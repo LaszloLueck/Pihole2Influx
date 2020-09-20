@@ -1,41 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using dck_pihole2influx.Configuration;
 using dck_pihole2influx.Logging;
-using Microsoft.IdentityModel.Tokens;
+using dck_pihole2influx.Scheduler;
 using Quartz;
 using Quartz.Impl;
 using Serilog;
-using Serilog.Core;
-using Serilog.Sinks.SystemConsole.Themes;
 
 namespace dck_pihole2influx
 {
-    class Test : IJob
-    {
-        private static readonly ILogger Log = LoggingFactory<Test>.CreateLogging();
-        public async Task Execute(IJobExecutionContext context)
-        {
-            var t = new Task(() =>
-            {
-                var configuration = new ConfigurationFactory().Configuration;
-                Log.Information("Use the following parameter for connections:");
-                Log.Information($"Pihole host: {configuration.PiholeHostOrIp}");
-                Log.Information($"Pihole telnet port: {configuration.PiholeTelnetPort}");
-                Log.Information($"InfluxDb host: {configuration.InfluxDbHostOrIp}");
-                Log.Information($"InfluxDb port: {configuration.InfluxDbPort}");
-                Log.Information($"InfluxDb database name: {configuration.InfluxDbDatabaseName}");
-                Log.Information($"InfluxDb user name: {configuration.InfluxDbUserName}");
-                Log.Information(
-                    $"InfluxDb password is {(configuration.InfluxDbPassword.Length == 0 ? "not set" : "set")}");
-            });
-
-            t.Start();
-
-        }
-    }
-    
-    
     class Program
     {
         private static readonly ILogger Log = LoggingFactory<Program>.CreateLogging();
@@ -49,7 +21,7 @@ namespace dck_pihole2influx
             await scheduler.Start();
 
             IJobDetail job = JobBuilder
-                .Create<Test>()
+                .Create<SchedulerJob>()
                 .WithIdentity("job1", "group1")
                 .Build();
 
@@ -60,10 +32,11 @@ namespace dck_pihole2influx
                 .Build();
 
             await scheduler.ScheduleJob(job, trigger);
-            
+
+            //The app runs inside of a docker-container, so let them never finish while the container runs.
             await Task.Delay(-1);
+            
             await scheduler.Shutdown();
         }
-        
     }
 }
