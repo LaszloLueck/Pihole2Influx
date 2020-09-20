@@ -12,7 +12,7 @@ namespace dck_pihole2influx.Logging
                 .WriteTo
                 .Console(theme: AnsiConsoleTheme.Code,
                     outputTemplate:
-                    "[{Timestamp:HH:mm:ss} {Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}")
+                    "[{Timestamp:HH:mm:ss} {Level:u4}] {SourceContext} {Message:lj}{NewLine}{Exception}")
                 .CreateLogger()
                 .ForContext<T>();
         }
