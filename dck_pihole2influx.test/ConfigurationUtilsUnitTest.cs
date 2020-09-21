@@ -9,7 +9,7 @@ namespace dck_pihole2influx.test
     public class ConfigurationUtilsUnitTest
     {
 
-        private readonly ConfigurationUtils _configurationUtils;
+        private readonly IConfigurationUtils _configurationUtils;
 
         public ConfigurationUtilsUnitTest()
         {
@@ -17,28 +17,28 @@ namespace dck_pihole2influx.test
         }
         
         
-        [TestMethod]
+        [TestMethod, Description("Try to parse an Option<string> Some to a valid number and returns the real value")]
         public void ReturnValidWhenSome_TryParseValueFromString()
         {
             var result = _configurationUtils.TryParseValueFromString(Option.Some<string>("1"), 100);
             Assert.AreEqual(1,result);
         }
 
-        [TestMethod]
+        [TestMethod, Description("Try to parse an Option<string> Some to a valid number and returns the default if it is not parseable")]
         public void ReturnDefaultWhenSome_TryParseValueFromString()
         {
             var result = _configurationUtils.TryParseValueFromString(Option.Some("a"), 100);
             Assert.AreEqual(100,100);
         }
 
-        [TestMethod]
+        [TestMethod, Description("Try to parse an Option<string> None to a valid number and returns the default")]
         public void ReturnDefaultWhenNone_TryParseValueFromString()
         {
             var result = _configurationUtils.TryParseValueFromString(Option.None<string>(), 100);
             Assert.AreEqual(100,100);
         }
 
-        [TestMethod]
+        [TestMethod, Description("Try to read an environment variable and return the value as Option.Some<string> if it is existing")]
         public void ReturnSome_ReadEnvironmentVariable()
         {
             Environment.SetEnvironmentVariable("test_value1", "a");
@@ -47,7 +47,7 @@ namespace dck_pihole2influx.test
             Environment.SetEnvironmentVariable("test_value1",null);
         }
 
-        [TestMethod]
+        [TestMethod, Description("Try to read an environment variable and return the value as Option.None<string> if it is not existing")]
         public void ReturnNone_ReadEnvironmentVariable()
         {
             var result = _configurationUtils.ReadEnvironmentVariable("test_value2");

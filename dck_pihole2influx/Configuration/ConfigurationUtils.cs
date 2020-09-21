@@ -3,7 +3,7 @@ using Optional;
 
 namespace dck_pihole2influx.Configuration
 {
-    public class ConfigurationUtils
+    public class ConfigurationUtils : IConfigurationUtils
     {
         public Option<string> ReadEnvironmentVariable(string value)
         {

@@ -8,21 +8,28 @@ namespace dck_pihole2influx.Scheduler
 {
     public class SchedulerJob : IJob
     {
-        private static readonly ILogger Log = LoggingFactory<SchedulerJob>.CreateLogging();
-        
+        private static readonly ILogger _log = LoggingFactory<SchedulerJob>.CreateLogging();
+        private readonly IConfigurationUtils _configurationUtils;
+
+        public SchedulerJob(IConfigurationUtils configurationUtils)
+        {
+            _configurationUtils = configurationUtils;
+        }
+
+
         public async Task Execute(IJobExecutionContext context)
         {
             await Task.Run(() =>
             {
-                var configuration = new ConfigurationFactory().Configuration;
-                Log.Information("Use the following parameter for connections:");
-                Log.Information($"Pihole host: {configuration.PiholeHostOrIp}");
-                Log.Information($"Pihole telnet port: {configuration.PiholeTelnetPort}");
-                Log.Information($"InfluxDb host: {configuration.InfluxDbHostOrIp}");
-                Log.Information($"InfluxDb port: {configuration.InfluxDbPort}");
-                Log.Information($"InfluxDb database name: {configuration.InfluxDbDatabaseName}");
-                Log.Information($"InfluxDb user name: {configuration.InfluxDbUserName}");
-                Log.Information(
+                var configuration = new ConfigurationFactory(_configurationUtils).Configuration;
+                _log.Information("Use the following parameter for connections:");
+                _log.Information($"Pihole host: {configuration.PiholeHostOrIp}");
+                _log.Information($"Pihole telnet port: {configuration.PiholeTelnetPort}");
+                _log.Information($"InfluxDb host: {configuration.InfluxDbHostOrIp}");
+                _log.Information($"InfluxDb port: {configuration.InfluxDbPort}");
+                _log.Information($"InfluxDb database name: {configuration.InfluxDbDatabaseName}");
+                _log.Information($"InfluxDb user name: {configuration.InfluxDbUserName}");
+                _log.Information(
                     $"InfluxDb password is {(configuration.InfluxDbPassword.Length == 0 ? "not set" : "set")}");
             });
         }

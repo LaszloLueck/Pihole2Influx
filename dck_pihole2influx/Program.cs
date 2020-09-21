@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using dck_pihole2influx.Configuration;
 using dck_pihole2influx.Logging;
 using dck_pihole2influx.Scheduler;
 using Quartz;
@@ -10,12 +9,12 @@ namespace dck_pihole2influx
 {
     class Program
     {
-        private static readonly ILogger Log = LoggingFactory<Program>.CreateLogging();
+        private static readonly ILogger _log = LoggingFactory<Program>.CreateLogging();
 
         static async Task Main(string[] args)
         {
-            Log.Information("starting app!");
-            Log.Information("Build up the scheduler");
+            _log.Information("starting app!");
+            _log.Information("Build up the scheduler");
             StdSchedulerFactory factory = new StdSchedulerFactory();
             IScheduler scheduler = await factory.GetScheduler();
             await scheduler.Start();
