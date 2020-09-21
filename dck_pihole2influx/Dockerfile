@@ -1,14 +1,15 @@
-﻿FROM ubuntu
+﻿FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
 LABEL MAINTAINER="Laszlo Lueck <llueck@gmail.com>"
-RUN pwd
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get install -y apt-transport-https
-RUN apt-get install -y wget
-RUN wget "https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb" -O packages-microsoft-prod.deb
-RUN dpkg --install ./packages-microsoft-prod.deb
-RUN apt-get update
-RUN apt-get install -y dotnet-sdk-3.1
-COPY bin/Release/netcoreapp3.1/publish/ App/
-WORKDIR /App
+WORKDIR /app
+COPY *.csproj ./
+RUN dotnet restore
+
+COPY . ./
+RUN dotnet build
+RUN dotnet publish -c Release -o out
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+WORKDIR /app
+COPY --from=build-env /app/out .
+
 ENTRYPOINT ["dotnet", "dck_pihole2influx.dll"]
