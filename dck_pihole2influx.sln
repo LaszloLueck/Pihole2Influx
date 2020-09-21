@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dck_pihole2influx", "dck_pihole2influx\dck_pihole2influx.csproj", "{AB006CB1-0F1D-4BD2-B221-8E3FDC0F2D51}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dck_pihole2influx.test", "dck_pihole2influx.test\dck_pihole2influx.test.csproj", "{570E5FEA-2D2D-4025-83FB-4039AAC092E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{AB006CB1-0F1D-4BD2-B221-8E3FDC0F2D51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB006CB1-0F1D-4BD2-B221-8E3FDC0F2D51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB006CB1-0F1D-4BD2-B221-8E3FDC0F2D51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{570E5FEA-2D2D-4025-83FB-4039AAC092E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{570E5FEA-2D2D-4025-83FB-4039AAC092E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{570E5FEA-2D2D-4025-83FB-4039AAC092E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{570E5FEA-2D2D-4025-83FB-4039AAC092E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
