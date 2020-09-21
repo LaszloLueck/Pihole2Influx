@@ -13,10 +13,12 @@ namespace dck_pihole2influx
         {
             _log.Information("starting app!");
             _log.Information("Build up the scheduler");
-            ISchedulerFactory schedulerFactory = new SchedulerFactory<SchedulerJob>("job1", "group1", "trigger1", 10);
+            ISchedulerFactory schedulerFactory = new MySchedulerFactory<SchedulerJob>("job1", "group1", "trigger1", 10);
+            await schedulerFactory.BuildScheduler();
             await schedulerFactory.StartScheduler();
-            await schedulerFactory.ScheduleJob(schedulerFactory.GetJob(), schedulerFactory.GetTrigger());
+            await schedulerFactory.ScheduleJob();
 
+            _log.Information("App is in running state!");
             await Task.Delay(-1);
 
             await schedulerFactory.ShutdownScheduler();

@@ -8,11 +8,9 @@ namespace dck_pihole2influx.Scheduler
     {
         Task StartScheduler();
 
-        Task<DateTimeOffset> ScheduleJob(IJobDetail jobDetail, ITrigger trigger);
+        Task BuildScheduler();
 
-        IJobDetail GetJob();
-
-        ITrigger GetTrigger();
+        Task ScheduleJob();
 
         Task ShutdownScheduler();
     }

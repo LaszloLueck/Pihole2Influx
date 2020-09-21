@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using Quartz;
@@ -8,56 +7,74 @@ using Serilog;
 
 namespace dck_pihole2influx.Scheduler
 {
-    public class SchedulerFactory<T> : ISchedulerFactory where T: IJob
+    public class MySchedulerFactory<U> : ISchedulerFactory where U: IJob
     {
-        private static readonly ILogger _log = LoggingFactory<SchedulerFactory<T>>.CreateLogging();
+        private static readonly ILogger _log = LoggingFactory<MySchedulerFactory<U>>.CreateLogging();
         private readonly string _jobName;
         private readonly string _groupName;
         private readonly string _triggerName;
         private readonly int _repeatIntervalInSeconds;
-        private readonly IScheduler _scheduler;
-        
-        public SchedulerFactory(string jobName, string groupName, string triggerName, int repeatIntervalInSeconds)
+        private IScheduler _scheduler;
+        private readonly StdSchedulerFactory _factory;
+
+        public MySchedulerFactory(string jobName, string groupName, string triggerName, int repeatIntervalInSeconds)
         {
             _log.Information("Generate Scheduler with Values: ");
-            
+            _log.Information($"JobName: {jobName}");
+            _log.Information($"GroupName: {groupName}");
+            _log.Information($"TriggerName: {triggerName}");
+            _log.Information($"RepeatInterval: {repeatIntervalInSeconds} s");
             _jobName = jobName;
             _groupName = groupName;
             _triggerName = triggerName;
             _repeatIntervalInSeconds = repeatIntervalInSeconds;
-            StdSchedulerFactory factory = new StdSchedulerFactory();
-            _scheduler = factory.GetScheduler().Result;
+            _factory = new StdSchedulerFactory();
         }
 
-        public IJobDetail GetJob()
+        public async Task BuildScheduler()
         {
+            _log.Information("Build Scheduler");
+            _scheduler = await _factory.GetScheduler();
+        }
+
+        private IJobDetail GetJob()
+        {
+            _log.Information("Get Job");
             return JobBuilder
-                .Create<T>()
+                .Create<U>()
                 .WithIdentity(_jobName, _groupName)
                 .Build();
         }
 
-        public ITrigger GetTrigger()
+        private ITrigger GetTrigger()
         {
+            _log.Information("Get Trigger");
+            var dto = new DateTimeOffset(DateTime.Now).AddSeconds(5);
+            _log.Information($"Now is: {new DateTimeOffset(DateTime.Now)}");
+            _log.Information($"Start at: {dto}");
             return TriggerBuilder
                 .Create()
                 .WithIdentity(_triggerName, _groupName)
+                .StartAt(dto)
                 .WithSimpleSchedule(x => x.WithIntervalInSeconds(_repeatIntervalInSeconds).RepeatForever())
                 .Build();
         }
-        
+
         public async Task StartScheduler()
         {
+            _log.Information("Start Scheduler");
             await _scheduler.Start();
         }
 
-        public async Task<DateTimeOffset> ScheduleJob(IJobDetail jobDetail, ITrigger trigger)
+        public async Task ScheduleJob()
         {
-            return await _scheduler.ScheduleJob(jobDetail, trigger);
+            _log.Information("Schedule Job");
+            await _scheduler.ScheduleJob(GetJob(), GetTrigger());
         }
 
         public async Task ShutdownScheduler()
         {
+            _log.Information("Shutdown Scheduler");
             await _scheduler.Shutdown();
         }
     }
