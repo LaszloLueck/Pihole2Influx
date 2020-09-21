@@ -6,6 +6,7 @@ RUN dotnet restore
 
 COPY . ./
 RUN dotnet build
+RUN dotnet test -c Release -l n
 RUN dotnet publish -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
