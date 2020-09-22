@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Specialized;
 using System.Threading.Tasks;
-using dck_pihole2influx.Configuration;
 using dck_pihole2influx.Logging;
 using Quartz;
 using Quartz.Impl;
@@ -9,9 +7,9 @@ using Serilog;
 
 namespace dck_pihole2influx.Scheduler
 {
-    public class MySchedulerFactory<T> : ISchedulerFactory where T: class, IJob
+    public class MySchedulerFactory<T> : ISchedulerFactory where T : class, IJob
     {
-        private static readonly ILogger _log = LoggingFactory<MySchedulerFactory<T>>.CreateLogging();
+        private static readonly ILogger Log = LoggingFactory<MySchedulerFactory<T>>.CreateLogging();
         private readonly string _jobName;
         private readonly string _groupName;
         private readonly string _triggerName;
@@ -21,11 +19,11 @@ namespace dck_pihole2influx.Scheduler
 
         public MySchedulerFactory(string jobName, string groupName, string triggerName, int repeatIntervalInSeconds)
         {
-            _log.Information("Generate Scheduler with Values: ");
-            _log.Information($"JobName: {jobName}");
-            _log.Information($"GroupName: {groupName}");
-            _log.Information($"TriggerName: {triggerName}");
-            _log.Information($"RepeatInterval: {repeatIntervalInSeconds} s");
+            Log.Information("Generate Scheduler with Values: ");
+            Log.Information($"JobName: {jobName}");
+            Log.Information($"GroupName: {groupName}");
+            Log.Information($"TriggerName: {triggerName}");
+            Log.Information($"RepeatInterval: {repeatIntervalInSeconds} s");
             _jobName = jobName;
             _groupName = groupName;
             _triggerName = triggerName;
@@ -33,15 +31,22 @@ namespace dck_pihole2influx.Scheduler
             _factory = new StdSchedulerFactory();
         }
 
-        public async Task BuildScheduler()
+        public async Task RunScheduler()
         {
-            _log.Information("Build Scheduler");
+            await BuildScheduler();
+            await StartScheduler();
+            await ScheduleJob();
+        }
+
+        private async Task BuildScheduler()
+        {
+            Log.Information("Build Scheduler");
             _scheduler = await _factory.GetScheduler();
         }
 
         private IJobDetail GetJob()
         {
-            _log.Information("Get Job");
+            Log.Information("Get Job");
             return JobBuilder
                 .Create<T>()
                 .WithIdentity(_jobName, _groupName)
@@ -50,10 +55,10 @@ namespace dck_pihole2influx.Scheduler
 
         private ITrigger GetTrigger()
         {
-            _log.Information("Get Trigger");
+            Log.Information("Get Trigger");
             var dto = new DateTimeOffset(DateTime.Now).AddSeconds(5);
-            _log.Information($"current time: {new DateTimeOffset(DateTime.Now)}");
-            _log.Information($"trigger start: {dto}");
+            Log.Information($"current time: {new DateTimeOffset(DateTime.Now)}");
+            Log.Information($"trigger start: {dto}");
             return TriggerBuilder
                 .Create()
                 .WithIdentity(_triggerName, _groupName)
@@ -62,23 +67,23 @@ namespace dck_pihole2influx.Scheduler
                 .Build();
         }
 
-        public async Task StartScheduler()
+        private async Task StartScheduler()
         {
-            _log.Information("Start Scheduler");
+            Log.Information("Start Scheduler");
             await _scheduler.Start();
         }
 
-        public async Task ScheduleJob()
+        private async Task ScheduleJob()
         {
             var job = GetJob();
             var trigger = GetTrigger();
-            _log.Information("Schedule Job");
+            Log.Information("Schedule Job");
             await _scheduler.ScheduleJob(job, trigger);
         }
 
         public async Task ShutdownScheduler()
         {
-            _log.Information("Shutdown Scheduler");
+            Log.Information("Shutdown Scheduler");
             await _scheduler.Shutdown();
         }
     }

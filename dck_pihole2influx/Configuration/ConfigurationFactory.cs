@@ -1,6 +1,4 @@
-﻿using static dck_pihole2influx.Configuration.ConfigurationUtils;
-
-namespace dck_pihole2influx.Configuration
+﻿namespace dck_pihole2influx.Configuration
 {
     public class ConfigurationFactory
     {
@@ -17,13 +15,20 @@ namespace dck_pihole2influx.Configuration
         public ConfigurationFactory(IConfigurationUtils configurationUtils)
         {
             this.Configuration = new Configuration(
-                configurationUtils.ReadEnvironmentVariable(PiholeIpOrHostName).ValueOr(Configuration.DefaultPiholeHostOrIp),
-                configurationUtils.TryParseValueFromString(configurationUtils.ReadEnvironmentVariable(PiholePort), Configuration.DefaultPiholePort),
-                configurationUtils.ReadEnvironmentVariable(InfluxDbIpOrHostName).ValueOr(Configuration.DefaultInfluxDbHostOrIp),
-                configurationUtils.TryParseValueFromString(configurationUtils.ReadEnvironmentVariable(InfluxDbPort), Configuration.DefaultInfluxDbPort),
-                configurationUtils.ReadEnvironmentVariable(InfluxDbDatabaseName).ValueOr(Configuration.DefaultInfluxDbDatabaseName),
-                configurationUtils.ReadEnvironmentVariable(InfluxDbUserName).ValueOr(Configuration.DefaultInfluxDbUserName),
-                configurationUtils.ReadEnvironmentVariable(InfluxDbPassword).ValueOr(Configuration.DefaultInfluxDbPassword)
+                configurationUtils.ReadEnvironmentVariable(PiholeIpOrHostName)
+                    .ValueOr(Configuration.DefaultPiholeHostOrIp),
+                configurationUtils.TryParseValueFromString(configurationUtils.ReadEnvironmentVariable(PiholePort),
+                    Configuration.DefaultPiholePort),
+                configurationUtils.ReadEnvironmentVariable(InfluxDbIpOrHostName)
+                    .ValueOr(Configuration.DefaultInfluxDbHostOrIp),
+                configurationUtils.TryParseValueFromString(configurationUtils.ReadEnvironmentVariable(InfluxDbPort),
+                    Configuration.DefaultInfluxDbPort),
+                configurationUtils.ReadEnvironmentVariable(InfluxDbDatabaseName)
+                    .ValueOr(Configuration.DefaultInfluxDbDatabaseName),
+                configurationUtils.ReadEnvironmentVariable(InfluxDbUserName)
+                    .ValueOr(Configuration.DefaultInfluxDbUserName),
+                configurationUtils.ReadEnvironmentVariable(InfluxDbPassword)
+                    .ValueOr(Configuration.DefaultInfluxDbPassword)
             );
         }
     }
