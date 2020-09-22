@@ -9,6 +9,8 @@
         public const string InfluxDbDatabaseName = "INFLUXDBNAME";
         public const string InfluxDbUserName = "INFLUXDBUSERNAME";
         public const string InfluxDbPassword = "INFLUXDBPASSWORD";
+        public const string PiholeUser = "PIHOLEUSER";
+        public const string PihoePassword = "PIHOLEPASSWORD";
 
         public readonly Configuration Configuration;
 
@@ -28,7 +30,9 @@
                 configurationUtils.ReadEnvironmentVariable(InfluxDbUserName)
                     .ValueOr(Configuration.DefaultInfluxDbUserName),
                 configurationUtils.ReadEnvironmentVariable(InfluxDbPassword)
-                    .ValueOr(Configuration.DefaultInfluxDbPassword)
+                    .ValueOr(Configuration.DefaultInfluxDbPassword),
+                configurationUtils.ReadEnvironmentVariable(PiholeUser).ValueOr(Configuration.DefaultPiholeUser),
+                configurationUtils.ReadEnvironmentVariable(PihoePassword).ValueOr(Configuration.DefaultPiholePassword)
             );
         }
     }

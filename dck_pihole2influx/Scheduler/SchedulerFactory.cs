@@ -7,9 +7,9 @@ using Serilog;
 
 namespace dck_pihole2influx.Scheduler
 {
-    public class MySchedulerFactory<T> : ISchedulerFactory where T : class, IJob
+    public class CustomSchedulerFactory<T> : ISchedulerFactory where T : class, IJob
     {
-        private static readonly ILogger Log = LoggingFactory<MySchedulerFactory<T>>.CreateLogging();
+        private static readonly ILogger Log = LoggingFactory<CustomSchedulerFactory<T>>.CreateLogging();
         private readonly string _jobName;
         private readonly string _groupName;
         private readonly string _triggerName;
@@ -17,7 +17,7 @@ namespace dck_pihole2influx.Scheduler
         private IScheduler _scheduler;
         private readonly StdSchedulerFactory _factory;
 
-        public MySchedulerFactory(string jobName, string groupName, string triggerName, int repeatIntervalInSeconds)
+        public CustomSchedulerFactory(string jobName, string groupName, string triggerName, int repeatIntervalInSeconds)
         {
             Log.Information("Generate Scheduler with Values: ");
             Log.Information($"JobName: {jobName}");

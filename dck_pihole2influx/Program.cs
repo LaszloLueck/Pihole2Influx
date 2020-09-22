@@ -10,13 +10,12 @@ namespace dck_pihole2influx
     class Program
     {
         private static readonly ILogger Log = LoggingFactory<Program>.CreateLogging();
-        //LogProvider.SetCurrentLogProvider(new ConsoleLogProvider());
         
         static async Task Main(string[] args)
         {
             Log.Information("starting app!");
             Log.Information("Build up the scheduler");
-            ISchedulerFactory schedulerFactory = new MySchedulerFactory<SchedulerJob>("job1", "group1", "trigger1", 10);
+            ISchedulerFactory schedulerFactory = new CustomSchedulerFactory<SchedulerJob>("job1", "group1", "trigger1", 10);
             await schedulerFactory.RunScheduler();
 
             Log.Information("App is in running state!");

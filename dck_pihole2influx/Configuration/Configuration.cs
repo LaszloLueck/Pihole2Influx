@@ -9,6 +9,8 @@ namespace dck_pihole2influx.Configuration
         public const string DefaultInfluxDbDatabaseName = "influxdb";
         public const string DefaultInfluxDbUserName = "";
         public const string DefaultInfluxDbPassword = "";
+        public const string DefaultPiholeUser = "";
+        public const string DefaultPiholePassword = "";
 
         public readonly string PiholeHostOrIp;
         public readonly int PiholeTelnetPort;
@@ -17,8 +19,10 @@ namespace dck_pihole2influx.Configuration
         public readonly string InfluxDbDatabaseName;
         public readonly string InfluxDbUserName;
         public readonly string InfluxDbPassword;
+        public readonly string PiholeUser;
+        public readonly string PiholePassword;
 
-        public Configuration(string piholeHostOrIp, int piholeTelnetPort, string influxDbHostOrIp, int influxDbPort, string influxDbDatabaseName, string influxDbUserName, string influxDbPassword)
+        public Configuration(string piholeHostOrIp, int piholeTelnetPort, string influxDbHostOrIp, int influxDbPort, string influxDbDatabaseName, string influxDbUserName, string influxDbPassword, string piholeUser, string piholePassword)
         {
             PiholeHostOrIp = piholeHostOrIp;
             PiholeTelnetPort = piholeTelnetPort;
@@ -27,6 +31,8 @@ namespace dck_pihole2influx.Configuration
             InfluxDbDatabaseName = influxDbDatabaseName;
             InfluxDbUserName = influxDbUserName;
             InfluxDbPassword = influxDbPassword;
+            PiholeUser = piholeUser;
+            PiholePassword = piholePassword;
         }
     }
 }
