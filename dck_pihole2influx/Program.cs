@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using dck_pihole2influx.Scheduler;
+using Quartz.Logging;
 using Serilog;
 
 namespace dck_pihole2influx
@@ -9,7 +10,8 @@ namespace dck_pihole2influx
     class Program
     {
         private static readonly ILogger Log = LoggingFactory<Program>.CreateLogging();
-
+        //LogProvider.SetCurrentLogProvider(new ConsoleLogProvider());
+        
         static async Task Main(string[] args)
         {
             Log.Information("starting app!");
