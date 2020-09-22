@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
+using dck_pihole2influx.Configuration;
 using dck_pihole2influx.Logging;
 using Quartz;
 using Quartz.Impl;
@@ -7,9 +9,9 @@ using Serilog;
 
 namespace dck_pihole2influx.Scheduler
 {
-    public class MySchedulerFactory<U> : ISchedulerFactory where U: IJob
+    public class MySchedulerFactory<T> : ISchedulerFactory where T: class, IJob
     {
-        private static readonly ILogger _log = LoggingFactory<MySchedulerFactory<U>>.CreateLogging();
+        private static readonly ILogger _log = LoggingFactory<MySchedulerFactory<T>>.CreateLogging();
         private readonly string _jobName;
         private readonly string _groupName;
         private readonly string _triggerName;
@@ -41,7 +43,7 @@ namespace dck_pihole2influx.Scheduler
         {
             _log.Information("Get Job");
             return JobBuilder
-                .Create<U>()
+                .Create<T>()
                 .WithIdentity(_jobName, _groupName)
                 .Build();
         }
@@ -50,8 +52,8 @@ namespace dck_pihole2influx.Scheduler
         {
             _log.Information("Get Trigger");
             var dto = new DateTimeOffset(DateTime.Now).AddSeconds(5);
-            _log.Information($"Now is: {new DateTimeOffset(DateTime.Now)}");
-            _log.Information($"Start at: {dto}");
+            _log.Information($"current time: {new DateTimeOffset(DateTime.Now)}");
+            _log.Information($"trigger start: {dto}");
             return TriggerBuilder
                 .Create()
                 .WithIdentity(_triggerName, _groupName)
@@ -68,8 +70,10 @@ namespace dck_pihole2influx.Scheduler
 
         public async Task ScheduleJob()
         {
+            var job = GetJob();
+            var trigger = GetTrigger();
             _log.Information("Schedule Job");
-            await _scheduler.ScheduleJob(GetJob(), GetTrigger());
+            await _scheduler.ScheduleJob(job, trigger);
         }
 
         public async Task ShutdownScheduler()

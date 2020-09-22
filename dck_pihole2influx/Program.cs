@@ -22,6 +22,7 @@ namespace dck_pihole2influx
             await Task.Delay(-1);
 
             await schedulerFactory.ShutdownScheduler();
+            System.Environment.Exit(1);
         }
     }
 }

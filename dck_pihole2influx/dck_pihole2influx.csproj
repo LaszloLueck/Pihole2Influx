@@ -7,11 +7,15 @@
     <PackageReference Include="Optional" Version="4.0.0" />
     <PackageReference Include="InfluxDB.LineProtocol" Version="1.1.1" />
     <PackageReference Include="Quartz" Version="3.1.0" />
+    <PackageReference Include="Quartz.Plugins" Version="3.1.0" />
     <PackageReference Include="Serilog.Enrichers.Context" Version="4.2.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Telnet" Version="0.8.6" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="quartz.config" />
   </ItemGroup>
 </Project>

@@ -9,19 +9,12 @@ namespace dck_pihole2influx.Scheduler
     public class SchedulerJob : IJob
     {
         private static readonly ILogger _log = LoggingFactory<SchedulerJob>.CreateLogging();
-        private readonly IConfigurationUtils _configurationUtils;
-
-        public SchedulerJob(IConfigurationUtils configurationUtils)
-        {
-            _configurationUtils = configurationUtils;
-        }
-
 
         public async Task Execute(IJobExecutionContext context)
         {
             await Task.Run(() =>
             {
-                var configuration = new ConfigurationFactory(_configurationUtils).Configuration;
+                var configuration = new ConfigurationFactory(new ConfigurationUtils()).Configuration;
                 _log.Information("Use the following parameter for connections:");
                 _log.Information($"Pihole host: {configuration.PiholeHostOrIp}");
                 _log.Information($"Pihole telnet port: {configuration.PiholeTelnetPort}");
