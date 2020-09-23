@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace dck_pihole2influx.Transport.Telnet
 {
-    public static class TelnetUtils
+    public static class TelnetCommands
     {
 
         public enum PiholeCommands {

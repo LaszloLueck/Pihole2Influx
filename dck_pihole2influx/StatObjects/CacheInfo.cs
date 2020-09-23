@@ -14,9 +14,9 @@ namespace dck_pihole2influx.StatObjects
     ///cache-inserted: 98590
     ///---EOM---
     /// </summary>
-    public class CacheInfo
+    public class CacheInfo : PiholeDataBase
     {
-        private static readonly ILogger _Log = LoggingFactory<CacheInfo>.CreateLogging();
+        private static readonly ILogger Log = LoggingFactory<CacheInfo>.CreateLogging();
 
         private readonly string _input;
 
@@ -63,8 +63,8 @@ namespace dck_pihole2influx.StatObjects
             }
             catch (Exception ex)
             {
-                _Log.Error(ex, "Error while create an object from return string");
-                _Log.Warning(_input);
+                Log.Error(ex, "Error while create an object from return string");
+                Log.Warning(_input);
                 return Option.None<CacheInfoDto>();
             }
         }

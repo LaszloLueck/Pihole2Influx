@@ -10,7 +10,7 @@ namespace dck_pihole2influx.Transport.Telnet
 {
     public class TelnetClient
     {
-        private static readonly ILogger _Log = LoggingFactory<TelnetClient>.CreateLogging();
+        private static readonly ILogger Log = LoggingFactory<TelnetClient>.CreateLogging();
         private readonly string _telnetHost;
         private readonly int _telnetPort;
         private readonly string _piholeUser;
@@ -25,9 +25,9 @@ namespace dck_pihole2influx.Transport.Telnet
             _piholePassword = piholePassword;
         }
 
-        public async Task<Option<string>> ConnectAndReceiveData(TelnetUtils.PiholeCommands key)
+        public async Task<Option<string>> ConnectAndReceiveData(TelnetCommands.PiholeCommands key)
         {
-            Log.Information($"Connect to Telnet-Host at {_telnetHost}:{_telnetPort}");
+            Serilog.Log.Information($"Connect to Telnet-Host at {_telnetHost}:{_telnetPort}");
             var client = new Client(_telnetHost, _telnetPort, new CancellationToken());
             if (client.IsConnected)
             {
@@ -38,11 +38,11 @@ namespace dck_pihole2influx.Transport.Telnet
                         await client.TryLoginAsync(_piholeUser, _piholePassword, 100);
                     }
 
-                    await client.WriteLine(TelnetUtils.GetCommandByName(key));
+                    await client.WriteLine(TelnetCommands.GetCommandByName(key));
 
                     string s = await client.TerminatedReadAsync("---EOM---\n", TimeSpan.FromMilliseconds(100));
 
-                    await client.WriteLine(TelnetUtils.GetCommandByName(TelnetUtils.PiholeCommands.Quit));
+                    await client.WriteLine(TelnetCommands.GetCommandByName(TelnetCommands.PiholeCommands.Quit));
                     
                     client.Dispose();
                     
