@@ -9,7 +9,7 @@ namespace dck_pihole2influx.Scheduler
 {
     public class CustomSchedulerFactory<T> : ISchedulerFactory where T : class, IJob
     {
-        private static readonly ILogger Log = LoggingFactory<CustomSchedulerFactory<T>>.CreateLogging();
+        private static readonly ILogger _Log = LoggingFactory<CustomSchedulerFactory<T>>.CreateLogging();
         private readonly string _jobName;
         private readonly string _groupName;
         private readonly string _triggerName;
@@ -19,11 +19,11 @@ namespace dck_pihole2influx.Scheduler
 
         public CustomSchedulerFactory(string jobName, string groupName, string triggerName, int repeatIntervalInSeconds)
         {
-            Log.Information("Generate Scheduler with Values: ");
-            Log.Information($"JobName: {jobName}");
-            Log.Information($"GroupName: {groupName}");
-            Log.Information($"TriggerName: {triggerName}");
-            Log.Information($"RepeatInterval: {repeatIntervalInSeconds} s");
+            _Log.Information("Generate Scheduler with Values: ");
+            _Log.Information($"JobName: {jobName}");
+            _Log.Information($"GroupName: {groupName}");
+            _Log.Information($"TriggerName: {triggerName}");
+            _Log.Information($"RepeatInterval: {repeatIntervalInSeconds} s");
             _jobName = jobName;
             _groupName = groupName;
             _triggerName = triggerName;
@@ -40,13 +40,13 @@ namespace dck_pihole2influx.Scheduler
 
         private async Task BuildScheduler()
         {
-            Log.Information("Build Scheduler");
+            _Log.Information("Build Scheduler");
             _scheduler = await _factory.GetScheduler();
         }
 
         private IJobDetail GetJob()
         {
-            Log.Information("Get Job");
+            _Log.Information("Get Job");
             return JobBuilder
                 .Create<T>()
                 .WithIdentity(_jobName, _groupName)
@@ -55,10 +55,10 @@ namespace dck_pihole2influx.Scheduler
 
         private ITrigger GetTrigger()
         {
-            Log.Information("Get Trigger");
+            _Log.Information("Get Trigger");
             var dto = new DateTimeOffset(DateTime.Now).AddSeconds(5);
-            Log.Information($"current time: {new DateTimeOffset(DateTime.Now)}");
-            Log.Information($"trigger start: {dto}");
+            _Log.Information($"current time: {new DateTimeOffset(DateTime.Now)}");
+            _Log.Information($"trigger start: {dto}");
             return TriggerBuilder
                 .Create()
                 .WithIdentity(_triggerName, _groupName)
@@ -69,7 +69,7 @@ namespace dck_pihole2influx.Scheduler
 
         private async Task StartScheduler()
         {
-            Log.Information("Start Scheduler");
+            _Log.Information("Start Scheduler");
             await _scheduler.Start();
         }
 
@@ -77,13 +77,13 @@ namespace dck_pihole2influx.Scheduler
         {
             var job = GetJob();
             var trigger = GetTrigger();
-            Log.Information("Schedule Job");
+            _Log.Information("Schedule Job");
             await _scheduler.ScheduleJob(job, trigger);
         }
 
         public async Task ShutdownScheduler()
         {
-            Log.Information("Shutdown Scheduler");
+            _Log.Information("Shutdown Scheduler");
             await _scheduler.Shutdown();
         }
     }

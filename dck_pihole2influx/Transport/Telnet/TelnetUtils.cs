@@ -7,38 +7,38 @@ namespace dck_pihole2influx.Transport.Telnet
     {
 
         public enum PiholeCommands {
-            STATS,
-            QUIT,
-            TOPDOMAINS,
-            TOPADS,
-            TOPCLIENTS,
-            FORWARDDESTINATIONS,
-            QUERYTYPES,
-            VERSION,
-            DBSTATS,
-            CACHEINFO,
-            OVERTIME
+            Stats,
+            Quit,
+            Topdomains,
+            Topads,
+            Topclients,
+            Forwarddestinations,
+            Querytypes,
+            Version,
+            Dbstats,
+            Cacheinfo,
+            Overtime
         }
 
-        private static Dictionary<PiholeCommands, string> Commands = new Dictionary<PiholeCommands, string>()
+        private static Dictionary<PiholeCommands, string> _commands = new Dictionary<PiholeCommands, string>()
         {
-            {PiholeCommands.STATS, ">stats"},
-            {PiholeCommands.QUIT, ">quit"},
-            {PiholeCommands.TOPDOMAINS, ">top-domains"},
-            {PiholeCommands.TOPADS, ">top-ads"},
-            {PiholeCommands.TOPCLIENTS, ">top-clients"},
-            {PiholeCommands.FORWARDDESTINATIONS, ">forward-dest"},
-            {PiholeCommands.QUERYTYPES, ">querytypes"},
-            {PiholeCommands.VERSION, ">version"},
-            {PiholeCommands.DBSTATS, ">dbstats"},
-            {PiholeCommands.CACHEINFO, ">cacheinfo"},
-            {PiholeCommands.OVERTIME, ">overTime"}
+            {PiholeCommands.Stats, ">stats"},
+            {PiholeCommands.Quit, ">quit"},
+            {PiholeCommands.Topdomains, ">top-domains"},
+            {PiholeCommands.Topads, ">top-ads"},
+            {PiholeCommands.Topclients, ">top-clients"},
+            {PiholeCommands.Forwarddestinations, ">forward-dest"},
+            {PiholeCommands.Querytypes, ">querytypes"},
+            {PiholeCommands.Version, ">version"},
+            {PiholeCommands.Dbstats, ">dbstats"},
+            {PiholeCommands.Cacheinfo, ">cacheinfo"},
+            {PiholeCommands.Overtime, ">overTime"}
         };
         
 
         public static string GetCommandByName(PiholeCommands value)
         {
-            return Commands[value];
+            return _commands[value];
         }
     }
 }

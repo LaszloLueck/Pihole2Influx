@@ -16,7 +16,7 @@ namespace dck_pihole2influx.StatObjects
     /// </summary>
     public class CacheInfo
     {
-        private static readonly ILogger Log = LoggingFactory<CacheInfo>.CreateLogging();
+        private static readonly ILogger _Log = LoggingFactory<CacheInfo>.CreateLogging();
 
         private readonly string _input;
 
@@ -63,8 +63,8 @@ namespace dck_pihole2influx.StatObjects
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error while create an object from return string");
-                Log.Warning(_input);
+                _Log.Error(ex, "Error while create an object from return string");
+                _Log.Warning(_input);
                 return Option.None<CacheInfoDto>();
             }
         }

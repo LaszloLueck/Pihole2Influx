@@ -10,7 +10,7 @@ namespace dck_pihole2influx.Transport.Telnet
 {
     public class TelnetClient
     {
-        private static readonly ILogger Log = LoggingFactory<TelnetClient>.CreateLogging();
+        private static readonly ILogger _Log = LoggingFactory<TelnetClient>.CreateLogging();
         private readonly string _telnetHost;
         private readonly int _telnetPort;
         private readonly string _piholeUser;
@@ -27,6 +27,7 @@ namespace dck_pihole2influx.Transport.Telnet
 
         public async Task<Option<string>> ConnectAndReceiveData(TelnetUtils.PiholeCommands key)
         {
+            Log.Information($"Connect to Telnet-Host at {_telnetHost}:{_telnetPort}");
             var client = new Client(_telnetHost, _telnetPort, new CancellationToken());
             if (client.IsConnected)
             {
@@ -41,7 +42,7 @@ namespace dck_pihole2influx.Transport.Telnet
 
                     string s = await client.TerminatedReadAsync("---EOM---\n", TimeSpan.FromMilliseconds(100));
 
-                    await client.WriteLine(TelnetUtils.GetCommandByName(TelnetUtils.PiholeCommands.QUIT));
+                    await client.WriteLine(TelnetUtils.GetCommandByName(TelnetUtils.PiholeCommands.Quit));
                     
                     client.Dispose();
                     
