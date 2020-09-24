@@ -14,7 +14,7 @@ namespace dck_pihole2influx.StatObjects
     ///cache-inserted: 98590
     ///---EOM---
     /// </summary>
-    public class CacheInfo : PiholeDataBase
+    public class CacheInfo : IPiholeDataBase
     {
         private static readonly ILogger Log = LoggingFactory<CacheInfo>.CreateLogging();
 

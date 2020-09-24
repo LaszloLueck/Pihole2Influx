@@ -46,7 +46,7 @@ namespace dck_pihole2influx.Transport.Telnet
                     
                     client.Dispose();
                     
-                    return Option.Some<string>(s);
+                    return Option.Some(s);
                 });
                 return await t;
             }

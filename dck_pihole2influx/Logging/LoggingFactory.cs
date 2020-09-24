@@ -28,18 +28,16 @@ namespace dck_pihole2influx.Logging
             var x = typeof(T);
             var classPathArray = x.FullName.Some().ValueOr("")?.Split(".");
             var resString = "";
-            if (classPathArray != null && classPathArray.Length > 0)
-            {
-                var lastClassName = classPathArray.TakeLast(1).Single();
-                var restPathArray = classPathArray.Reverse().Skip(1);
+            if (classPathArray == null || classPathArray.Length <= 0) return resString;
+            var lastClassName = classPathArray.TakeLast(1).Single();
+            var restPathArray = classPathArray.Reverse().Skip(1);
 
-                var resArray = restPathArray.Select(c =>
-                {
-                    var sSize = c.Length < shortenSize ? c.Length : shortenSize; 
-                    return c.Substring(0, sSize);
-                }).Reverse();
-                resString = string.Join(".", resArray) + $".{lastClassName}";
-            }
+            var resArray = restPathArray.Select(c =>
+            {
+                var sSize = c.Length < shortenSize ? c.Length : shortenSize; 
+                return c.Substring(0, sSize);
+            }).Reverse();
+            resString = string.Join(".", resArray) + $".{lastClassName}";
 
             return resString;
         }
