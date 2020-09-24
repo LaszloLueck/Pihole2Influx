@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Text.Json;
 using dck_pihole2influx.Logging;
-using Newtonsoft.Json;
 using Optional;
+using Optional.Collections;
 using Serilog;
 
 namespace dck_pihole2influx.StatObjects
@@ -20,7 +22,7 @@ namespace dck_pihole2influx.StatObjects
 
         private readonly string _input;
 
-        public Option<CacheInfoDto> CacheInfoDtoOpt { get; }
+        public Option<List<(string, dynamic)>> CacheInfoDtoOpt { get; }
         public Option<string> AsJsonOpt { get; }
 
         public CacheInfo(string input)
@@ -35,43 +37,56 @@ namespace dck_pihole2influx.StatObjects
             return input.Replace(key, "").TrimEnd().TrimStart();
         }
 
-        private Option<CacheInfoDto> GetDtoFromResult()
+        public enum ValueTypes
+        {
+            String,
+            Int
+        }
+
+        private Option<List<(string, dynamic)>> GetDtoFromResult()
         {
             var splitted = _input.Split("\n");
+            var pattern = new Dictionary<string, (string, ValueTypes)>()
+            {
+                {"cache-size:", ("CacheSize", ValueTypes.Int)},
+                {"cache-live-freed:", ("CacheLiveFreed", ValueTypes.Int)},
+                {"cache-inserted:", ("CacheInserted", ValueTypes.Int)}
+            };
+
             try
             {
-                var returnObject = new CacheInfoDto();
+                var ret = new List<(string, dynamic)>();
                 foreach (var s in splitted)
                 {
-                    if (s.StartsWith("cache-size: "))
+                    pattern.FirstOrNone(value => s.Contains(value.Key)).Map(result =>
                     {
-                        returnObject.CacheSize = Int32.Parse(RemoveKeyAndTrim("cache-size:", s));
-                    }
-
-                    if (s.StartsWith("cache-live-freed: "))
-                    {
-                        returnObject.CacheLiveFreed = Int32.Parse(RemoveKeyAndTrim("cache-live-freed:", s));
-                    }
-
-                    if (s.StartsWith("cache-inserted: "))
-                    {
-                        returnObject.CacheInserted = Int32.Parse(RemoveKeyAndTrim("cache-inserted:", s));
-                    }
+                        var (key, valueTuple) = result;
+                        return valueTuple.Item2 switch
+                        {
+                            ValueTypes.Int => ValueConverterBase<int>.Convert(s, key, 0)
+                                .Map<(string, dynamic)>(
+                                    value => (valueTuple.Item1, ((BaseValue<int>) value).GetValue())),
+                            ValueTypes.String => ValueConverterBase<string>.Convert(s, key, "")
+                                .Map<(string, dynamic)>(value =>
+                                    (valueTuple.Item1, ((BaseValue<string>) value).GetValue())),
+                            _ => Option.None<(string, dynamic)>()
+                        };
+                    }).Flatten().MatchSome(tuple => ret.Add(tuple));
                 }
 
-                return Option.Some<CacheInfoDto>(returnObject);
+                return Option.Some(ret);
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Error while create an object from return string");
                 Log.Warning(_input);
-                return Option.None<CacheInfoDto>();
+                return Option.None<List<(string, dynamic)>>();
             }
         }
 
         private Option<string> GetJsonFromDto()
         {
-            return CacheInfoDtoOpt.Map<string>(JsonConvert.SerializeObject);
+            return CacheInfoDtoOpt.Map<string>(value => JsonSerializer.Serialize(value));
         }
     }
 

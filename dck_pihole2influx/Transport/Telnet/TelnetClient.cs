@@ -40,7 +40,7 @@ namespace dck_pihole2influx.Transport.Telnet
 
                     await client.WriteLine(TelnetCommands.GetCommandByName(key));
 
-                    string s = await client.TerminatedReadAsync("---EOM---\n", TimeSpan.FromMilliseconds(100));
+                    var s = await client.TerminatedReadAsync("---EOM---\n", TimeSpan.FromMilliseconds(100));
 
                     await client.WriteLine(TelnetCommands.GetCommandByName(TelnetCommands.PiholeCommands.Quit));
                     
