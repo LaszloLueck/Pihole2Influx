@@ -5,11 +5,11 @@ using Serilog;
 
 namespace dck_pihole2influx.StatObjects
 {
-    public interface IBaseX
+    public interface IBaseValue
     {
     }
 
-    public class BaseValue<T> : IBaseX
+    public class BaseValue<T> : IBaseValue
     {
         private readonly T _value;
 
@@ -33,7 +33,7 @@ namespace dck_pihole2influx.StatObjects
             return input.Replace(key, "").TrimStart().TrimEnd();
         }
 
-        public static Option<IBaseX> Convert(string input, string key, T alternative)
+        public static Option<IBaseValue> Convert(string input, string key, T alternative)
         {
             switch (alternative)
             {
@@ -41,13 +41,13 @@ namespace dck_pihole2influx.StatObjects
                     int parsedValue = int.TryParse(RemoveKeyAndTrim(key, input), out parsedValue)
                         ? parsedValue
                         : i;
-                    IBaseX retInt = new BaseValue<int>(parsedValue);
+                    IBaseValue retInt = new BaseValue<int>(parsedValue);
 
                     return Option.Some(retInt);
                 case string s:
                     try
                     {
-                        IBaseX retString = new BaseValue<string>(RemoveKeyAndTrim(key, input));
+                        IBaseValue retString = new BaseValue<string>(RemoveKeyAndTrim(key, input));
                         return Option.Some(retString);
                     }
                     catch (Exception ex)
@@ -55,10 +55,10 @@ namespace dck_pihole2influx.StatObjects
                         Log.Error(ex, "An error occured!");
                     }
 
-                    return Option.None<IBaseX>();
+                    return Option.None<IBaseValue>();
                 default:
                     Log.Warning($"An inconvertible type found and get back an None. Type is {typeof(T).FullName}");
-                    return Option.None<IBaseX>();
+                    return Option.None<IBaseValue>();
             }
         }
     }

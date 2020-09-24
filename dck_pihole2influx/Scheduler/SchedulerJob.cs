@@ -39,19 +39,13 @@ namespace dck_pihole2influx.Scheduler
 
                 result.MatchSome(value =>
                 {
-                    var obj = new CacheInfo(value);
+                    var obj = new CacheInfoConverter();
+                    obj.Convert(value);
                     obj.AsJsonOpt.MatchSome(m =>
                     {
                         Log.Information($"R: {m}");
                     });
                 });
-
-                // var result = await telnetClient.ConnectAndReceiveData(TelnetUtils.PiholeCommands.TOPDOMAINS);
-                // result.Match(
-                //     some: s => Log.Information($"RESULT: {s}"),
-                //     none: () => Log.Error("Scheisse")
-                // );
-
             });
         }
     }
