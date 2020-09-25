@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using dck_pihole2influx.Logging;
+using dck_pihole2influx.Transport.Telnet;
 using Newtonsoft.Json;
 using Optional;
 using Optional.Collections;
@@ -23,8 +24,15 @@ namespace dck_pihole2influx.StatObjects
             DictionaryOpt = GetDtoFromResult();
             AsJsonOpt = GetJsonFromDto();
         }
-        
-        protected abstract Dictionary<string, (string, ValueTypes)> GetPattern();
+
+        protected abstract Dictionary<string, PatternValue> GetPattern();
+
+        public abstract PiholeCommands GetPiholeCommand();
+
+        public virtual string GetTerminator()
+        {
+            return "---EOM---";
+        }
 
         private Option<Dictionary<string, dynamic>> GetDtoFromResult()
         {
@@ -36,15 +44,17 @@ namespace dck_pihole2influx.StatObjects
                 {
                     GetPattern().FirstOrNone(value => s.Contains(value.Key)).Map(result =>
                     {
-                        var (key, valueTuple) = result;
-                        return valueTuple.Item2 switch
+                        var (key, patternValue) = result;
+                        return patternValue.ValueType switch
                         {
-                            ValueTypes.Int => ValueConverterBase<int>.Convert(s, key, 0)
+                            ValueTypes.Int => ValueConverterBase<int>
+                                .Convert(s, key, (int) patternValue.AlternativeValue)
                                 .Map<(string, dynamic)>(
-                                    value => (valueTuple.Item1, ((BaseValue<int>) value).GetValue())),
-                            ValueTypes.String => ValueConverterBase<string>.Convert(s, key, "")
+                                    value => (patternValue.GivenName, ((BaseValue<int>) value).GetValue())),
+                            ValueTypes.String => ValueConverterBase<string>
+                                .Convert(s, key, (string) patternValue.AlternativeValue)
                                 .Map<(string, dynamic)>(value =>
-                                    (valueTuple.Item1, ((BaseValue<string>) value).GetValue())),
+                                    (patternValue.GivenName, ((BaseValue<string>) value).GetValue())),
                             _ => Option.None<(string, dynamic)>()
                         };
                     }).Flatten().MatchSome(tuple => ret.Add(tuple));
@@ -62,10 +72,10 @@ namespace dck_pihole2influx.StatObjects
 
         private Option<string> GetJsonFromDto()
         {
-            return DictionaryOpt.Map<string>(value =>
+            return DictionaryOpt.Map(value =>
             {
                 var d = value.Select(line => new {key = line.Key, value = line.Value});
-                return JsonConvert.SerializeObject(d);
+                return JsonConvert.SerializeObject(d, Formatting.Indented);
             });
         }
     }

@@ -31,21 +31,32 @@ namespace dck_pihole2influx.Scheduler
 
                 Log.Information("Connect to pihole and get stats");
 
-                var telnetClient = new TelnetClient("192.168.1.10",
-                    ConfigurationFactory.PiholeTelnetPort, ConfigurationFactory.PiholeUser,
-                    ConfigurationFactory.PiholePassword);
-                
-                var result = await telnetClient.ConnectAndReceiveData(TelnetCommands.PiholeCommands.Cacheinfo);
-
-                result.MatchSome(value =>
+                IConnectedTelnetClient telnetClient = new ConnectedTelnetClient(ConfigurationFactory.PiholeHostOrIp, ConfigurationFactory.PiholeTelnetPort);
+                if (telnetClient.IsConnected())
                 {
-                    var obj = new CacheInfoConverter();
-                    obj.Convert(value);
-                    obj.AsJsonOpt.MatchSome(m =>
+                    if (ConfigurationFactory.PiholeUser.Length > 0 && ConfigurationFactory.PiholePassword.Length > 0)
                     {
-                        Log.Information($"R: {m}");
-                    });
-                });
+                        await telnetClient.LoginOnTelnet(ConfigurationFactory.PiholeUser,
+                            ConfigurationFactory.PiholePassword);
+                    }
+
+                    foreach (var worker in Workers.GetJobsToDo())
+                    {
+                        telnetClient.WriteCommand(worker.GetPiholeCommand());
+
+                        var result = await telnetClient.ReadResult(worker.GetTerminator());
+                        
+                        worker.Convert(result);
+
+                        worker.AsJsonOpt.Match(
+                            some: s => Log.Information($"Receive following result as json: {s}"),
+                            none: () => Log.Warning($"Could not convert the resultset to an approriate json. {result}")
+                        );
+                    }
+
+                    telnetClient.WriteCommand(PiholeCommands.Quit);
+                    telnetClient.DisposeClient();
+                }
             });
         }
     }

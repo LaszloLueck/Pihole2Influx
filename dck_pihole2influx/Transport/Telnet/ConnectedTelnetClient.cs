@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Security.AccessControl;
 using System.Threading;
 using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
+using dck_pihole2influx.StatObjects;
 using PrimS.Telnet;
 using Serilog;
 
@@ -26,6 +28,11 @@ namespace dck_pihole2influx.Transport.Telnet
         public async void WriteCommand(string command)
         {
             await _client.WriteLine(command);
+        }
+
+        public async void WriteCommand(PiholeCommands command)
+        {
+            await _client.WriteLine(TelnetCommands.GetCommandByName(command));
         }
 
         public async Task<string> ReadResult(string terminator)

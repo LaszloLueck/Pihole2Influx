@@ -52,10 +52,16 @@ namespace dck_pihole2influx.StatObjects
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(ex, "An error occured!");
+                        IBaseValue retString = new BaseValue<string>(s);
+                        Log.Error(ex, "An error occured while converting a text value!");
+                        return Option.Some(retString);
                     }
-
-                    return Option.None<IBaseValue>();
+                case float f:
+                    float floatValue = float.TryParse(RemoveKeyAndTrim(key, input), out floatValue)
+                        ? floatValue
+                        : f;
+                    IBaseValue retFloat = new BaseValue<float>(floatValue);
+                    return Option.Some(retFloat);
                 default:
                     Log.Warning($"An inconvertible type found and get back an None. Type is {typeof(T).FullName}");
                     return Option.None<IBaseValue>();

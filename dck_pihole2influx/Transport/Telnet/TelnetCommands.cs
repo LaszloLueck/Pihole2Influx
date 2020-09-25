@@ -6,19 +6,7 @@ namespace dck_pihole2influx.Transport.Telnet
     public static class TelnetCommands
     {
 
-        public enum PiholeCommands {
-            Stats,
-            Quit,
-            Topdomains,
-            Topads,
-            Topclients,
-            Forwarddestinations,
-            Querytypes,
-            Version,
-            Dbstats,
-            Cacheinfo,
-            Overtime
-        }
+
 
         private static Dictionary<PiholeCommands, string> _commands = new Dictionary<PiholeCommands, string>()
         {

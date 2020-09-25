@@ -10,6 +10,8 @@ namespace dck_pihole2influx.Transport.Telnet
 
         void WriteCommand(string command);
 
+        void WriteCommand(PiholeCommands command);
+
         Task<string> ReadResult(string terminator);
 
         void DisposeClient();
