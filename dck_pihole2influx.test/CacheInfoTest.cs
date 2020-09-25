@@ -26,7 +26,21 @@ cache-inserted: 98590
 
 ";
             _telnetResultConverter.Convert(testee);
-            var jsonExpected = "[{\"key\":\"CacheSize\",\"value\":10000},{\"key\":\"CacheLiveFreed\",\"value\":0},{\"key\":\"CacheInserted\",\"value\":98590}]";
+            var jsonExpected = @"[
+  {
+    ""key"": ""CacheSize"",
+    ""value"": 10000
+  },
+  {
+    ""key"": ""CacheLiveFreed"",
+    ""value"": 0
+  },
+  {
+    ""key"": ""CacheInserted"",
+    ""value"": 98590
+  }
+]";
+ 
             Assert.AreEqual(Option.Some<string>(jsonExpected),_telnetResultConverter.AsJsonOpt);
         }
         
