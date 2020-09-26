@@ -1,4 +1,5 @@
 using System;
+using Castle.DynamicProxy.Contributors;
 using dck_pihole2influx.StatObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Optional;
@@ -30,6 +31,57 @@ cache-inserted: 98590
  
             Assert.AreEqual(Option.Some<string>(jsonExpected),_telnetResultConverter.GetJsonFromObject(false));
         }
+
+        [TestMethod]
+        public void CheckValidTelnetButMissingKeyValueAndReturnNone()
+        {
+            var testee = @"cache-size: 10000
+cache-inserted: 98590
+---EOM---
+
+
+";
+            _telnetResultConverter.Convert(testee);
+            var jsonExpected = Option.None<string>();
+            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject(false));
+
+        }
+
+        [TestMethod]
+        public void CheckValidStructureTelnetStringInvalidValueAndReturnResultWithAlternate()
+        {
+            var testee = @"cache-size: 10000
+cache-live-freed: 0
+cache-inserted: abcde
+---EOM---
+
+
+";
+            _telnetResultConverter.Convert(testee);
+            var jsonExpected = "[{\"key\":\"CacheSize\",\"value\":10000},{\"key\":\"CacheLiveFreed\",\"value\":0},{\"key\":\"CacheInserted\",\"value\":0}]";
+            Assert.AreEqual(Option.Some(jsonExpected), _telnetResultConverter.GetJsonFromObject(false));
+        }
+
+        [TestMethod]
+        public void CheckInvalidTelnetStringAndReturnNone()
+        {
+            var testee = @"Some text string";
+            
+            _telnetResultConverter.Convert(testee);
+            var jsonExpected = Option.None<string>();
+            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject(false));
+        }
+
+        [TestMethod]
+        public void CheckEmptyTelnetStringAndReturnNone()
+        {
+            var testee = "";
+            _telnetResultConverter.Convert(testee);
+            var jsonExpected = Option.None<string>();
+            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject(false));
+            
+        }
+        
         
     }
 }

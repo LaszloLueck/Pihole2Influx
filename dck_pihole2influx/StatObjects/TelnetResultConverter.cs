@@ -34,6 +34,11 @@ namespace dck_pihole2influx.StatObjects
 
         private Option<Dictionary<string, dynamic>> GetDtoFromResult()
         {
+            if (_input.Length == 0)
+            {
+                Log.Warning("the input string (telnet result) contains no data, please check your configuration.");
+                return Option.None<Dictionary<string, dynamic>>();
+            }
             var splitted = _input.Split("\n");
             try
             {
@@ -58,6 +63,11 @@ namespace dck_pihole2influx.StatObjects
                     }).Flatten().MatchSome(tuple => ret.Add(tuple));
                 }
 
+                if (ret.Count != GetPattern().Count)
+                {
+                    Log.Warning($"The results contains less ({ret.Count} entries) data than the configuration ({GetPattern().Count} entries)");
+                    return Option.None<Dictionary<string, object>>();
+                }
                 return Option.Some(ret.ToDictionary(l => l.Item1, l => l.Item2));
             }
             catch (Exception ex)
