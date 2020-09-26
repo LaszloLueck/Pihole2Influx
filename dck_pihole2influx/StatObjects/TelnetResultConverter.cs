@@ -16,13 +16,11 @@ namespace dck_pihole2influx.StatObjects
         private string _input;
 
         public Option<Dictionary<string, dynamic>> DictionaryOpt { get; private set; }
-        public Option<string> AsJsonOpt { get; private set; }
 
         public void Convert(string input)
         {
             _input = input;
             DictionaryOpt = GetDtoFromResult();
-            AsJsonOpt = GetJsonFromDto();
         }
 
         protected abstract Dictionary<string, PatternValue> GetPattern();
@@ -70,12 +68,14 @@ namespace dck_pihole2influx.StatObjects
             }
         }
 
-        private Option<string> GetJsonFromDto()
+        public Option<string> GetJsonFromObject(bool prettyPrint)
         {
             return DictionaryOpt.Map(value =>
             {
                 var d = value.Select(line => new {key = line.Key, value = line.Value});
-                return JsonConvert.SerializeObject(d, Formatting.Indented);
+                if(prettyPrint)
+                    return JsonConvert.SerializeObject(d, Formatting.Indented);
+                return JsonConvert.SerializeObject(d);
             });
         }
     }

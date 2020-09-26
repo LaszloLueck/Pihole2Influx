@@ -48,7 +48,7 @@ namespace dck_pihole2influx.Scheduler
                         
                         worker.Convert(result);
 
-                        worker.AsJsonOpt.Match(
+                        worker.GetJsonFromObject(true).Match(
                             some: s => Log.Information($"Receive following result as json: {s}"),
                             none: () => Log.Warning($"Could not convert the resultset to an approriate json. {result}")
                         );
