@@ -59,6 +59,10 @@ namespace dck_pihole2influx.StatObjects
                                 .Convert(s, key, (string) patternValue.AlternativeValue)
                                 .Map<(string, dynamic)>(value =>
                                     (patternValue.GivenName, ((BaseValue<string>) value).GetValue())),
+                            ValueTypes.Float => ValueConverterBase<float>
+                                .Convert(s, key, (float) patternValue.AlternativeValue)
+                                .Map<(string, dynamic)>(value =>
+                                    (patternValue.GivenName, ((BaseValue<float>) value).GetValue())),
                             _ => Option.None<(string, dynamic)>()
                         };
                     }).Flatten().MatchSome(tuple => ret.Add(tuple));
@@ -81,12 +85,14 @@ namespace dck_pihole2influx.StatObjects
             }
         }
 
-        public Option<string> GetJsonFromObject(bool prettyPrint)
+        public Option<string> GetJsonFromObject(bool prettyPrint = false)
         {
             return DictionaryOpt.Map(value =>
             {
                 var d = value.Select(line => new {key = line.Key, value = line.Value});
-                return prettyPrint ? JsonConvert.SerializeObject(d, Formatting.Indented) : JsonConvert.SerializeObject(d);
+                return prettyPrint
+                    ? JsonConvert.SerializeObject(d, Formatting.Indented)
+                    : JsonConvert.SerializeObject(d);
             });
         }
     }

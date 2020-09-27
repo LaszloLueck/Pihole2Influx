@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using dck_pihole2influx.Logging;
 using Optional;
 using Serilog;
@@ -57,7 +58,7 @@ namespace dck_pihole2influx.StatObjects
                         return Option.Some(retString);
                     }
                 case float f:
-                    float floatValue = float.TryParse(RemoveKeyAndTrim(key, input), out floatValue)
+                    float floatValue = float.TryParse(RemoveKeyAndTrim(key, input), NumberStyles.Float, CultureInfo.InvariantCulture, out floatValue)
                         ? floatValue
                         : f;
                     IBaseValue retFloat = new BaseValue<float>(floatValue);

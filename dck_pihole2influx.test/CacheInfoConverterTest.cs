@@ -28,7 +28,7 @@ cache-inserted: 98590
             var jsonExpected =
                 "[{\"key\":\"CacheSize\",\"value\":10000},{\"key\":\"CacheLiveFreed\",\"value\":0},{\"key\":\"CacheInserted\",\"value\":98590}]";
             
-            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject(false).ValueOr(""));
+            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject().ValueOr(""));
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ cache-inserted: 98590
 ";
             _telnetResultConverter.Convert(testee);
             var jsonExpected = Option.None<string>();
-            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject(false));
+            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject());
         }
 
         [TestMethod]
@@ -58,7 +58,7 @@ cache-inserted: abcde
             _telnetResultConverter.Convert(testee);
             var jsonExpected =
                 "[{\"key\":\"CacheSize\",\"value\":10000},{\"key\":\"CacheLiveFreed\",\"value\":0},{\"key\":\"CacheInserted\",\"value\":0}]";
-            Assert.AreEqual(Option.Some(jsonExpected), _telnetResultConverter.GetJsonFromObject(false));
+            Assert.AreEqual(Option.Some(jsonExpected), _telnetResultConverter.GetJsonFromObject());
         }
 
         [TestMethod]
@@ -68,7 +68,7 @@ cache-inserted: abcde
 
             _telnetResultConverter.Convert(testee);
             var jsonExpected = Option.None<string>();
-            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject(false));
+            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject());
         }
 
         [TestMethod]
@@ -77,7 +77,7 @@ cache-inserted: abcde
             var testee = "";
             _telnetResultConverter.Convert(testee);
             var jsonExpected = Option.None<string>();
-            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject(false));
+            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject());
         }
     }
 }
