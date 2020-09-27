@@ -40,19 +40,19 @@ namespace dck_pihole2influx.Scheduler
                             ConfigurationFactory.PiholePassword);
                     }
 
-                    foreach (var worker in Workers.GetJobsToDo())
+                    Parallel.ForEach(Workers.GetJobsToDo(), new ParallelOptions(){MaxDegreeOfParallelism = 4}, async (worker) =>
                     {
                         telnetClient.WriteCommand(worker.GetPiholeCommand());
 
                         var result = await telnetClient.ReadResult(worker.GetTerminator());
-                        
+
                         worker.Convert(result);
 
                         worker.GetJsonFromObject(true).Match(
                             some: s => Log.Information($"Receive following result as json: {s}"),
                             none: () => Log.Warning($"Could not convert the resultset to an approriate json. {result}")
                         );
-                    }
+                    });
 
                     telnetClient.WriteCommand(PiholeCommands.Quit);
                     telnetClient.DisposeClient();
