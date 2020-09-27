@@ -2,7 +2,7 @@
 This tool, inside of the docker-container, gets data from a Pihole-DNS-Resolver, especially the FTLDNS (Faster than light dns), convert and put them into a influxdb timeseries database.
 
 ## What makes this tool different from other tools? 
-The the data will catched via the telnet-interface of pihole. 
+The data will catched via the telnet-interface of pihole. 
 With this interface, it collects much more data as of using the web-Restful-API.
 
 ## Prerequisites
@@ -16,8 +16,8 @@ The following image demonstrates the dataflow and the "position" of the applicat
 
 <img src="./working_dataflow.png"  alt="current dataflow"/>
 
-##Environment variables
-You can configure the tool with the following environment-variable.
+## Environment variables
+You can configure the tool with the following docker environment-variables:
 - PIHOLEHOST - IP-Address or hostname of pihole [default = 127.0.0.1] 
 - PIHOLEPORT - TCP-Port of the telnet port of pihole [default = 4711]
 - PIHOLEUSER - If the telnet connection for pihole ist secured, here is the place for the username [default = ""]
