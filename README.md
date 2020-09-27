@@ -1,16 +1,32 @@
 # Pihole2Influx
-This tool, inside of the docker-container gets data from a Pihole-DNS-Resolver and put them into a influxdb timeseries database.
-The special for this project is, that the data is catched via the telnet-interface of pihole. With this interface, we collect much more data as of using the web-api.
+This tool, inside of the docker-container, gets data from a Pihole-DNS-Resolver, especially the FTLDNS (Faster than light dns), convert and put them into a influxdb timeseries database.
 
+## What makes this tool different from other tools? 
+The the data will catched via the telnet-interface of pihole. 
+With this interface, it collects much more data as of using the web-Restful-API.
 
 ## Prerequisites
-If you try this tool, please notice that you enable the telnet interface for all devices if you plan to run the container outside of the pihole server.
+If you try this tool, please notice that you enable the telnet interface, on the pihole device, for all devices if you plan to run the container outside of the pihole server.
+Please follow the link for a description how you enable telnet for any network device.
+<a href="https://docs.pi-hole.net/ftldns/configfile/#socket_listening" target="blank">Link to ftl dns documentation</a>
 
 ## Specs
-The tool is written with C# but the is not so important, because i deliver the tool in a docker-container and you can run it everywhere where docker runs.
+The tool is written with C# but the used language is not so important, because the tool runs completely in a docker-container and you can run it everywhere where docker runs.
 The following image demonstrates the dataflow and the "position" of the application inside your technical landscape.
 
 <img src="./working_dataflow.png"  alt="current dataflow"/>
+
+##Environment variables
+You can configure the tool with the following environment-variable.
+- PIHOLEHOST - IP-Address or hostname of pihole [default = 127.0.0.1] 
+- PIHOLEPORT - TCP-Port of the telnet port of pihole [default = 4711]
+- PIHOLEUSER - If the telnet connection for pihole ist secured, here is the place for the username [default = ""]
+- PIHOLEPASSWORD - If the telnet connection for pihole is secured, here is the place for the password [default = ""]
+- INFLUXDBHOST - IP-Address or hostname of the InfluxDb time series database [default = 127.0.0.1]
+- INFLUXDBPORT - TCP-Port of the InfluxDb time series database [default = 8086]
+- INFLUXDBNAME - The database name where the data will be stored [default = influxdb]
+- INFLUXDBUSERNAME - If the InfluxDb database is secured, here is the place for the username [default = ""]
+- INFLUXDBPASSWORD - If the InfluxDb database is secured, here is the place for the password [default = ""]
 
 ### State
 Currently, the tool ist in absolutely alpha stadium.
