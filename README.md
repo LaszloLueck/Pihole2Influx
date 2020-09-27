@@ -2,7 +2,7 @@
 This tool, inside of the docker-container, gets data from a Pihole-DNS-Resolver, especially the FTLDNS (Faster than light dns), convert and put them into a influxdb timeseries database.
 
 ## What makes this tool different from other tools? 
-The the data will catched via the telnet-interface of pihole. 
+The data will catched via the telnet-interface of pihole. 
 With this interface, it collects much more data as of using the web-Restful-API.
 
 ## Prerequisites
