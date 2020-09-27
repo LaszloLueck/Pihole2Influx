@@ -17,7 +17,7 @@ The following image demonstrates the dataflow and the "position" of the applicat
 <img src="./working_dataflow.png"  alt="current dataflow"/>
 
 ## Environment variables
-You can configure the tool with the following environment-variable.
+You can configure the tool with the following docker environment-variables:
 - PIHOLEHOST - IP-Address or hostname of pihole [default = 127.0.0.1] 
 - PIHOLEPORT - TCP-Port of the telnet port of pihole [default = 4711]
 - PIHOLEUSER - If the telnet connection for pihole ist secured, here is the place for the username [default = ""]
