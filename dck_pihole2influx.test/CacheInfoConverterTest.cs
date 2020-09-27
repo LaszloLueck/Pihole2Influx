@@ -1,5 +1,3 @@
-using System;
-using Castle.DynamicProxy.Contributors;
 using dck_pihole2influx.StatObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Optional;
@@ -27,9 +25,10 @@ cache-inserted: 98590
 
 ";
             _telnetResultConverter.Convert(testee);
-            var jsonExpected = "[{\"key\":\"CacheSize\",\"value\":10000},{\"key\":\"CacheLiveFreed\",\"value\":0},{\"key\":\"CacheInserted\",\"value\":98590}]";
- 
-            Assert.AreEqual(Option.Some<string>(jsonExpected),_telnetResultConverter.GetJsonFromObject(false));
+            var jsonExpected =
+                "[{\"key\":\"CacheSize\",\"value\":10000},{\"key\":\"CacheLiveFreed\",\"value\":0},{\"key\":\"CacheInserted\",\"value\":98590}]";
+            
+            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject(false).ValueOr(""));
         }
 
         [TestMethod]
@@ -44,7 +43,6 @@ cache-inserted: 98590
             _telnetResultConverter.Convert(testee);
             var jsonExpected = Option.None<string>();
             Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject(false));
-
         }
 
         [TestMethod]
@@ -58,7 +56,8 @@ cache-inserted: abcde
 
 ";
             _telnetResultConverter.Convert(testee);
-            var jsonExpected = "[{\"key\":\"CacheSize\",\"value\":10000},{\"key\":\"CacheLiveFreed\",\"value\":0},{\"key\":\"CacheInserted\",\"value\":0}]";
+            var jsonExpected =
+                "[{\"key\":\"CacheSize\",\"value\":10000},{\"key\":\"CacheLiveFreed\",\"value\":0},{\"key\":\"CacheInserted\",\"value\":0}]";
             Assert.AreEqual(Option.Some(jsonExpected), _telnetResultConverter.GetJsonFromObject(false));
         }
 
@@ -66,7 +65,7 @@ cache-inserted: abcde
         public void CheckInvalidTelnetStringAndReturnNone()
         {
             var testee = @"Some text string";
-            
+
             _telnetResultConverter.Convert(testee);
             var jsonExpected = Option.None<string>();
             Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject(false));
@@ -79,9 +78,6 @@ cache-inserted: abcde
             _telnetResultConverter.Convert(testee);
             var jsonExpected = Option.None<string>();
             Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject(false));
-            
         }
-        
-        
     }
 }

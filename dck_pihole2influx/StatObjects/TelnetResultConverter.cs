@@ -39,13 +39,14 @@ namespace dck_pihole2influx.StatObjects
                 Log.Warning("the input string (telnet result) contains no data, please check your configuration.");
                 return Option.None<Dictionary<string, dynamic>>();
             }
+
             var splitted = _input.Split("\n");
             try
             {
                 var ret = new List<(string, dynamic)>();
                 foreach (var s in splitted)
                 {
-                    GetPattern().FirstOrNone(value => s.Contains(value.Key)).Map(result =>
+                    GetPattern().FirstOrNone(value => s.Contains(value.Key)).Map<Option<(string, dynamic)>>(result =>
                     {
                         var (key, patternValue) = result;
                         return patternValue.ValueType switch
@@ -65,9 +66,11 @@ namespace dck_pihole2influx.StatObjects
 
                 if (ret.Count != GetPattern().Count)
                 {
-                    Log.Warning($"The results contains less ({ret.Count} entries) data than the configuration ({GetPattern().Count} entries)");
+                    Log.Warning(
+                        $"The results contains less ({ret.Count} entries) data than the configuration ({GetPattern().Count} entries)");
                     return Option.None<Dictionary<string, object>>();
                 }
+
                 return Option.Some(ret.ToDictionary(l => l.Item1, l => l.Item2));
             }
             catch (Exception ex)
@@ -83,9 +86,7 @@ namespace dck_pihole2influx.StatObjects
             return DictionaryOpt.Map(value =>
             {
                 var d = value.Select(line => new {key = line.Key, value = line.Value});
-                if(prettyPrint)
-                    return JsonConvert.SerializeObject(d, Formatting.Indented);
-                return JsonConvert.SerializeObject(d);
+                return prettyPrint ? JsonConvert.SerializeObject(d, Formatting.Indented) : JsonConvert.SerializeObject(d);
             });
         }
     }

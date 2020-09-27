@@ -1,4 +1,5 @@
-﻿using Optional;
+﻿
+using Optional;
 
 namespace dck_pihole2influx.Configuration
 {
