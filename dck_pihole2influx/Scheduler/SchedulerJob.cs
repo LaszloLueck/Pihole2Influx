@@ -40,7 +40,7 @@ namespace dck_pihole2influx.Scheduler
                             ConfigurationFactory.PiholePassword);
                     }
 
-                    Parallel.ForEach(Workers.GetJobsToDo(), new ParallelOptions(){MaxDegreeOfParallelism = 4}, async (worker) =>
+                    Parallel.ForEach(Workers.GetJobsToDo(), new ParallelOptions {MaxDegreeOfParallelism = 4}, async (worker) =>
                     {
                         telnetClient.WriteCommand(worker.GetPiholeCommand());
 

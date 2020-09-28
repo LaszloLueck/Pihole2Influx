@@ -8,7 +8,7 @@ namespace dck_pihole2influx.Transport.Telnet
 
 
 
-        private static Dictionary<PiholeCommands, string> _commands = new Dictionary<PiholeCommands, string>()
+        private static Dictionary<PiholeCommands, string> _commands = new Dictionary<PiholeCommands, string>
         {
             {PiholeCommands.Stats, ">stats"},
             {PiholeCommands.Quit, ">quit"},

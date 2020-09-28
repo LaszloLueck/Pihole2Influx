@@ -19,7 +19,7 @@ namespace dck_pihole2influx.StatObjects
     /// </summary>
     public class StatsConverter : TelnetResultConverter
     {
-        protected override Dictionary<string, PatternValue> GetPattern() => new Dictionary<string, PatternValue>()
+        protected override Dictionary<string, PatternValue> GetPattern() => new Dictionary<string, PatternValue>
         {
             {"domains_being_blocked", new PatternValue("DomainsBeingBlocked", ValueTypes.Int, 0)},
             {"dns_queries_today", new PatternValue("DnsQueriesToday", ValueTypes.Int, 0)},

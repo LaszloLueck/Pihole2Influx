@@ -7,7 +7,7 @@ namespace dck_pihole2influx.StatObjects
     {
         public static List<TelnetResultConverter> GetJobsToDo()
         {
-            return new List<TelnetResultConverter>()
+            return new List<TelnetResultConverter>
             {
                 new CacheInfoConverter(),
                 new StatsConverter()

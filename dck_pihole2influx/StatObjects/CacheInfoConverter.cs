@@ -12,7 +12,7 @@ namespace dck_pihole2influx.StatObjects
     /// </summary>
     public class CacheInfoConverter : TelnetResultConverter
     {
-        protected override Dictionary<string, PatternValue> GetPattern() => new Dictionary<string, PatternValue>()
+        protected override Dictionary<string, PatternValue> GetPattern() => new Dictionary<string, PatternValue>
         {
             {"cache-size:", new PatternValue("CacheSize", ValueTypes.Int, 0)},
             {"cache-live-freed:", new PatternValue("CacheLiveFreed", ValueTypes.Int, 0)},
