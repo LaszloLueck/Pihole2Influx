@@ -1,10 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using dck_pihole2influx.StatObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Optional;
 
 namespace dck_pihole2influx.test
@@ -31,12 +27,12 @@ cache-inserted: 98590
 ";
             _telnetResultConverter.Convert(testee).Wait();
             var jsonExpected =
-                "[{\"key\":\"CacheSize\",\"value\":10000},{\"key\":\"CacheLiveFreed\",\"value\":0},{\"key\":\"CacheInserted\",\"value\":98590}]";
+                $"[{{\"key\":\"{CacheInfoConverter.CacheSize}\",\"value\":10000}},{{\"key\":\"{CacheInfoConverter.CacheLiveFreed}\",\"value\":0}},{{\"key\":\"{CacheInfoConverter.CacheInserted}\",\"value\":98590}}]";
 
             //order the json and make it testable
             var jsArrayExpected = TestUtils.OrderJsonStringFromConvert(jsonExpected);
             var currentJson = _telnetResultConverter
-                .GetJsonFromObject(false)
+                .GetJsonFromObject()
                 .Map(TestUtils.OrderJsonStringFromConvert)
                 .ValueOr("");
 
@@ -44,11 +40,11 @@ cache-inserted: 98590
             Assert.AreEqual(jsArrayExpected, currentJson);
 
 
-            var dictionaryExpected = TestUtils.OrderDictionaryFromResult(new Dictionary<string, dynamic>()
+            var dictionaryExpected = TestUtils.OrderDictionaryFromResult(new Dictionary<string, dynamic>
             {
-                {"CacheSize", 10000},
-                {"CacheLiveFreed", 0},
-                {"CacheInserted", 98590}
+                {CacheInfoConverter.CacheSize, 10000},
+                {CacheInfoConverter.CacheLiveFreed, 0},
+                {CacheInfoConverter.CacheInserted, 98590}
             });
 
 
@@ -56,7 +52,7 @@ cache-inserted: 98590
                 .DictionaryOpt
                 .ValueOr(new Dictionary<string, dynamic>()));
 
-            CollectionAssert.AreEqual((ICollection) dictionaryExpected, (ICollection) resultDic);
+            CollectionAssert.AreEqual(dictionaryExpected, resultDic);
         }
 
         [TestMethod]
@@ -86,24 +82,25 @@ cache-inserted: abcde
 ";
             _telnetResultConverter.Convert(testee).Wait();
 
-            var expectedDictionary = TestUtils.OrderDictionaryFromResult(new Dictionary<string, dynamic>()
+            var expectedDictionary = TestUtils.OrderDictionaryFromResult(new Dictionary<string, dynamic>
             {
-                {"CacheSize", 10000},
-                {"CacheLiveFreed", 0},
-                {"CacheInserted", 0}
+                {CacheInfoConverter.CacheSize, 10000},
+                {CacheInfoConverter.CacheLiveFreed, 0},
+                {CacheInfoConverter.CacheInserted, 0}
             });
 
             var resultDictionary = _telnetResultConverter.DictionaryOpt.Map(TestUtils.OrderDictionaryFromResult)
                 .ValueOr(new Dictionary<string, dynamic>());
-            
-            
+
+
             CollectionAssert.AreEqual(expectedDictionary, resultDictionary);
-            
+
             var jsonExpected = TestUtils.OrderJsonStringFromConvert(
-                "[{\"key\":\"CacheSize\",\"value\":10000},{\"key\":\"CacheLiveFreed\",\"value\":0},{\"key\":\"CacheInserted\",\"value\":0}]");
-            
-            
-            Assert.AreEqual(Option.Some(jsonExpected), _telnetResultConverter.GetJsonFromObject().Map(TestUtils.OrderJsonStringFromConvert));
+                $"[{{\"key\":\"{CacheInfoConverter.CacheSize}\",\"value\":10000}},{{\"key\":\"{CacheInfoConverter.CacheLiveFreed}\",\"value\":0}},{{\"key\":\"{CacheInfoConverter.CacheInserted}\",\"value\":0}}]");
+
+
+            Assert.AreEqual(Option.Some(jsonExpected),
+                _telnetResultConverter.GetJsonFromObject().Map(TestUtils.OrderJsonStringFromConvert));
         }
 
         [TestMethod]

@@ -12,16 +12,23 @@ namespace dck_pihole2influx.StatObjects
     /// </summary>
     public class CacheInfoConverter : TelnetResultConverter
     {
+        public const string CacheSize = "CacheSize";
+        public const string CacheLiveFreed = "CacheLiveFreed";
+        public const string CacheInserted = "CacheInserted";
+
         protected override Dictionary<string, PatternValue> GetPattern() => new Dictionary<string, PatternValue>
         {
-            {"cache-size:", new PatternValue("CacheSize", ValueTypes.Int, 0)},
-            {"cache-live-freed:", new PatternValue("CacheLiveFreed", ValueTypes.Int, 0)},
-            {"cache-inserted:", new PatternValue("CacheInserted", ValueTypes.Int, 0)}
+            {"cache-size:", new PatternValue(CacheSize, ValueTypes.Int, 0)},
+            {"cache-live-freed:", new PatternValue(CacheLiveFreed, ValueTypes.Int, 0)},
+            {"cache-inserted:", new PatternValue(CacheInserted, ValueTypes.Int, 0)}
         };
 
         public override PiholeCommands GetPiholeCommand()
         {
             return PiholeCommands.Cacheinfo;
         }
+        
+       
+        
     }
 }
