@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using dck_pihole2influx.StatObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Optional;
@@ -24,11 +26,19 @@ cache-inserted: 98590
 
 
 ";
-            _telnetResultConverter.Convert(testee);
+            _telnetResultConverter.Convert(testee).Wait();
             var jsonExpected =
                 "[{\"key\":\"CacheSize\",\"value\":10000},{\"key\":\"CacheLiveFreed\",\"value\":0},{\"key\":\"CacheInserted\",\"value\":98590}]";
-            
-            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject().ValueOr(""));
+
+
+            var dictionaryExpected = new Dictionary<string, dynamic>()
+            {
+                {"CacheSize", 10000},
+                {"CacheLiveFreed", 0},
+                {"CacheInserted", 98590}
+            };
+            var resultDic = _telnetResultConverter.DictionaryOpt.ValueOr(new Dictionary<string, dynamic>());
+            CollectionAssert.AreEqual((ICollection) dictionaryExpected, (ICollection) resultDic);
         }
 
         [TestMethod]

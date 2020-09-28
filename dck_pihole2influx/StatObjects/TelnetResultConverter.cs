@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using dck_pihole2influx.Transport.Telnet;
 using Newtonsoft.Json;
@@ -17,10 +19,10 @@ namespace dck_pihole2influx.StatObjects
 
         public Option<Dictionary<string, dynamic>> DictionaryOpt { get; private set; }
 
-        public void Convert(string input)
+        public async Task Convert(string input)
         {
             _input = input;
-            DictionaryOpt = GetDtoFromResult();
+            DictionaryOpt = await GetDtoFromResult();
         }
 
         protected abstract Dictionary<string, PatternValue> GetPattern();
@@ -32,7 +34,7 @@ namespace dck_pihole2influx.StatObjects
             return "---EOM---";
         }
 
-        private Option<Dictionary<string, dynamic>> GetDtoFromResult()
+        private async Task<Option<Dictionary<string, dynamic>>> GetDtoFromResult()
         {
             if (_input.Length == 0)
             {
@@ -40,33 +42,47 @@ namespace dck_pihole2influx.StatObjects
                 return Option.None<Dictionary<string, dynamic>>();
             }
 
-            var splitted = _input.Split("\n");
+            var splitted = _input
+                .Split("\n")
+                .Where(s => !string.IsNullOrWhiteSpace(s) && s != GetTerminator())
+                .AsParallel()
+                .AsOrdered();
+
             try
             {
-                var ret = new List<(string, dynamic)>();
+                var ret = new ConcurrentBag<(string, dynamic)>();
+                var tasks = new ConcurrentBag<Task>();
+                
+
                 foreach (var s in splitted)
                 {
-                    GetPattern().FirstOrNone(value => s.Contains(value.Key)).Map<Option<(string, dynamic)>>(result =>
+                    tasks.Add(Task.Run(() =>
                     {
-                        var (key, patternValue) = result;
-                        return patternValue.ValueType switch
-                        {
-                            ValueTypes.Int => ValueConverterBase<int>
-                                .Convert(s, key, (int) patternValue.AlternativeValue)
-                                .Map<(string, dynamic)>(
-                                    value => (patternValue.GivenName, ((BaseValue<int>) value).GetValue())),
-                            ValueTypes.String => ValueConverterBase<string>
-                                .Convert(s, key, (string) patternValue.AlternativeValue)
-                                .Map<(string, dynamic)>(value =>
-                                    (patternValue.GivenName, ((BaseValue<string>) value).GetValue())),
-                            ValueTypes.Float => ValueConverterBase<float>
-                                .Convert(s, key, (float) patternValue.AlternativeValue)
-                                .Map<(string, dynamic)>(value =>
-                                    (patternValue.GivenName, ((BaseValue<float>) value).GetValue())),
-                            _ => Option.None<(string, dynamic)>()
-                        };
-                    }).Flatten().MatchSome(tuple => ret.Add(tuple));
+                        GetPattern().FirstOrNone(value => s.Contains(value.Key)).Map(
+                            result =>
+                            {
+                                var (key, patternValue) = result;
+                                return patternValue.ValueType switch
+                                {
+                                    ValueTypes.Int => ValueConverterBase<int>
+                                        .Convert(s, key, (int) patternValue.AlternativeValue)
+                                        .Map<(string, dynamic)>(
+                                            value => (patternValue.GivenName, ((BaseValue<int>) value).GetValue())),
+                                    ValueTypes.String => ValueConverterBase<string>
+                                        .Convert(s, key, (string) patternValue.AlternativeValue)
+                                        .Map<(string, dynamic)>(value =>
+                                            (patternValue.GivenName, ((BaseValue<string>) value).GetValue())),
+                                    ValueTypes.Float => ValueConverterBase<float>
+                                        .Convert(s, key, (float) patternValue.AlternativeValue)
+                                        .Map<(string, dynamic)>(value =>
+                                            (patternValue.GivenName, ((BaseValue<float>) value).GetValue())),
+                                    _ => Option.None<(string, dynamic)>()
+                                };
+                            }).Flatten().MatchSome(tuple => ret.Add(tuple));
+                    }));
                 }
+
+                await Task.WhenAll(tasks);
 
                 if (ret.Count != GetPattern().Count)
                 {

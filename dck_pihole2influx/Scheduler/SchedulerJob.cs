@@ -46,7 +46,7 @@ namespace dck_pihole2influx.Scheduler
 
                         var result = await telnetClient.ReadResult(worker.GetTerminator());
 
-                        worker.Convert(result);
+                        await worker.Convert(result);
 
                         worker.GetJsonFromObject(true).Match(
                             some: s => Log.Information($"Receive following result as json: {s}"),
