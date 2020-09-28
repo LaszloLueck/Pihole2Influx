@@ -34,31 +34,28 @@ cache-inserted: 98590
                 "[{\"key\":\"CacheSize\",\"value\":10000},{\"key\":\"CacheLiveFreed\",\"value\":0},{\"key\":\"CacheInserted\",\"value\":98590}]";
 
             //order the json and make it testable
-            var jsArrayExpected =
-                JsonConvert.SerializeObject(JArray.Parse(jsonExpected).OrderBy(a => (string) a["key"]));
-            var currentJson = _telnetResultConverter.GetJsonFromObject(false).Map(json =>
-            {
-                return JsonConvert.SerializeObject(JArray.Parse(json).OrderBy(a => (string) a["key"]));
-            }).ValueOr("");
+            var jsArrayExpected = TestUtils.OrderJsonStringFromConvert(jsonExpected);
+            var currentJson = _telnetResultConverter
+                .GetJsonFromObject(false)
+                .Map(TestUtils.OrderJsonStringFromConvert)
+                .ValueOr("");
 
 
             Assert.AreEqual(jsArrayExpected, currentJson);
 
 
-            var dictionaryExpected = new Dictionary<string, dynamic>()
+            var dictionaryExpected = TestUtils.OrderDictionaryFromResult(new Dictionary<string, dynamic>()
             {
                 {"CacheSize", 10000},
                 {"CacheLiveFreed", 0},
                 {"CacheInserted", 98590}
-            }
-                .OrderBy(a => a.Key)
-                .ToDictionary(a => a.Key);
-            var resultDic = _telnetResultConverter
+            });
+
+
+            var resultDic = TestUtils.OrderDictionaryFromResult(_telnetResultConverter
                 .DictionaryOpt
-                .ValueOr(new Dictionary<string, dynamic>())
-                .OrderBy(a => a.Key)
-                .ToDictionary(a => a.Key);
-            
+                .ValueOr(new Dictionary<string, dynamic>()));
+
             CollectionAssert.AreEqual((ICollection) dictionaryExpected, (ICollection) resultDic);
         }
 
@@ -85,11 +82,28 @@ cache-inserted: abcde
 ---EOM---
 
 
+
 ";
-            _telnetResultConverter.Convert(testee);
-            var jsonExpected =
-                "[{\"key\":\"CacheSize\",\"value\":10000},{\"key\":\"CacheLiveFreed\",\"value\":0},{\"key\":\"CacheInserted\",\"value\":0}]";
-            Assert.AreEqual(Option.Some(jsonExpected), _telnetResultConverter.GetJsonFromObject());
+            _telnetResultConverter.Convert(testee).Wait();
+
+            var expectedDictionary = TestUtils.OrderDictionaryFromResult(new Dictionary<string, dynamic>()
+            {
+                {"CacheSize", 10000},
+                {"CacheLiveFreed", 0},
+                {"CacheInserted", 0}
+            });
+
+            var resultDictionary = _telnetResultConverter.DictionaryOpt.Map(TestUtils.OrderDictionaryFromResult)
+                .ValueOr(new Dictionary<string, dynamic>());
+            
+            
+            CollectionAssert.AreEqual(expectedDictionary, resultDictionary);
+            
+            var jsonExpected = TestUtils.OrderJsonStringFromConvert(
+                "[{\"key\":\"CacheSize\",\"value\":10000},{\"key\":\"CacheLiveFreed\",\"value\":0},{\"key\":\"CacheInserted\",\"value\":0}]");
+            
+            
+            Assert.AreEqual(Option.Some(jsonExpected), _telnetResultConverter.GetJsonFromObject().Map(TestUtils.OrderJsonStringFromConvert));
         }
 
         [TestMethod]

@@ -34,12 +34,12 @@ status enabled
 
 ";
             
-            _telnetResultConverter.Convert(testee);
+            _telnetResultConverter.Convert(testee).Wait();
 
-            var expectedResult =
-                "[{\"key\":\"DomainsBeingBlocked\",\"value\":116007},{\"key\":\"DnsQueriesToday\",\"value\":30163},{\"key\":\"AdsBlockedToday\",\"value\":5650},{\"key\":\"AdsPercentageToday\",\"value\":18.731558},{\"key\":\"UniqueDomains\",\"value\":1056},{\"key\":\"QueriesForwarded\",\"value\":4275},{\"key\":\"QueriesCached\",\"value\":20238},{\"key\":\"ClientsEverSeen\",\"value\":11},{\"key\":\"UniqueClients\",\"value\":9},{\"key\":\"Status\",\"value\":\"enabled\"}]";
+            var expectedResult = TestUtils.OrderJsonStringFromConvert(
+                "[{\"key\":\"DomainsBeingBlocked\",\"value\":116007},{\"key\":\"DnsQueriesToday\",\"value\":30163},{\"key\":\"AdsBlockedToday\",\"value\":5650},{\"key\":\"AdsPercentageToday\",\"value\":18.731558},{\"key\":\"UniqueDomains\",\"value\":1056},{\"key\":\"QueriesForwarded\",\"value\":4275},{\"key\":\"QueriesCached\",\"value\":20238},{\"key\":\"ClientsEverSeen\",\"value\":11},{\"key\":\"UniqueClients\",\"value\":9},{\"key\":\"Status\",\"value\":\"enabled\"}]");
 
-            Assert.AreEqual(Option.Some<string>(expectedResult),_telnetResultConverter.GetJsonFromObject());
+            Assert.AreEqual(Option.Some<string>(expectedResult),_telnetResultConverter.GetJsonFromObject().Map(TestUtils.OrderJsonStringFromConvert));
         }
         
         
