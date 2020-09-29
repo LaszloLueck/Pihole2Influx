@@ -53,7 +53,7 @@ cache-inserted: 98590
             resultTokens.Should().BeEquivalentTo(expectedToken);
         }
 
-        [TestMethod]
+        [TestMethod, Description("Return None because one or more parameter are missing in result")]
         public void CheckValidTelnetButMissingKeyValueAndReturnNone()
         {
             var testee = @"cache-size: 10000
@@ -64,7 +64,7 @@ cache-inserted: 98590
 ";
 
             _telnetResultConverter.Convert(testee);
-            
+
             "{}".Should().Be(_telnetResultConverter.GetJsonFromObjectAsync().Result);
         }
 

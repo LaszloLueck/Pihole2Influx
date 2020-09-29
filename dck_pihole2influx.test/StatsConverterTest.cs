@@ -1,6 +1,9 @@
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using dck_pihole2influx.StatObjects;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Optional;
+using Newtonsoft.Json.Linq;
 
 namespace dck_pihole2influx.test
 {
@@ -13,7 +16,7 @@ namespace dck_pihole2influx.test
         {
             _telnetResultConverter = new StatsConverter();
         }
-        
+
         [TestMethod, Description("fill in with a valid return from the telnet method and convert the result.")]
         public void CheckValidTelnetStringAndReturnSomeResults()
         {
@@ -29,18 +32,42 @@ unique_clients 9
 status enabled
 ---EOM---
 
-
+            
 
 ";
-            //
-            // _telnetResultConverter.Convert(testee).Wait();
-            //
-            // var expectedResult = TestUtils.OrderJsonStringFromConvert(
-            //     $"[{{\"key\":\"{StatsConverter.DomainsBeingBlocked}\",\"value\":116007}},{{\"key\":\"{StatsConverter.DnsQueriesToday}\",\"value\":30163}},{{\"key\":\"{StatsConverter.AdsBlockedToday}\",\"value\":5650}},{{\"key\":\"{StatsConverter.AdsPercentageToday}\",\"value\":18.731558}},{{\"key\":\"{StatsConverter.UniqueDomains}\",\"value\":1056}},{{\"key\":\"{StatsConverter.QueriesForwarded}\",\"value\":4275}},{{\"key\":\"{StatsConverter.QueriesCached}\",\"value\":20238}},{{\"key\":\"{StatsConverter.ClientsEverSeen}\",\"value\":11}},{{\"key\":\"{StatsConverter.UniqueClients}\",\"value\":9}},{{\"key\":\"{StatsConverter.Status}\",\"value\":\"enabled\"}}]");
-            //
-            // Assert.AreEqual(Option.Some(expectedResult),_telnetResultConverter.GetJsonFromObject().Map(TestUtils.OrderJsonStringFromConvert));
+            _telnetResultConverter.Convert(testee).Wait();
+            var dictionaryExpected = new Dictionary<string, dynamic>
+            {
+                {StatsConverter.DomainsBeingBlocked, 116007},
+                {StatsConverter.DnsQueriesToday, 30163},
+                {StatsConverter.AdsBlockedToday, 5650},
+                {StatsConverter.AdsPercentageToday, 18.731558F},
+                {StatsConverter.UniqueDomains, 1056},
+                {StatsConverter.QueriesForwarded, 4275},
+                {StatsConverter.QueriesCached, 20238},
+                {StatsConverter.ClientsEverSeen, 11},
+                {StatsConverter.UniqueClients, 9},
+                {StatsConverter.Status, "enabled"}
+            };
+
+            var resultDic = _telnetResultConverter
+                .DictionaryOpt
+                .ValueOr(new ConcurrentDictionary<string, dynamic>());
+            
+            resultDic.Should().BeEquivalentTo(dictionaryExpected);
+
+
+            var expectedJson =
+                "{\"QueriesCached\":20238,\"DnsQueriesToday\":30163,\"AdsPercentageToday\":18.731558,\"Status\":\"enabled\",\"AdsBlockedToday\":5650,\"UniqueClients\":9,\"DomainsBeingBlocked\":116007,\"QueriesForwarded\":4275,\"ClientsEverSeen\":11,\"UniqueDomains\":1056}";
+
+            var expectedToken = JToken.Parse(expectedJson);
+
+            var resultToken = JToken.Parse(_telnetResultConverter.GetJsonFromObjectAsync().Result);
+
+            resultToken.Should().BeEquivalentTo(expectedToken);
         }
         
+        //All other possible checks (missing values, wrong types) are tested in CacheInfoConverterTest.cs
         
     }
 }

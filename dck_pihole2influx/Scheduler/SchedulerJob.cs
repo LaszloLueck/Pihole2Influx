@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using dck_pihole2influx.Configuration;
@@ -18,7 +15,7 @@ namespace dck_pihole2influx.Scheduler
 
         private static readonly Configuration.Configuration ConfigurationFactory =
             new ConfigurationFactory(new ConfigurationUtils()).Configuration;
-        
+
         public async Task Execute(IJobExecutionContext context)
         {
             await Task.Run(async () =>
@@ -37,21 +34,25 @@ namespace dck_pihole2influx.Scheduler
 
                 var enumerable = Workers.GetJobsToDo().Select(async worker =>
                 {
-                    var t = Task.Run(async () => { 
-                        IConnectedTelnetClient telnetClient = new ConnectedTelnetClient(ConfigurationFactory.PiholeHostOrIp, ConfigurationFactory.PiholeTelnetPort);
+                    var t = Task.Run(async () =>
+                    {
+                        IConnectedTelnetClient telnetClient =
+                            new ConnectedTelnetClient(ConfigurationFactory.PiholeHostOrIp,
+                                ConfigurationFactory.PiholeTelnetPort);
                         if (telnetClient.IsConnected())
                         {
-                            if (ConfigurationFactory.PiholeUser.Length > 0 && ConfigurationFactory.PiholePassword.Length > 0)
+                            if (ConfigurationFactory.PiholeUser.Length > 0 &&
+                                ConfigurationFactory.PiholePassword.Length > 0)
                             {
                                 await telnetClient.LoginOnTelnet(ConfigurationFactory.PiholeUser,
                                     ConfigurationFactory.PiholePassword);
                             }
+
                             await telnetClient.WriteCommand(worker.GetPiholeCommand());
                             var result = await telnetClient.ReadResult(worker.GetTerminator());
                             await worker.Convert(result);
                             var resultString = await worker.GetJsonFromObjectAsync(true);
                             Log.Information($"UGU: {resultString}");
-                        
                         }
 
                         await telnetClient.WriteCommand(PiholeCommands.Quit);
