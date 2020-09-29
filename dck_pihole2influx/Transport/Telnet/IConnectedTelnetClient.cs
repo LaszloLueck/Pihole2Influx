@@ -15,5 +15,7 @@ namespace dck_pihole2influx.Transport.Telnet
         Task<string> ReadResult(string terminator);
 
         void DisposeClient();
+
+        void Dispose();
     }
 }
