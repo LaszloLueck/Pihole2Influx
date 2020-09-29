@@ -1,13 +1,14 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace dck_pihole2influx.StatObjects
 {
     public static class  Workers
     {
-        public static List<TelnetResultConverter> GetJobsToDo()
+        public static ConcurrentBag<TelnetResultConverter> GetJobsToDo()
         {
-            return new List<TelnetResultConverter>
+            return new ConcurrentBag<TelnetResultConverter>
             {
                 new CacheInfoConverter(),
                 new StatsConverter()

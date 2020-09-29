@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using dck_pihole2influx.Transport.Telnet;
-using Newtonsoft.Json;
 using Optional;
 using Optional.Collections;
 using Serilog;
@@ -17,7 +18,7 @@ namespace dck_pihole2influx.StatObjects
         private static readonly ILogger Log = LoggingFactory<TelnetResultConverter>.CreateLogging();
         private string _input;
 
-        public Option<Dictionary<string, dynamic>> DictionaryOpt { get; private set; }
+        public Option<ConcurrentDictionary<string, dynamic>> DictionaryOpt { get; private set; }
 
         public async Task Convert(string input)
         {
@@ -34,12 +35,12 @@ namespace dck_pihole2influx.StatObjects
             return "---EOM---";
         }
 
-        private async Task<Option<Dictionary<string, dynamic>>> GetDtoFromResult()
+        private async Task<Option<ConcurrentDictionary<string, dynamic>>> GetDtoFromResult()
         {
             if (_input.Length == 0)
             {
                 Log.Warning("the input string (telnet result) contains no data, please check your configuration.");
-                return Option.None<Dictionary<string, dynamic>>();
+                return Option.None<ConcurrentDictionary<string, dynamic>>();
             }
 
             var splitted = _input
@@ -50,9 +51,9 @@ namespace dck_pihole2influx.StatObjects
 
             try
             {
-                var ret = new ConcurrentBag<(string, dynamic)>();
+                var ret = new ConcurrentDictionary<string, dynamic>();
                 var tasks = new ConcurrentBag<Task>();
-                
+
 
                 foreach (var s in splitted)
                 {
@@ -78,38 +79,41 @@ namespace dck_pihole2influx.StatObjects
                                             (patternValue.GivenName, ((BaseValue<float>) value).GetValue())),
                                     _ => Option.None<(string, dynamic)>()
                                 };
-                            }).Flatten().MatchSome(tuple => ret.Add(tuple));
+                            }).Flatten().MatchSome(tuple => ret.TryAdd(tuple.Item1, tuple.Item2));
                     }));
                 }
 
                 await Task.WhenAll(tasks);
 
-                if (ret.Count != GetPattern().Count)
-                {
-                    Log.Warning(
-                        $"The results contains less ({ret.Count} entries) data than the configuration ({GetPattern().Count} entries)");
-                    return Option.None<Dictionary<string, object>>();
-                }
+                if (ret.Count == GetPattern().Count) return Option.Some(ret);
 
-                return Option.Some(ret.ToDictionary(l => l.Item1, l => l.Item2));
+                Log.Warning(
+                    $"The results contains less ({ret.Count} entries) data than the configuration ({GetPattern().Count} entries)");
+                return Option.None<ConcurrentDictionary<string, object>>();
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Error while create an object from return string");
                 Log.Warning(_input);
-                return Option.None<Dictionary<string, dynamic>>();
+                return Option.None<ConcurrentDictionary<string, dynamic>>();
             }
         }
 
-        public Option<string> GetJsonFromObject(bool prettyPrint = false)
+        public async Task<string> GetJsonFromObjectAsync(bool prettyPrint = false)
         {
-            return DictionaryOpt.Map(value =>
-            {
-                var d = value.Select(line => new {key = line.Key, value = line.Value});
-                return prettyPrint
-                    ? JsonConvert.SerializeObject(d, Formatting.Indented)
-                    : JsonConvert.SerializeObject(d);
-            });
+            var obj = DictionaryOpt.Match(
+                some: dic => dic,
+                none: () =>
+                {
+                    Log.Warning("Cannot convert dictionary to json, dictionary is none!");
+                    return new ConcurrentDictionary<string, dynamic>();
+                });
+            await using var stream = new MemoryStream();
+            await JsonSerializer.SerializeAsync(stream, obj, obj.GetType(),
+                new JsonSerializerOptions() {WriteIndented = prettyPrint});
+            stream.Position = 0;
+            using var reader = new StreamReader(stream);
+            return await reader.ReadToEndAsync();
         }
     }
 }

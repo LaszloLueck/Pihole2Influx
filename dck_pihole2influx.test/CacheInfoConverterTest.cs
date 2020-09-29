@@ -1,7 +1,10 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using dck_pihole2influx.StatObjects;
+using FluentAssertions;
+using FluentAssertions.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Optional;
+using Newtonsoft.Json.Linq;
 
 namespace dck_pihole2influx.test
 {
@@ -26,33 +29,28 @@ cache-inserted: 98590
 
 ";
             _telnetResultConverter.Convert(testee).Wait();
-            var jsonExpected =
-                $"[{{\"key\":\"{CacheInfoConverter.CacheSize}\",\"value\":10000}},{{\"key\":\"{CacheInfoConverter.CacheLiveFreed}\",\"value\":0}},{{\"key\":\"{CacheInfoConverter.CacheInserted}\",\"value\":98590}}]";
-
-            //order the json and make it testable
-            var jsArrayExpected = TestUtils.OrderJsonStringFromConvert(jsonExpected);
-            var currentJson = _telnetResultConverter
-                .GetJsonFromObject()
-                .Map(TestUtils.OrderJsonStringFromConvert)
-                .ValueOr("");
-
-
-            Assert.AreEqual(jsArrayExpected, currentJson);
-
-
-            var dictionaryExpected = TestUtils.OrderDictionaryFromResult(new Dictionary<string, dynamic>
+            var dictionaryExpected = new Dictionary<string, dynamic>
             {
                 {CacheInfoConverter.CacheSize, 10000},
                 {CacheInfoConverter.CacheLiveFreed, 0},
                 {CacheInfoConverter.CacheInserted, 98590}
-            });
+            };
 
-
-            var resultDic = TestUtils.OrderDictionaryFromResult(_telnetResultConverter
+            var resultDic = _telnetResultConverter
                 .DictionaryOpt
-                .ValueOr(new Dictionary<string, dynamic>()));
+                .ValueOr(new ConcurrentDictionary<string, dynamic>());
 
-            CollectionAssert.AreEqual(dictionaryExpected, resultDic);
+            resultDic.Should().BeEquivalentTo(dictionaryExpected);
+
+            var resultTokens = JToken.Parse(_telnetResultConverter.GetJsonFromObjectAsync().Result);
+
+            var jsonExpected =
+                $"{{\"{CacheInfoConverter.CacheSize}\":10000,\"{CacheInfoConverter.CacheLiveFreed}\":0,\"{CacheInfoConverter.CacheInserted}\":98590}}";
+
+            var expectedToken = JToken.Parse(jsonExpected);
+
+
+            resultTokens.Should().BeEquivalentTo(expectedToken);
         }
 
         [TestMethod]
@@ -64,9 +62,10 @@ cache-inserted: 98590
 
 
 ";
+
             _telnetResultConverter.Convert(testee);
-            var jsonExpected = Option.None<string>();
-            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject());
+            
+            "{}".Should().Be(_telnetResultConverter.GetJsonFromObjectAsync().Result);
         }
 
         [TestMethod]
@@ -82,25 +81,25 @@ cache-inserted: abcde
 ";
             _telnetResultConverter.Convert(testee).Wait();
 
-            var expectedDictionary = TestUtils.OrderDictionaryFromResult(new Dictionary<string, dynamic>
+            var expectedDictionary = new Dictionary<string, dynamic>
             {
                 {CacheInfoConverter.CacheSize, 10000},
                 {CacheInfoConverter.CacheLiveFreed, 0},
                 {CacheInfoConverter.CacheInserted, 0}
-            });
+            };
 
-            var resultDictionary = _telnetResultConverter.DictionaryOpt.Map(TestUtils.OrderDictionaryFromResult)
-                .ValueOr(new Dictionary<string, dynamic>());
+            var resultDictionary = _telnetResultConverter.DictionaryOpt
+                .ValueOr(new ConcurrentDictionary<string, dynamic>());
 
+            resultDictionary.Should().BeEquivalentTo(expectedDictionary);
 
-            CollectionAssert.AreEqual(expectedDictionary, resultDictionary);
+            var expectedJson =
+                $"{{\"{CacheInfoConverter.CacheSize}\":10000,\"{CacheInfoConverter.CacheLiveFreed}\":0,\"{CacheInfoConverter.CacheInserted}\":0}}";
+            var expectedToken = JToken.Parse(expectedJson);
 
-            var jsonExpected = TestUtils.OrderJsonStringFromConvert(
-                $"[{{\"key\":\"{CacheInfoConverter.CacheSize}\",\"value\":10000}},{{\"key\":\"{CacheInfoConverter.CacheLiveFreed}\",\"value\":0}},{{\"key\":\"{CacheInfoConverter.CacheInserted}\",\"value\":0}}]");
+            var resultToken = JToken.Parse(_telnetResultConverter.GetJsonFromObjectAsync().Result);
 
-
-            Assert.AreEqual(Option.Some(jsonExpected),
-                _telnetResultConverter.GetJsonFromObject().Map(TestUtils.OrderJsonStringFromConvert));
+            resultToken.Should().BeEquivalentTo(expectedToken);
         }
 
         [TestMethod]
@@ -109,8 +108,7 @@ cache-inserted: abcde
             var testee = @"Some text string";
 
             _telnetResultConverter.Convert(testee);
-            var jsonExpected = Option.None<string>();
-            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject());
+            "{}".Should().Be(_telnetResultConverter.GetJsonFromObjectAsync().Result);
         }
 
         [TestMethod]
@@ -118,8 +116,7 @@ cache-inserted: abcde
         {
             var testee = "";
             _telnetResultConverter.Convert(testee);
-            var jsonExpected = Option.None<string>();
-            Assert.AreEqual(jsonExpected, _telnetResultConverter.GetJsonFromObject());
+            "{}".Should().Be(_telnetResultConverter.GetJsonFromObjectAsync().Result);
         }
     }
 }

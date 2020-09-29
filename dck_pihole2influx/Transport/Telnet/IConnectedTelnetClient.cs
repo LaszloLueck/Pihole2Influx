@@ -8,9 +8,9 @@ namespace dck_pihole2influx.Transport.Telnet
 
         Task<bool> LoginOnTelnet(string userName, string password);
 
-        void WriteCommand(string command);
+        Task WriteCommand(string command);
 
-        void WriteCommand(PiholeCommands command);
+        Task WriteCommand(PiholeCommands command);
 
         Task<string> ReadResult(string terminator);
 

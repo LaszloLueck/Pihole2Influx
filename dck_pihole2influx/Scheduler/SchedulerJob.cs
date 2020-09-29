@@ -1,3 +1,6 @@
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using dck_pihole2influx.Configuration;
 using dck_pihole2influx.Logging;
@@ -40,21 +43,27 @@ namespace dck_pihole2influx.Scheduler
                             ConfigurationFactory.PiholePassword);
                     }
 
-                    Parallel.ForEach(Workers.GetJobsToDo(), new ParallelOptions {MaxDegreeOfParallelism = 4}, async (worker) =>
+                    Parallel.ForEach(Workers.GetJobsToDo(), new ParallelOptions {MaxDegreeOfParallelism = 1},  (worker) =>
                     {
-                        telnetClient.WriteCommand(worker.GetPiholeCommand());
+                        var t = Task.Run(async () =>
+                        {
+                           await telnetClient.WriteCommand(worker.GetPiholeCommand());
 
-                        var result = await telnetClient.ReadResult(worker.GetTerminator());
+                           var result = await telnetClient.ReadResult(worker.GetTerminator());
+                    
+                           await worker.Convert(result);
+                    
+                           var resultString = await worker.GetJsonFromObjectAsync(true);
+                    
+                           //Print the result, later write to influx
+                           Log.Information($"UGU: ${resultString}");
+                        });
 
-                        await worker.Convert(result);
+                        t.Wait();
 
-                        worker.GetJsonFromObject(true).Match(
-                            some: s => Log.Information($"Receive following result as json: {s}"),
-                            none: () => Log.Warning($"Could not convert the resultset to an approriate json. {result}")
-                        );
                     });
-
-                    telnetClient.WriteCommand(PiholeCommands.Quit);
+                    
+                    await telnetClient.WriteCommand(PiholeCommands.Quit);
                     telnetClient.DisposeClient();
                 }
             });
