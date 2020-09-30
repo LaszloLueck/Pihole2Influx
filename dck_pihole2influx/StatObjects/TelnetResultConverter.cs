@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -30,6 +29,11 @@ namespace dck_pihole2influx.StatObjects
         protected abstract Dictionary<string, PatternValue> GetPattern();
 
         public abstract PiholeCommands GetPiholeCommand();
+
+        public virtual ConverterType GetConverterType()
+        {
+            return ConverterType.Standard;
+        }
 
         public virtual string GetTerminator()
         {
@@ -60,27 +64,44 @@ namespace dck_pihole2influx.StatObjects
                 {
                     tasks.Add(Task.Run(() =>
                     {
-                        GetPattern().FirstOrNone(value => s.Contains(value.Key)).Map(
-                            result =>
+                        switch (GetConverterType())
+                        {
+                            case ConverterType.Standard:
                             {
-                                var (key, patternValue) = result;
-                                return patternValue.ValueType switch
-                                {
-                                    ValueTypes.Int => ValueConverterBase<int>
-                                        .Convert(s, key, (int) patternValue.AlternativeValue)
-                                        .Map<(string, dynamic)>(
-                                            value => (patternValue.GivenName, ((BaseValue<int>) value).GetValue())),
-                                    ValueTypes.String => ValueConverterBase<string>
-                                        .Convert(s, key, (string) patternValue.AlternativeValue)
-                                        .Map<(string, dynamic)>(value =>
-                                            (patternValue.GivenName, ((BaseValue<string>) value).GetValue())),
-                                    ValueTypes.Float => ValueConverterBase<float>
-                                        .Convert(s, key, (float) patternValue.AlternativeValue)
-                                        .Map<(string, dynamic)>(value =>
-                                            (patternValue.GivenName, ((BaseValue<float>) value).GetValue())),
-                                    _ => Option.None<(string, dynamic)>()
-                                };
-                            }).Flatten().MatchSome(tuple => ret.TryAdd(tuple.Item1, tuple.Item2));
+                                GetPattern().FirstOrNone(value => s.Contains(value.Key)).Map(
+                                    result =>
+                                    {
+                                        var (key, patternValue) = result;
+                                        return patternValue.ValueType switch
+                                        {
+                                            ValueTypes.Int => ValueConverterBase<int>
+                                                .Convert(s, key, (int) patternValue.AlternativeValue)
+                                                .Map<(string, dynamic)>(
+                                                    value => (patternValue.GivenName,
+                                                        ((BaseValue<int>) value).GetValue())),
+                                            ValueTypes.String => ValueConverterBase<string>
+                                                .Convert(s, key, (string) patternValue.AlternativeValue)
+                                                .Map<(string, dynamic)>(value =>
+                                                    (patternValue.GivenName, ((BaseValue<string>) value).GetValue())),
+                                            ValueTypes.Float => ValueConverterBase<float>
+                                                .Convert(s, key, (float) patternValue.AlternativeValue)
+                                                .Map<(string, dynamic)>(value =>
+                                                    (patternValue.GivenName, ((BaseValue<float>) value).GetValue())),
+                                            _ => Option.None<(string, dynamic)>()
+                                        };
+                                    }).Flatten().MatchSome(tuple => ret.TryAdd(tuple.Item1, tuple.Item2));
+                                break;
+                            }
+                            case ConverterType.NumberedList:
+                            {
+                                
+                                break;
+                            }
+                            default:
+                                Log.Warning(
+                                    "Unidentified / Unprocessable ConverterType used. Please implement a processing for this type");
+                                break;
+                        }
                     }));
                 }
 
@@ -109,12 +130,24 @@ namespace dck_pihole2influx.StatObjects
                     Log.Warning("Cannot convert dictionary to json, dictionary is none!");
                     return new ConcurrentDictionary<string, dynamic>();
                 });
-            await using var stream = new MemoryStream();
-            await JsonSerializer.SerializeAsync(stream, obj, obj.GetType(),
-                new JsonSerializerOptions() {WriteIndented = prettyPrint});
-            stream.Position = 0;
-            using var reader = new StreamReader(stream);
-            return await reader.ReadToEndAsync();
+            switch (GetConverterType())
+            {
+                case ConverterType.Standard:
+                {
+                    await using var stream = new MemoryStream();
+                    await JsonSerializer.SerializeAsync(stream, obj, obj.GetType(),
+                        new JsonSerializerOptions() {WriteIndented = prettyPrint});
+                    stream.Position = 0;
+                    using var reader = new StreamReader(stream);
+                    return await reader.ReadToEndAsync();
+                }
+                case ConverterType.NumberedList:
+                    return await Task.Run(() => string.Empty);
+                default:
+                    Log.Warning(
+                        "Unidentified / Unprocessable ConverterType used. Please implement a processing for this type");
+                    return await Task.Run(() => string.Empty);
+            }
         }
     }
 }
