@@ -17,17 +17,17 @@ namespace dck_pihole2influx.StatObjects
     {
         protected override Dictionary<string, PatternValue> GetPattern()
         {
-            throw new System.NotImplementedException();
+            return new Dictionary<string, PatternValue>();
         }
 
         public override PiholeCommands GetPiholeCommand()
         {
-            throw new System.NotImplementedException();
+            return PiholeCommands.Topdomains;
         }
 
         public override ConverterType GetConverterType()
         {
-            return ConverterType.NumberedList;
+            return ConverterType.NumberedUrlList;
         }
     }
 }

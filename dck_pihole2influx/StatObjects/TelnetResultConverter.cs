@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using dck_pihole2influx.Transport.Telnet;
 using Optional;
-using Optional.Collections;
 using Serilog;
 
 namespace dck_pihole2influx.StatObjects
@@ -40,6 +39,7 @@ namespace dck_pihole2influx.StatObjects
             return "---EOM---";
         }
 
+
         private async Task<Option<ConcurrentDictionary<string, dynamic>>> GetDtoFromResult()
         {
             if (_input.Length == 0)
@@ -68,33 +68,14 @@ namespace dck_pihole2influx.StatObjects
                         {
                             case ConverterType.Standard:
                             {
-                                GetPattern().FirstOrNone(value => s.Contains(value.Key)).Map(
-                                    result =>
-                                    {
-                                        var (key, patternValue) = result;
-                                        return patternValue.ValueType switch
-                                        {
-                                            ValueTypes.Int => ValueConverterBase<int>
-                                                .Convert(s, key, (int) patternValue.AlternativeValue)
-                                                .Map<(string, dynamic)>(
-                                                    value => (patternValue.GivenName,
-                                                        ((BaseValue<int>) value).GetValue())),
-                                            ValueTypes.String => ValueConverterBase<string>
-                                                .Convert(s, key, (string) patternValue.AlternativeValue)
-                                                .Map<(string, dynamic)>(value =>
-                                                    (patternValue.GivenName, ((BaseValue<string>) value).GetValue())),
-                                            ValueTypes.Float => ValueConverterBase<float>
-                                                .Convert(s, key, (float) patternValue.AlternativeValue)
-                                                .Map<(string, dynamic)>(value =>
-                                                    (patternValue.GivenName, ((BaseValue<float>) value).GetValue())),
-                                            _ => Option.None<(string, dynamic)>()
-                                        };
-                                    }).Flatten().MatchSome(tuple => ret.TryAdd(tuple.Item1, tuple.Item2));
+                                ConverterUtils.ConvertResultForStandard(s, GetPattern())
+                                    .MatchSome(result => ret.TryAdd(result.Item1, result.Item2));
                                 break;
                             }
-                            case ConverterType.NumberedList:
+                            case ConverterType.NumberedUrlList:
                             {
-                                
+                                ConverterUtils.ConvertResultForNumberedUrlList(s, GetPattern())
+                                    .MatchSome(result => ret.TryAdd(result.Item1, result.Item2));
                                 break;
                             }
                             default:
@@ -141,7 +122,7 @@ namespace dck_pihole2influx.StatObjects
                     using var reader = new StreamReader(stream);
                     return await reader.ReadToEndAsync();
                 }
-                case ConverterType.NumberedList:
+                case ConverterType.NumberedUrlList:
                     return await Task.Run(() => string.Empty);
                 default:
                     Log.Warning(
