@@ -62,10 +62,26 @@ cache-inserted: 98590
 
 
 ";
+            var dictionaryExpected = new Dictionary<string, dynamic>
+            {
+                {CacheInfoConverter.CacheSize, 10000},
+                {CacheInfoConverter.CacheInserted, 98590}
+            };
 
-            _telnetResultConverter.Convert(testee);
+            _telnetResultConverter.Convert(testee).Wait();
 
-            "{}".Should().Be(_telnetResultConverter.GetJsonFromObjectAsync().Result);
+            var resultDic = _telnetResultConverter.DictionaryOpt.ValueOr(new ConcurrentDictionary<string, dynamic>());
+            
+            resultDic.Should().BeEquivalentTo(dictionaryExpected);
+            
+            var jsonExpected = $"{{\"{CacheInfoConverter.CacheSize}\":10000,\"{CacheInfoConverter.CacheInserted}\":98590}}";
+
+            var expectedToken = JToken.Parse(jsonExpected);
+
+            var resultToken = JToken.Parse(_telnetResultConverter.GetJsonFromObjectAsync().Result);
+
+            resultToken.Should().BeEquivalentTo(expectedToken);
+            
         }
 
         [TestMethod]

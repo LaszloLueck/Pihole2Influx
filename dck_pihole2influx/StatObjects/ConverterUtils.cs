@@ -42,20 +42,21 @@ namespace dck_pihole2influx.StatObjects
             //Every line looks like '1 236 safebrowsing-cache.google.com'
             //Lets split the parameter by regex.
             //([0-9]{1,2}) ([0-9]{1,3}) ([\w\-\.\d]{1,})
-            const string pattern = @"([0-9]{1,2}) ([0-9]{1,3}) ([\w\-\.\d]{1,})";
-
+            const string pattern = @"([0-9]{1,2}) ([0-9]{1,}) ([\w\-\.\d]{1,})";
+            
             MatchCollection matches = Regex.Matches(line, pattern);
-            int key = 0;
-            int count = 0;
+            string key = "";
+            string count = "";
             string domain = "";
             foreach (Match match in matches)
             {
-                Console.WriteLine($"A: {match.Groups[1].Value}");
-                Console.WriteLine($"B: {match.Groups[2].Value}");
-                Console.WriteLine($"C: {match.Groups[3].Value}");
+                key = match.Groups[1].Value;
+                count = match.Groups[2].Value;
+                domain = match.Groups[3].Value;
             }
 
-            return Option.None<(string, dynamic)>();
+            int intCount = int.TryParse(count, out intCount) ? intCount : 0;
+            return Option.Some<(string, dynamic)>((key, (intCount, domain)));
         }
     }
 }
