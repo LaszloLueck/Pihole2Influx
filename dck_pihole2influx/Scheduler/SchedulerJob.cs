@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using dck_pihole2influx.Configuration;
 using dck_pihole2influx.Logging;
@@ -31,9 +32,14 @@ namespace dck_pihole2influx.Scheduler
                     $"InfluxDb password is {(ConfigurationFactory.InfluxDbPassword.Length == 0 ? "not set" : "set")}");
 
                 Log.Information("Connect to pihole and get stats");
+                
+                //throttle the amount of concurrent telnet-requests to pihole.
+                //if it is not set per env-var, the default is 1 (one request per time). 
+                var mutex = new SemaphoreSlim(ConfigurationFactory.ConcurrentRequestsToPihole);
 
                 var enumerable = Workers.GetJobsToDo().Select(async worker =>
                 {
+                    await mutex.WaitAsync();
                     var t = Task.Run(async () =>
                     {
                         IConnectedTelnetClient telnetClient =
@@ -59,6 +65,7 @@ namespace dck_pihole2influx.Scheduler
                         telnetClient.Dispose();
                     });
                     await t;
+                    mutex.Release();
                 });
                 await Task.WhenAll(enumerable);
             });

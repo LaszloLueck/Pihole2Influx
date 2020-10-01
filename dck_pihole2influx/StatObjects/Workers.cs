@@ -11,8 +11,8 @@ namespace dck_pihole2influx.StatObjects
             return new ConcurrentBag<TelnetResultConverter>
             {
                 new CacheInfoConverter(),
-                new StatsConverter()
-                
+                new StatsConverter(),
+                new TopDomainsConverter()
             };
         }
         

@@ -87,14 +87,8 @@ namespace dck_pihole2influx.StatObjects
                 }
 
                 await Task.WhenAll(tasks);
-
+                
                 return Option.Some(ret);
-
-                //if (ret.Count == GetPattern().Count) return Option.Some(ret);
-
-                // Log.Warning(
-                //     $"The results contains less ({ret.Count} entries) data than the configuration ({GetPattern().Count} entries)");
-                // return Option.None<ConcurrentDictionary<string, object>>();
             }
             catch (Exception ex)
             {
