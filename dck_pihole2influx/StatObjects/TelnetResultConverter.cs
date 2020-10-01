@@ -87,8 +87,8 @@ namespace dck_pihole2influx.StatObjects
                 }
 
                 await Task.WhenAll(tasks);
-                
-                return Option.Some(ret);
+
+                return ret.Count > 0 ? Option.Some(ret) : Option.None<ConcurrentDictionary<string, dynamic>>();
             }
             catch (Exception ex)
             {
@@ -119,12 +119,31 @@ namespace dck_pihole2influx.StatObjects
                     return await reader.ReadToEndAsync();
                 }
                 case ConverterType.NumberedUrlList:
-                    return await Task.Run(() => string.Empty);
+                {
+                    var to = (from element in obj select GetNumberdUrlFromKeyValue(element))
+                        .OrderBy(element => element.position);
+
+                    await using var stream = new MemoryStream();
+                    await JsonSerializer.SerializeAsync(stream, to, to.GetType(),
+                        new JsonSerializerOptions() {WriteIndented = prettyPrint});
+                    stream.Position = 0;
+                    using var reader = new StreamReader(stream);
+                    return await reader.ReadToEndAsync();
+                }
                 default:
                     Log.Warning(
                         "Unidentified / Unprocessable ConverterType used. Please implement a processing for this type");
                     return await Task.Run(() => string.Empty);
             }
         }
+
+        private NumberedUrlItem GetNumberdUrlFromKeyValue(KeyValuePair<string, dynamic> keyValue)
+        {
+            int key = int.TryParse(keyValue.Key, out key) ? key : 0;
+            var tpl = ((int, string)) keyValue.Value;
+            return new NumberedUrlItem(key, tpl.Item1, tpl.Item2);
+        }
+
+
     }
 }
