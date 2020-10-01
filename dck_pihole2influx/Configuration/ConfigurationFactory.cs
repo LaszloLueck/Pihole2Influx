@@ -14,7 +14,7 @@ namespace dck_pihole2influx.Configuration
         public const string InfluxDbUserName = "INFLUXDBUSERNAME";
         public const string InfluxDbPassword = "INFLUXDBPASSWORD";
         public const string PiholeUser = "PIHOLEUSER";
-        public const string PihoePassword = "PIHOLEPASSWORD";
+        public const string PiholePassword = "PIHOLEPASSWORD";
         public const string ConcurrentRequestsToPihole = "CONCURRENTREQUESTSTOPIHOLE";
 
         public readonly Configuration Configuration;
@@ -34,7 +34,7 @@ namespace dck_pihole2influx.Configuration
                 GetValueOrDefaultFromEnv<string>(InfluxDbUserName, Configuration.DefaultInfluxDbUserName),
                 GetValueOrDefaultFromEnv<string>(InfluxDbPassword, Configuration.InfluxDbPassword),
                 GetValueOrDefaultFromEnv<string>(PiholeUser, Configuration.PiholeUser),
-                GetValueOrDefaultFromEnv<string>(PihoePassword, Configuration.PiholePassword),
+                GetValueOrDefaultFromEnv<string>(PiholePassword, Configuration.PiholePassword),
                 GetValueOrDefaultFromEnv<int>(ConcurrentRequestsToPihole, Configuration.DefaultConcurrentRequestsToPihole)
                 );
         }
