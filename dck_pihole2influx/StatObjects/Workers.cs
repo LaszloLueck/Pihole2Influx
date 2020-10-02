@@ -12,7 +12,9 @@ namespace dck_pihole2influx.StatObjects
             {
                 new CacheInfoConverter(),
                 new StatsConverter(),
-                new TopDomainsConverter()
+                new TopDomainsConverter(),
+                new TopAdsConverter(),
+                new QueryTypesConverter()
             };
         }
         

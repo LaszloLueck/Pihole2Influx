@@ -78,6 +78,12 @@ namespace dck_pihole2influx.StatObjects
                                     .MatchSome(result => ret.TryAdd(result.Item1, result.Item2));
                                 break;
                             }
+                            case ConverterType.ColonSplit:
+                            {
+                                ConverterUtils.ConvertColonSpliitedLine(s, GetPattern())
+                                    .MatchSome(result => ret.TryAdd(result.Item1, result.Item2));
+                                break;
+                            }
                             default:
                                 Log.Warning(
                                     "Unidentified / Unprocessable ConverterType used. Please implement a processing for this type");
@@ -119,6 +125,10 @@ namespace dck_pihole2influx.StatObjects
                         .OrderBy(element => element.position);
 
                     return await ConvertOutputToJson(to, prettyPrint);
+                }
+                case ConverterType.ColonSplit:
+                {
+                    return await ConvertOutputToJson(obj, prettyPrint);
                 }
                 default:
                     Log.Warning(

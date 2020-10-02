@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Optional;
@@ -46,6 +48,23 @@ namespace dck_pihole2influx.StatObjects
 
             MatchCollection matches = Regex.Matches(line, pattern);
             return (from match in matches select GenerateOutputFromMatchOpt(match)).FirstOrNone().Flatten();
+        }
+
+        public static Option<(string, dynamic)> ConvertColonSpliitedLine(string line,
+            Dictionary<string, PatternValue> patternDic)
+        {
+            //A line looks like this: A (IPv4): 67.73
+            //Lets split them by colon and return the first part as key and the second part as double...
+            var splitLine = line.Split(":");
+            if (splitLine.Length != 2)
+                return Option.None<(string, dynamic)>();
+
+            double dblValue = double.TryParse(splitLine[1], NumberStyles.Number, CultureInfo.InvariantCulture, out dblValue)
+                ? dblValue
+                : 0d;
+            
+            return Option.Some<(string, dynamic)>((splitLine[0], dblValue));
+            
         }
 
         private static Option<(string, dynamic)> GenerateOutputFromMatchOpt(Match match)
