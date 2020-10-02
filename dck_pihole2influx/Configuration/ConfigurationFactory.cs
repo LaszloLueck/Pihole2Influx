@@ -54,7 +54,7 @@ namespace dck_pihole2influx.Configuration
                         typeof(T));
                 default:
                     Log.Warning(
-                        $"Unidentified type <{typeof(T).FullName}> found. Return default value instead <{defaultValue}>");
+                        $"Unidentified type <{typeof(T).FullName}> found. Return default value instead.>");
                     return (T) Convert.ChangeType(defaultValue, typeof(T));
             }
         }
