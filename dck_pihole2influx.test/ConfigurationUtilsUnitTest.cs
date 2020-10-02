@@ -1,5 +1,6 @@
 using System;
 using dck_pihole2influx.Configuration;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Optional;
 
@@ -52,6 +53,26 @@ namespace dck_pihole2influx.test
         {
             var result = _configurationUtils.ReadEnvironmentVariable("test_value2");
             Assert.AreEqual(Option.None<string>(), result);
+        }
+
+        [TestMethod, Description("Try to load a complete ConfigurationFactory (and all the default values)")]
+        public void TryToLoadConfigurationFactoryWithAllDefaults()
+        {
+            var configurationFactory = new ConfigurationFactory(_configurationUtils);
+            var testee = configurationFactory.Configuration;
+
+            testee.PiholeHostOrIp.Should().Be("127.0.0.1");
+            testee.PiholeTelnetPort.Should().Be(4711);
+            testee.PiholeUser.Should().Be("");
+            testee.PiholePassword.Should().Be("");
+            testee.InfluxDbHostOrIp.Should().Be("127.0.0.1");
+            testee.InfluxDbPort.Should().Be(8086);
+            testee.InfluxDbDatabaseName.Should().Be("influxdb");
+            testee.InfluxDbUserName.Should().Be("");
+            testee.InfluxDbPassword.Should().Be("");
+            testee.ConcurrentRequestsToPihole.Should().Be(1);
+
+
         }
     }
 }

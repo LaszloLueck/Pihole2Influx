@@ -32,9 +32,9 @@ namespace dck_pihole2influx.Configuration
                 GetValueOrDefaultFromEnv<int>(InfluxDbPort, Configuration.DefaultInfluxDbPort),
                 GetValueOrDefaultFromEnv<string>(InfluxDbDatabaseName, Configuration.DefaultInfluxDbDatabaseName),
                 GetValueOrDefaultFromEnv<string>(InfluxDbUserName, Configuration.DefaultInfluxDbUserName),
-                GetValueOrDefaultFromEnv<string>(InfluxDbPassword, Configuration.InfluxDbPassword),
-                GetValueOrDefaultFromEnv<string>(PiholeUser, Configuration.PiholeUser),
-                GetValueOrDefaultFromEnv<string>(PiholePassword, Configuration.PiholePassword),
+                GetValueOrDefaultFromEnv<string>(InfluxDbPassword, Configuration.DefaultInfluxDbPassword),
+                GetValueOrDefaultFromEnv<string>(PiholeUser, Configuration.DefaultPiholeUser),
+                GetValueOrDefaultFromEnv<string>(PiholePassword, Configuration.DefaultPiholePassword),
                 GetValueOrDefaultFromEnv<int>(ConcurrentRequestsToPihole,
                     Configuration.DefaultConcurrentRequestsToPihole)
             );
