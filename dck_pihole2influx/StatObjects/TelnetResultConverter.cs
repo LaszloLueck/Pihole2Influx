@@ -111,29 +111,37 @@ namespace dck_pihole2influx.StatObjects
             {
                 case ConverterType.Standard:
                 {
-                    await using var stream = new MemoryStream();
-                    await JsonSerializer.SerializeAsync(stream, obj, obj.GetType(),
-                        new JsonSerializerOptions() {WriteIndented = prettyPrint});
-                    stream.Position = 0;
-                    using var reader = new StreamReader(stream);
-                    return await reader.ReadToEndAsync();
+                    return await ConvertOutputToJson(obj, prettyPrint);
                 }
                 case ConverterType.NumberedUrlList:
                 {
                     var to = (from element in obj select GetNumberdUrlFromKeyValue(element))
                         .OrderBy(element => element.position);
 
-                    await using var stream = new MemoryStream();
-                    await JsonSerializer.SerializeAsync(stream, to, to.GetType(),
-                        new JsonSerializerOptions() {WriteIndented = prettyPrint});
-                    stream.Position = 0;
-                    using var reader = new StreamReader(stream);
-                    return await reader.ReadToEndAsync();
+                    return await ConvertOutputToJson(to, prettyPrint);
                 }
                 default:
                     Log.Warning(
                         "Unidentified / Unprocessable ConverterType used. Please implement a processing for this type");
                     return await Task.Run(() => string.Empty);
+            }
+        }
+
+        private static async Task<string> ConvertOutputToJson<T>(T output, bool prettyPrint)
+        {
+            try
+            {
+                await using var stream = new MemoryStream();
+                await JsonSerializer.SerializeAsync(stream, output, output.GetType(),
+                    new JsonSerializerOptions() {WriteIndented = prettyPrint});
+                stream.Position = 0;
+                using var reader = new StreamReader(stream);
+                return await reader.ReadToEndAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An error occured while processing a data structure to json string");
+                return await Task.Run(() => string.Empty);
             }
         }
 
@@ -143,7 +151,5 @@ namespace dck_pihole2influx.StatObjects
             var tpl = ((int, string)) keyValue.Value;
             return new NumberedUrlItem(key, tpl.Item1, tpl.Item2);
         }
-
-
     }
 }

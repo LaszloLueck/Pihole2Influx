@@ -25,7 +25,7 @@ namespace dck_pihole2influx.Configuration
         public ConfigurationFactory(IConfigurationUtils configurationUtils)
         {
             _configurationUtils = configurationUtils;
-            this.Configuration = new Configuration(
+            Configuration = new Configuration(
                 GetValueOrDefaultFromEnv<string>(PiholeIpOrHostName, Configuration.DefaultPiholeHostOrIp),
                 GetValueOrDefaultFromEnv<int>(PiholePort, Configuration.DefaultPiholePort),
                 GetValueOrDefaultFromEnv<string>(InfluxDbIpOrHostName, Configuration.DefaultInfluxDbHostOrIp),
@@ -35,8 +35,9 @@ namespace dck_pihole2influx.Configuration
                 GetValueOrDefaultFromEnv<string>(InfluxDbPassword, Configuration.InfluxDbPassword),
                 GetValueOrDefaultFromEnv<string>(PiholeUser, Configuration.PiholeUser),
                 GetValueOrDefaultFromEnv<string>(PiholePassword, Configuration.PiholePassword),
-                GetValueOrDefaultFromEnv<int>(ConcurrentRequestsToPihole, Configuration.DefaultConcurrentRequestsToPihole)
-                );
+                GetValueOrDefaultFromEnv<int>(ConcurrentRequestsToPihole,
+                    Configuration.DefaultConcurrentRequestsToPihole)
+            );
         }
 
         private T GetValueOrDefaultFromEnv<T>(string envKey, T defaultValue)
@@ -48,7 +49,8 @@ namespace dck_pihole2influx.Configuration
                         _configurationUtils.TryParseValueFromString(_configurationUtils.ReadEnvironmentVariable(envKey),
                             intValue), typeof(T));
                 case string stringValue:
-                    return (T) Convert.ChangeType(_configurationUtils.ReadEnvironmentVariable(envKey).ValueOr(stringValue),
+                    return (T) Convert.ChangeType(
+                        _configurationUtils.ReadEnvironmentVariable(envKey).ValueOr(stringValue),
                         typeof(T));
                 default:
                     Log.Warning(

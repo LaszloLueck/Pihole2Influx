@@ -15,23 +15,23 @@ public class TaskOption<T>
 
 	public TaskOption(Func<Task<T>> task)
 	{
-		this._task = task ?? throw new ArgumentNullException(nameof(task));
+		_task = task ?? throw new ArgumentNullException(nameof(task));
 	}
 
 	public TaskOption<T> Filter(Predicate<T> filterPredicate, Func<T, Exception> exceptionalFunc)
 	{
-		return this.Match(
+		return Match(
 			some: s => filterPredicate(s) ? s : throw exceptionalFunc(s),
 			none: n => throw n);
 	}
 
 	public TaskOption<TResult> Map<TResult>(Func<T, TResult> mapping) =>
-		this._task().ContinueWith(t => mapping(t.Result));
+		_task().ContinueWith(t => mapping(t.Result));
 
 	public TaskOption<TResult> Map<TResult>(Func<T, Task<TResult>> mapping) =>
-		this._task().ContinueWith(t => mapping(t.Result)).Unwrap();
+		_task().ContinueWith(t => mapping(t.Result)).Unwrap();
 
-	public TaskOption<TResult> Match<TResult>(Func<T, TResult> some, Func<Exception, TResult> none) => this._task()
+	public TaskOption<TResult> Match<TResult>(Func<T, TResult> some, Func<Exception, TResult> none) => _task()
 		.ContinueWith(t =>
 		{
 			if (t.IsCanceled)
@@ -51,7 +51,7 @@ public class TaskOption<T>
 
 	public TaskAwaiter<Option<T, Exception>> GetAwaiter()
 	{
-		var continued = this._task().ContinueWith(t =>
+		var continued = _task().ContinueWith(t =>
 		{
 			if (t.IsCanceled)
 			{
@@ -71,7 +71,7 @@ public class TaskOption<T>
 
 	public ConfiguredTaskAwaitable<Option<T, Exception>> ConfigureAwait(bool continueOnCapturedContext)
 	{
-		var continued = this._task().ContinueWith(t => {
+		var continued = _task().ContinueWith(t => {
 			if (t.IsCanceled)
 			{
 				return Option.None<T, Exception>(new TaskCanceledException(t));
