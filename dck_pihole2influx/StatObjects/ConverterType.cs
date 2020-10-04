@@ -4,6 +4,7 @@ namespace dck_pihole2influx.StatObjects
     {
         Standard,
         NumberedUrlList,
-        ColonSplit
+        ColonSplit,
+        NumberedPercentageList
     }
 }

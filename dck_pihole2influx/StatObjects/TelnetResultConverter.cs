@@ -80,7 +80,13 @@ namespace dck_pihole2influx.StatObjects
                             }
                             case ConverterType.ColonSplit:
                             {
-                                ConverterUtils.ConvertColonSpliitedLine(s, GetPattern())
+                                ConverterUtils.ConvertColonSplittedLine(s, GetPattern())
+                                    .MatchSome(result => ret.TryAdd(result.Item1, result.Item2));
+                                break;
+                            }
+                            case ConverterType.NumberedPercentageList:
+                            {
+                                ConverterUtils.ConvertResultForNumberedPercentage(s, GetPattern())
                                     .MatchSome(result => ret.TryAdd(result.Item1, result.Item2));
                                 break;
                             }
@@ -130,6 +136,12 @@ namespace dck_pihole2influx.StatObjects
                 {
                     return await ConvertOutputToJson(obj, prettyPrint);
                 }
+                case ConverterType.NumberedPercentageList:
+                {
+                    var to = (from element in obj select GetNumberedPercentageFromKeyValue(element)).OrderBy(element =>
+                        element.position);
+                    return await ConvertOutputToJson(to, prettyPrint);
+                }
                 default:
                     Log.Warning(
                         "Unidentified / Unprocessable ConverterType used. Please implement a processing for this type");
@@ -160,6 +172,13 @@ namespace dck_pihole2influx.StatObjects
             int key = int.TryParse(keyValue.Key, out key) ? key : 0;
             var tpl = ((int, string)) keyValue.Value;
             return new NumberedUrlItem(key, tpl.Item1, tpl.Item2);
+        }
+
+        private NumberedPercentageItem GetNumberedPercentageFromKeyValue(KeyValuePair<string, dynamic> keyvalue)
+        {
+            int key = int.TryParse(keyvalue.Key, out key) ? key : 0;
+            var tpl = ((double, string)) keyvalue.Value;
+            return new NumberedPercentageItem(key, tpl.Item1, tpl.Item2);
         }
     }
 }

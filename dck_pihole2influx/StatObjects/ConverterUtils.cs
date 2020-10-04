@@ -47,10 +47,21 @@ namespace dck_pihole2influx.StatObjects
             const string pattern = @"([0-9]{1,2}) ([0-9]{1,}) ([\w\-\.\d]{1,})";
 
             MatchCollection matches = Regex.Matches(line, pattern);
-            return (from match in matches select GenerateOutputFromMatchOpt(match)).FirstOrNone().Flatten();
+            return (from match in matches select GenerateOutputFromMatchOptInt(match)).FirstOrNone().Flatten();
         }
 
-        public static Option<(string, dynamic)> ConvertColonSpliitedLine(string line,
+        public static Option<(string, dynamic)> ConvertResultForNumberedPercentage(string line,
+            Dictionary<string, PatternValue> patternDic)
+        {
+            //Every line looks like -2 22.31 blocklist blocklist
+            //Lets split the parameter by regex.
+            //([\-0-9]{1,2})+ ([0-9\.]{1,5})+ ([\w\-\.\d\ ]{1,})
+            const string pattern = @"([\-0-9]{1,2})+ ([0-9\.]{1,5})+ ([\w\-\.\d\ ]{1,})";
+            MatchCollection matches = Regex.Matches(line, pattern);
+            return (from match in matches select GenerateOutputFromMatchOptDouble(match)).FirstOrNone().Flatten();
+        }
+
+        public static Option<(string, dynamic)> ConvertColonSplittedLine(string line,
             Dictionary<string, PatternValue> patternDic)
         {
             //A line looks like this: A (IPv4): 67.73
@@ -67,7 +78,15 @@ namespace dck_pihole2influx.StatObjects
             
         }
 
-        private static Option<(string, dynamic)> GenerateOutputFromMatchOpt(Match match)
+        private static Option<(string, dynamic)> GenerateOutputFromMatchOptDouble(Match match)
+        {
+            return (double.TryParse(match.Groups[2].Value, NumberStyles.Number, CultureInfo.InvariantCulture, out var intParsed)
+                    ? Option.Some(intParsed)
+                    : Option.None<double>())
+                .Map<(string, dynamic)>(result => (match.Groups[1].Value, (intParsed, match.Groups[3].Value)));
+        }
+
+        private static Option<(string, dynamic)> GenerateOutputFromMatchOptInt(Match match)
         {
             return (int.TryParse(match.Groups[2].Value, out var intParsed)
                     ? Option.Some(intParsed)

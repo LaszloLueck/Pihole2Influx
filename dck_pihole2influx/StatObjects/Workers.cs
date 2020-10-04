@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace dck_pihole2influx.StatObjects
 {
@@ -14,7 +12,8 @@ namespace dck_pihole2influx.StatObjects
                 new StatsConverter(),
                 new TopDomainsConverter(),
                 new TopAdsConverter(),
-                new QueryTypesConverter()
+                new QueryTypesConverter(),
+                new ForwardDestinationsConverter()
             };
         }
         
