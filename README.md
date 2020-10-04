@@ -44,6 +44,7 @@ Currently they are:
 <li>List of top permitted domains</li>
 <li>List of top blocked domains</li>
 <li>List of query-types (e.g. A, AAAA, DS)</li>
+<li>List of forward destinations (cache, dns, block)</li>
 </ul>
 </li>
 </ul>
@@ -55,7 +56,6 @@ What is missing:
 <li>Get all possible data from pihole<br />
 <ul>
 <li>List of top clients</li>
-<li>List of forward destinations (cache, dns, block)</li>
 <li>Version information</li>
 <li>database statistics</li>
 <li>overtime</li>
