@@ -41,6 +41,9 @@ Currently they are:
 <ul>
 <li>Standard Pihole Statistics</li>
 <li>Informations about pihole's cache</li>
+<li>List of top permitted domains</li>
+<li>List of top blocked domains</li>
+<li>List of query-types (e.g. A, AAAA, DS)</li>
 </ul>
 </li>
 </ul>
@@ -51,11 +54,8 @@ What is missing:
 <li>Create a default dashboard for influx</li>
 <li>Get all possible data from pihole<br />
 <ul>
-<li>List of top permitted domains</li>
-<li>List of top blocked domains</li>
 <li>List of top clients</li>
 <li>List of forward destinations (cache, dns, block)</li>
-<li>List of query-types (e.g. A, AAAA, DS)</li>
 <li>Version information</li>
 <li>database statistics</li>
 <li>overtime</li>
