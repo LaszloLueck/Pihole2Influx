@@ -42,7 +42,7 @@ cache-inserted: 98590
 
             resultDic.Should().BeEquivalentTo(dictionaryExpected);
 
-            var resultTokens = JToken.Parse(_telnetResultConverter.GetJsonFromObjectAsync().Result);
+            var resultTokens = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync( false).Result);
 
             var jsonExpected =
                 $"{{\"{CacheInfoConverter.CacheSize}\":10000,\"{CacheInfoConverter.CacheLiveFreed}\":0,\"{CacheInfoConverter.CacheInserted}\":98590}}";
@@ -78,7 +78,7 @@ cache-inserted: 98590
 
             var expectedToken = JToken.Parse(jsonExpected);
 
-            var resultToken = JToken.Parse(_telnetResultConverter.GetJsonFromObjectAsync().Result);
+            var resultToken = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync( false).Result);
 
             resultToken.Should().BeEquivalentTo(expectedToken);
             
@@ -113,7 +113,7 @@ cache-inserted: abcde
                 $"{{\"{CacheInfoConverter.CacheSize}\":10000,\"{CacheInfoConverter.CacheLiveFreed}\":0,\"{CacheInfoConverter.CacheInserted}\":0}}";
             var expectedToken = JToken.Parse(expectedJson);
 
-            var resultToken = JToken.Parse(_telnetResultConverter.GetJsonFromObjectAsync().Result);
+            var resultToken = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync( false).Result);
 
             resultToken.Should().BeEquivalentTo(expectedToken);
         }
@@ -124,7 +124,7 @@ cache-inserted: abcde
             var testee = @"Some text string";
 
             _telnetResultConverter.Convert(testee);
-            "{}".Should().Be(_telnetResultConverter.GetJsonFromObjectAsync().Result);
+            "{}".Should().Be(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result);
         }
 
         [TestMethod]
@@ -132,7 +132,7 @@ cache-inserted: abcde
         {
             var testee = "";
             _telnetResultConverter.Convert(testee);
-            "{}".Should().Be(_telnetResultConverter.GetJsonFromObjectAsync().Result);
+            "{}".Should().Be(_telnetResultConverter.GetJsonObjectFromDictionaryAsync( false).Result);
         }
     }
 }

@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using dck_pihole2influx.StatObjects;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -58,10 +57,9 @@ namespace dck_pihole2influx.test
 
             var expectedToken = JToken.Parse(expectedJson);
 
-            var currentToken = JToken.Parse(_telnetResultConverter.GetJsonFromObjectAsync().Result);
+            var currentToken = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result);
 
             currentToken.Should().BeEquivalentTo(expectedToken);
-
         }
 
         [TestMethod]
@@ -73,6 +71,5 @@ namespace dck_pihole2influx.test
 
             _telnetResultConverter.DictionaryOpt.Should().Be(Option.None<ConcurrentDictionary<string, dynamic>>());
         }
-        
     }
 }

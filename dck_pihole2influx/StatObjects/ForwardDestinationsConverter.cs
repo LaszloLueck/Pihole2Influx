@@ -1,5 +1,9 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using dck_pihole2influx.Transport.Telnet;
+using Optional;
 
 namespace dck_pihole2influx.StatObjects
 {
@@ -28,6 +32,15 @@ namespace dck_pihole2influx.StatObjects
         public override ConverterType GetConverterType()
         {
             return ConverterType.NumberedPercentageList;
+        }
+
+        public override async Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)
+        {
+            
+            var obj = ConvertDictionaryOpt(DictionaryOpt);
+            var to = (from element in obj select GetNumberedPercentageFromKeyValue(element)).OrderBy(element =>
+                element.position);
+            return await ConvertOutputToJson(to, prettyPrint);
         }
     }
 }

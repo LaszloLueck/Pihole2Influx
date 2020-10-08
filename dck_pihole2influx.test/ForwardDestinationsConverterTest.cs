@@ -41,7 +41,7 @@ namespace dck_pihole2influx.test
                 _telnetResultConverter.DictionaryOpt.ValueOr(new ConcurrentDictionary<string, dynamic>());
             dictionaryResult.Should().BeEquivalentTo(dictionaryExpected);
 
-            var tokenResult = JToken.Parse(_telnetResultConverter.GetJsonFromObjectAsync().Result);
+            var tokenResult = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result);
 
             var jsonExpected = "[{\"position\":-2,\"percentage\":22.31,\"entry\":\"blocklist blocklist\"},{\"position\":-1,\"percentage\":8.24,\"entry\":\"cache cache\"},{\"position\":0,\"percentage\":35.31,\"entry\":\"192.168.1.1 opnsense.localdomain\"},{\"position\":1,\"percentage\":19.39,\"entry\":\"1.0.0.1 one.one.one.one\"},{\"position\":2,\"percentage\":15.6,\"entry\":\"1.1.1.1 one.one.one.one\"}]";
             var tokenExpected = JToken.Parse(jsonExpected);

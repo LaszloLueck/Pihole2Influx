@@ -29,6 +29,8 @@ namespace dck_pihole2influx.StatObjects
 
         public abstract PiholeCommands GetPiholeCommand();
 
+        public abstract Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint);
+
         public virtual ConverterType GetConverterType()
         {
             return ConverterType.Standard;
@@ -110,46 +112,23 @@ namespace dck_pihole2influx.StatObjects
             }
         }
 
-        public async Task<string> GetJsonFromObjectAsync(bool prettyPrint = false)
+        protected ConcurrentDictionary<string, dynamic> ConvertDictionaryOpt(Option<ConcurrentDictionary<string, dynamic>> inputOpt)
         {
-            var obj = DictionaryOpt.Match(
-                some: dic => dic,
-                none: () =>
-                {
-                    Log.Warning("Cannot convert dictionary to json, dictionary is none!");
-                    return new ConcurrentDictionary<string, dynamic>();
-                });
-            switch (GetConverterType())
+            return inputOpt.ValueOr(() =>
             {
-                case ConverterType.Standard:
-                {
-                    return await ConvertOutputToJson(obj, prettyPrint);
-                }
-                case ConverterType.NumberedUrlList:
-                {
-                    var to = (from element in obj select GetNumberdUrlFromKeyValue(element))
-                        .OrderBy(element => element.position);
-
-                    return await ConvertOutputToJson(to, prettyPrint);
-                }
-                case ConverterType.ColonSplit:
-                {
-                    return await ConvertOutputToJson(obj, prettyPrint);
-                }
-                case ConverterType.NumberedPercentageList:
-                {
-                    var to = (from element in obj select GetNumberedPercentageFromKeyValue(element)).OrderBy(element =>
-                        element.position);
-                    return await ConvertOutputToJson(to, prettyPrint);
-                }
-                default:
-                    Log.Warning(
-                        "Unidentified / Unprocessable ConverterType used. Please implement a processing for this type");
-                    return await Task.Run(() => string.Empty);
-            }
+                Log.Warning("Cannot convert dictionary to json, dictionary is none!");
+                return new ConcurrentDictionary<string, dynamic>();
+            });
+        }
+        
+        protected NumberedUrlItem GetNumberdUrlFromKeyValue(KeyValuePair<string, dynamic> keyValue)
+        {
+            int key = int.TryParse(keyValue.Key, out key) ? key : 0;
+            var tpl = ((int, string)) keyValue.Value;
+            return new NumberedUrlItem(key, tpl.Item1, tpl.Item2);
         }
 
-        private static async Task<string> ConvertOutputToJson<T>(T output, bool prettyPrint)
+        protected async Task<string> ConvertOutputToJson<T>(T output, bool prettyPrint)
         {
             try
             {
@@ -167,14 +146,9 @@ namespace dck_pihole2influx.StatObjects
             }
         }
 
-        private NumberedUrlItem GetNumberdUrlFromKeyValue(KeyValuePair<string, dynamic> keyValue)
-        {
-            int key = int.TryParse(keyValue.Key, out key) ? key : 0;
-            var tpl = ((int, string)) keyValue.Value;
-            return new NumberedUrlItem(key, tpl.Item1, tpl.Item2);
-        }
 
-        private NumberedPercentageItem GetNumberedPercentageFromKeyValue(KeyValuePair<string, dynamic> keyvalue)
+
+        protected NumberedPercentageItem GetNumberedPercentageFromKeyValue(KeyValuePair<string, dynamic> keyvalue)
         {
             int key = int.TryParse(keyvalue.Key, out key) ? key : 0;
             var tpl = ((double, string)) keyvalue.Value;

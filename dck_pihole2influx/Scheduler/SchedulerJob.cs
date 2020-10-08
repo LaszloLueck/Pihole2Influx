@@ -59,7 +59,7 @@ namespace dck_pihole2influx.Scheduler
                             await telnetClient.WriteCommand(worker.GetPiholeCommand());
                             var result = await telnetClient.ReadResult(worker.GetTerminator());
                             await worker.Convert(result);
-                            var resultString = await worker.GetJsonFromObjectAsync(true);
+                            var resultString = await worker.GetJsonObjectFromDictionaryAsync(true);
                             Log.Information($"UGU: {resultString}");
                         }
 

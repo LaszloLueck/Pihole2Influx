@@ -62,7 +62,7 @@ status enabled
 
             var expectedToken = JToken.Parse(expectedJson);
 
-            var resultToken = JToken.Parse(_telnetResultConverter.GetJsonFromObjectAsync().Result);
+            var resultToken = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result);
 
             resultToken.Should().BeEquivalentTo(expectedToken);
         }

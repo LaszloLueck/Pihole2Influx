@@ -1,5 +1,10 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using dck_pihole2influx.Transport.Telnet;
+using Optional;
+using Optional.Linq;
 
 namespace dck_pihole2influx.StatObjects
 {
@@ -29,5 +34,17 @@ namespace dck_pihole2influx.StatObjects
         {
             return ConverterType.NumberedUrlList;
         }
+
+        public override async Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)
+        {
+            var obj = ConvertDictionaryOpt(DictionaryOpt);
+            var to = (from element in obj select GetNumberdUrlFromKeyValue(element)).OrderBy(
+                element => element.position);
+            return await ConvertOutputToJson(to, prettyPrint);
+        }
+        
+
+        
+        
     }
 }

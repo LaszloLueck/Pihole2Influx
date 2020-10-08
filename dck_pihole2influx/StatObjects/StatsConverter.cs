@@ -1,5 +1,8 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using dck_pihole2influx.Transport.Telnet;
+using Optional;
 
 namespace dck_pihole2influx.StatObjects
 {
@@ -47,6 +50,12 @@ namespace dck_pihole2influx.StatObjects
         public override PiholeCommands GetPiholeCommand()
         {
             return PiholeCommands.Stats;
+        }
+
+        public override async Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)
+        {
+            var obj = ConvertDictionaryOpt(DictionaryOpt);
+            return await ConvertOutputToJson(obj, prettyPrint);
         }
     }
 }
