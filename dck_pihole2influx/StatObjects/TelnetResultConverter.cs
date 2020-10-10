@@ -1,9 +1,5 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using dck_pihole2influx.Transport.Telnet;
@@ -12,7 +8,7 @@ using Serilog;
 
 namespace dck_pihole2influx.StatObjects
 {
-    public abstract class TelnetResultConverter
+    public abstract class TelnetResultConverter : ConverterUtils
     {
         private static readonly ILogger Log = LoggingFactory<TelnetResultConverter>.CreateLogging();
         private string _input;
@@ -25,18 +21,13 @@ namespace dck_pihole2influx.StatObjects
             DictionaryOpt = await GetDtoFromResult();
         }
 
-        protected abstract Dictionary<string, PatternValue> GetPattern();
-
         public abstract PiholeCommands GetPiholeCommand();
 
         public abstract Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint);
 
-        public virtual ConverterType GetConverterType()
-        {
-            return ConverterType.Standard;
-        }
+        protected abstract Option<(string, dynamic)> CalculateTupleFromString(string line);
 
-        public virtual string GetTerminator()
+        public string GetTerminator()
         {
             return "---EOM---";
         }
@@ -50,55 +41,21 @@ namespace dck_pihole2influx.StatObjects
                 return Option.None<ConcurrentDictionary<string, dynamic>>();
             }
 
-            var splitted = _input
-                .Split("\n")
-                .Where(s => !string.IsNullOrWhiteSpace(s) && s != GetTerminator())
-                .AsParallel()
-                .AsOrdered();
-
             try
             {
                 var ret = new ConcurrentDictionary<string, dynamic>();
                 var tasks = new ConcurrentBag<Task>();
 
-
-                foreach (var s in splitted)
+                SplitInputString(_input, GetTerminator()).MatchSome(splitted =>
                 {
-                    tasks.Add(Task.Run(() =>
+                    foreach (var s in splitted)
                     {
-                        switch (GetConverterType())
+                        tasks.Add(Task.Run(() =>
                         {
-                            case ConverterType.Standard:
-                            {
-                                ConverterUtils.ConvertResultForStandard(s, GetPattern())
-                                    .MatchSome(result => ret.TryAdd(result.Item1, result.Item2));
-                                break;
-                            }
-                            case ConverterType.NumberedUrlList:
-                            {
-                                ConverterUtils.ConvertResultForNumberedUrlList(s, GetPattern())
-                                    .MatchSome(result => ret.TryAdd(result.Item1, result.Item2));
-                                break;
-                            }
-                            case ConverterType.ColonSplit:
-                            {
-                                ConverterUtils.ConvertColonSplittedLine(s, GetPattern())
-                                    .MatchSome(result => ret.TryAdd(result.Item1, result.Item2));
-                                break;
-                            }
-                            case ConverterType.NumberedPercentageList:
-                            {
-                                ConverterUtils.ConvertResultForNumberedPercentage(s, GetPattern())
-                                    .MatchSome(result => ret.TryAdd(result.Item1, result.Item2));
-                                break;
-                            }
-                            default:
-                                Log.Warning(
-                                    "Unidentified / Unprocessable ConverterType used. Please implement a processing for this type");
-                                break;
-                        }
-                    }));
-                }
+                            CalculateTupleFromString(s).MatchSome(result => ret.TryAdd(result.Item1, result.Item2));
+                        }));
+                    }
+                });
 
                 await Task.WhenAll(tasks);
 
@@ -110,49 +67,6 @@ namespace dck_pihole2influx.StatObjects
                 Log.Warning(_input);
                 return Option.None<ConcurrentDictionary<string, dynamic>>();
             }
-        }
-
-        protected ConcurrentDictionary<string, dynamic> ConvertDictionaryOpt(Option<ConcurrentDictionary<string, dynamic>> inputOpt)
-        {
-            return inputOpt.ValueOr(() =>
-            {
-                Log.Warning("Cannot convert dictionary to json, dictionary is none!");
-                return new ConcurrentDictionary<string, dynamic>();
-            });
-        }
-        
-        protected NumberedUrlItem GetNumberdUrlFromKeyValue(KeyValuePair<string, dynamic> keyValue)
-        {
-            int key = int.TryParse(keyValue.Key, out key) ? key : 0;
-            var tpl = ((int, string)) keyValue.Value;
-            return new NumberedUrlItem(key, tpl.Item1, tpl.Item2);
-        }
-
-        protected async Task<string> ConvertOutputToJson<T>(T output, bool prettyPrint)
-        {
-            try
-            {
-                await using var stream = new MemoryStream();
-                await JsonSerializer.SerializeAsync(stream, output, output.GetType(),
-                    new JsonSerializerOptions() {WriteIndented = prettyPrint});
-                stream.Position = 0;
-                using var reader = new StreamReader(stream);
-                return await reader.ReadToEndAsync();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "An error occured while processing a data structure to json string");
-                return await Task.Run(() => string.Empty);
-            }
-        }
-
-
-
-        protected NumberedPercentageItem GetNumberedPercentageFromKeyValue(KeyValuePair<string, dynamic> keyvalue)
-        {
-            int key = int.TryParse(keyvalue.Key, out key) ? key : 0;
-            var tpl = ((double, string)) keyvalue.Value;
-            return new NumberedPercentageItem(key, tpl.Item1, tpl.Item2);
         }
     }
 }

@@ -30,11 +30,11 @@ namespace dck_pihole2influx.StatObjects
     /// ---EOM---
     /// 
     /// </summary>
-    public class QueryTypesConverter : TelnetResultConverter
+    public class QueryTypesConverter : TelnetResultConverter, IBaseConverter
     {
         private static readonly ILogger Log = LoggingFactory<QueryTypesConverter>.CreateLogging();
         
-        protected override Dictionary<string, PatternValue> GetPattern()
+        public Dictionary<string, PatternValue> GetPattern()
         {
             return new Dictionary<string, PatternValue>();
         }
@@ -44,15 +44,15 @@ namespace dck_pihole2influx.StatObjects
             return PiholeCommands.Querytypes;
         }
 
-        public override ConverterType GetConverterType()
-        {
-            return ConverterType.ColonSplit;
-        }
-
         public override async Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)
         {
             var obj = ConvertDictionaryOpt(DictionaryOpt);
             return await ConvertOutputToJson(obj, prettyPrint);
+        }
+
+        protected override Option<(string, dynamic)> CalculateTupleFromString(string line)
+        {
+            return ConvertColonSplittedLine(line, GetPattern());
         }
     }
 }

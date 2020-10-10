@@ -33,7 +33,7 @@ namespace dck_pihole2influx.StatObjects
         public const string UniqueClients = "UniqueClients";
         public const string Status = "Status";
         
-        protected override Dictionary<string, PatternValue> GetPattern() => new Dictionary<string, PatternValue>
+        public Dictionary<string, PatternValue> GetPattern() => new Dictionary<string, PatternValue>
         {
             {"domains_being_blocked", new PatternValue(DomainsBeingBlocked, ValueTypes.Int, 0)},
             {"dns_queries_today", new PatternValue(DnsQueriesToday, ValueTypes.Int, 0)},
@@ -56,6 +56,11 @@ namespace dck_pihole2influx.StatObjects
         {
             var obj = ConvertDictionaryOpt(DictionaryOpt);
             return await ConvertOutputToJson(obj, prettyPrint);
+        }
+
+        protected override Option<(string, dynamic)> CalculateTupleFromString(string line)
+        {
+            return ConvertResultForStandard(line, GetPattern());
         }
     }
 }

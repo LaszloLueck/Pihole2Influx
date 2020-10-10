@@ -26,16 +26,16 @@ namespace dck_pihole2influx.Configuration
         {
             _configurationUtils = configurationUtils;
             Configuration = new Configuration(
-                GetValueOrDefaultFromEnv<string>(PiholeIpOrHostName, Configuration.DefaultPiholeHostOrIp),
-                GetValueOrDefaultFromEnv<int>(PiholePort, Configuration.DefaultPiholePort),
-                GetValueOrDefaultFromEnv<string>(InfluxDbIpOrHostName, Configuration.DefaultInfluxDbHostOrIp),
-                GetValueOrDefaultFromEnv<int>(InfluxDbPort, Configuration.DefaultInfluxDbPort),
-                GetValueOrDefaultFromEnv<string>(InfluxDbDatabaseName, Configuration.DefaultInfluxDbDatabaseName),
-                GetValueOrDefaultFromEnv<string>(InfluxDbUserName, Configuration.DefaultInfluxDbUserName),
-                GetValueOrDefaultFromEnv<string>(InfluxDbPassword, Configuration.DefaultInfluxDbPassword),
-                GetValueOrDefaultFromEnv<string>(PiholeUser, Configuration.DefaultPiholeUser),
-                GetValueOrDefaultFromEnv<string>(PiholePassword, Configuration.DefaultPiholePassword),
-                GetValueOrDefaultFromEnv<int>(ConcurrentRequestsToPihole,
+                GetValueOrDefaultFromEnv(PiholeIpOrHostName, Configuration.DefaultPiholeHostOrIp),
+                GetValueOrDefaultFromEnv(PiholePort, Configuration.DefaultPiholePort),
+                GetValueOrDefaultFromEnv(InfluxDbIpOrHostName, Configuration.DefaultInfluxDbHostOrIp),
+                GetValueOrDefaultFromEnv(InfluxDbPort, Configuration.DefaultInfluxDbPort),
+                GetValueOrDefaultFromEnv(InfluxDbDatabaseName, Configuration.DefaultInfluxDbDatabaseName),
+                GetValueOrDefaultFromEnv(InfluxDbUserName, Configuration.DefaultInfluxDbUserName),
+                GetValueOrDefaultFromEnv(InfluxDbPassword, Configuration.DefaultInfluxDbPassword),
+                GetValueOrDefaultFromEnv(PiholeUser, Configuration.DefaultPiholeUser),
+                GetValueOrDefaultFromEnv(PiholePassword, Configuration.DefaultPiholePassword),
+                GetValueOrDefaultFromEnv(ConcurrentRequestsToPihole,
                     Configuration.DefaultConcurrentRequestsToPihole)
             );
         }

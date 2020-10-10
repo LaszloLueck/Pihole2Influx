@@ -18,9 +18,9 @@ namespace dck_pihole2influx.StatObjects
     /// 5 96 plus.google.com
     /// </summary>
     
-    public class TopDomainsConverter : TelnetResultConverter
+    public class TopDomainsConverter : TelnetResultConverter, IBaseConverter
     {
-        protected override Dictionary<string, PatternValue> GetPattern()
+        public Dictionary<string, PatternValue> GetPattern()
         {
             return new Dictionary<string, PatternValue>();
         }
@@ -30,11 +30,6 @@ namespace dck_pihole2influx.StatObjects
             return PiholeCommands.Topdomains;
         }
 
-        public override ConverterType GetConverterType()
-        {
-            return ConverterType.NumberedUrlList;
-        }
-
         public override async Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)
         {
             var obj = ConvertDictionaryOpt(DictionaryOpt);
@@ -42,9 +37,10 @@ namespace dck_pihole2influx.StatObjects
                 element => element.position);
             return await ConvertOutputToJson(to, prettyPrint);
         }
-        
 
-        
-        
+        protected override Option<(string, dynamic)> CalculateTupleFromString(string line)
+        {
+            return ConvertResultForNumberedUrlList(line, GetPattern());
+        }
     }
 }

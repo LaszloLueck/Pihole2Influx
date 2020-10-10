@@ -17,9 +17,9 @@ namespace dck_pihole2influx.StatObjects
     /// 4 1 www.googletagmanager.com
     /// 5 1 s.zkcdn.net
     /// </summary>
-    public class TopAdsConverter : TelnetResultConverter
+    public class TopAdsConverter : TelnetResultConverter, IBaseConverter
     {
-        protected override Dictionary<string, PatternValue> GetPattern()
+        public Dictionary<string, PatternValue> GetPattern()
         {
             return new Dictionary<string, PatternValue>();
         }
@@ -29,17 +29,17 @@ namespace dck_pihole2influx.StatObjects
             return PiholeCommands.Topads;
         }
 
-        public override ConverterType GetConverterType()
-        {
-            return ConverterType.NumberedUrlList;
-        }
-
         public override async Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)
         {
             var obj = ConvertDictionaryOpt(DictionaryOpt);
             var to = (from element in obj select GetNumberdUrlFromKeyValue(element)).OrderBy(
                 element => element.position);
             return await ConvertOutputToJson(to, prettyPrint);
+        }
+
+        protected override Option<(string, dynamic)> CalculateTupleFromString(string line)
+        {
+            return ConvertResultForNumberedUrlList(line, GetPattern());
         }
     }
 }

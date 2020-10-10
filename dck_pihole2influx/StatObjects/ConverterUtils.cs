@@ -1,16 +1,24 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using dck_pihole2influx.Logging;
 using Optional;
 using Optional.Collections;
+using Serilog;
 
 namespace dck_pihole2influx.StatObjects
 {
-    public static class ConverterUtils
+    public class ConverterUtils
     {
-        public static Option<(string, dynamic)> ConvertResultForStandard(string line,
+        private static readonly ILogger Log = LoggingFactory<ConverterUtils>.CreateLogging();
+
+        protected Option<(string, dynamic)> ConvertResultForStandard(string line,
             Dictionary<string, PatternValue> pattern)
         {
             var convertedLineOpt = pattern.FirstOrNone(value => line.Contains(value.Key)).FlatMap(
@@ -38,7 +46,7 @@ namespace dck_pihole2influx.StatObjects
             return convertedLineOpt;
         }
 
-        public static Option<(string, dynamic)> ConvertResultForNumberedUrlList(string line,
+        protected Option<(string, dynamic)> ConvertResultForNumberedUrlList(string line,
             Dictionary<string, PatternValue> patternDic)
         {
             //Every line looks like '1 236 safebrowsing-cache.google.com'
@@ -50,7 +58,7 @@ namespace dck_pihole2influx.StatObjects
             return (from match in matches select GenerateOutputFromMatchOptInt(match)).FirstOrNone().Flatten();
         }
 
-        public static Option<(string, dynamic)> ConvertResultForNumberedPercentage(string line,
+        protected Option<(string, dynamic)> ConvertResultForNumberedPercentage(string line,
             Dictionary<string, PatternValue> patternDic)
         {
             //Every line looks like -2 22.31 blocklist blocklist
@@ -61,7 +69,7 @@ namespace dck_pihole2influx.StatObjects
             return (from match in matches select GenerateOutputFromMatchOptDouble(match)).FirstOrNone().Flatten();
         }
 
-        public static Option<(string, dynamic)> ConvertColonSplittedLine(string line,
+        protected Option<(string, dynamic)> ConvertColonSplittedLine(string line,
             Dictionary<string, PatternValue> patternDic)
         {
             //A line looks like this: A (IPv4): 67.73
@@ -78,7 +86,7 @@ namespace dck_pihole2influx.StatObjects
             
         }
 
-        private static Option<(string, dynamic)> GenerateOutputFromMatchOptDouble(Match match)
+        private Option<(string, dynamic)> GenerateOutputFromMatchOptDouble(Match match)
         {
             return (double.TryParse(match.Groups[2].Value, NumberStyles.Number, CultureInfo.InvariantCulture, out var intParsed)
                     ? Option.Some(intParsed)
@@ -86,12 +94,73 @@ namespace dck_pihole2influx.StatObjects
                 .Map<(string, dynamic)>(result => (match.Groups[1].Value, (intParsed, match.Groups[3].Value)));
         }
 
-        private static Option<(string, dynamic)> GenerateOutputFromMatchOptInt(Match match)
+        private Option<(string, dynamic)> GenerateOutputFromMatchOptInt(Match match)
         {
             return (int.TryParse(match.Groups[2].Value, out var intParsed)
                     ? Option.Some(intParsed)
                     : Option.None<int>())
                 .Map<(string, dynamic)>(result => (match.Groups[1].Value, (intParsed, match.Groups[3].Value)));
         }
+
+        protected ConcurrentDictionary<string, dynamic> ConvertDictionaryOpt(Option<ConcurrentDictionary<string, dynamic>> inputOpt)
+        {
+            return inputOpt.ValueOr(() =>
+            {
+                Log.Warning("Cannot convert dictionary to json, dictionary is none!");
+                return new ConcurrentDictionary<string, dynamic>();
+            });
+        }
+
+        protected NumberedUrlItem GetNumberdUrlFromKeyValue(KeyValuePair<string, dynamic> keyValue)
+        {
+            int key = int.TryParse(keyValue.Key, out key) ? key : 0;
+            var tpl = ((int, string)) keyValue.Value;
+            return new NumberedUrlItem(key, tpl.Item1, tpl.Item2);
+        }
+
+        protected async Task<string> ConvertOutputToJson<T>(T output, bool prettyPrint)
+        {
+            try
+            {
+                await using var stream = new MemoryStream();
+                await JsonSerializer.SerializeAsync(stream, output, output.GetType(),
+                    new JsonSerializerOptions() {WriteIndented = prettyPrint});
+                stream.Position = 0;
+                using var reader = new StreamReader(stream);
+                return await reader.ReadToEndAsync();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An error occured while processing a data structure to json string");
+                return await Task.Run(() => string.Empty);
+            }
+        }
+
+        protected Option<ParallelQuery<string>> SplitInputString(string input, string terminator)
+        {
+            try
+            {
+                var splitted = input
+                    .Split("\n")
+                    .Where(s => !string.IsNullOrWhiteSpace(s) && s != terminator)
+                    .AsParallel()
+                    .AsOrdered();
+                
+                return Option.Some(splitted);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An error occured while splitting the input line");
+                return Option.None<ParallelQuery<string>>();
+            }
+        }
+
+        protected NumberedPercentageItem GetNumberedPercentageFromKeyValue(KeyValuePair<string, dynamic> keyvalue)
+        {
+            int key = int.TryParse(keyvalue.Key, out key) ? key : 0;
+            var tpl = ((double, string)) keyvalue.Value;
+            return new NumberedPercentageItem(key, tpl.Item1, tpl.Item2);
+        }
+        
     }
 }

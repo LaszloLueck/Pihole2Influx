@@ -17,9 +17,9 @@ namespace dck_pihole2influx.StatObjects
     ///2 15.60 1.1.1.1 one.one.one.one
     ///---EOM---
     /// </summary>
-    public class ForwardDestinationsConverter : TelnetResultConverter
+    public class ForwardDestinationsConverter : TelnetResultConverter, IBaseConverter
     {
-        protected override Dictionary<string, PatternValue> GetPattern()
+        public Dictionary<string, PatternValue> GetPattern()
         {
             return new Dictionary<string, PatternValue>();
         }
@@ -29,11 +29,6 @@ namespace dck_pihole2influx.StatObjects
             return PiholeCommands.Forwarddestinations;
         }
 
-        public override ConverterType GetConverterType()
-        {
-            return ConverterType.NumberedPercentageList;
-        }
-
         public override async Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)
         {
             
@@ -41,6 +36,11 @@ namespace dck_pihole2influx.StatObjects
             var to = (from element in obj select GetNumberedPercentageFromKeyValue(element)).OrderBy(element =>
                 element.position);
             return await ConvertOutputToJson(to, prettyPrint);
+        }
+
+        protected override Option<(string, dynamic)> CalculateTupleFromString(string line)
+        {
+            return ConvertResultForNumberedPercentage(line, GetPattern());
         }
     }
 }
