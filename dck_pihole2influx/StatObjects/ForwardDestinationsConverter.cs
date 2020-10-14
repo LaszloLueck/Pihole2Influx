@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,14 +30,13 @@ namespace dck_pihole2influx.StatObjects
 
         public override async Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)
         {
-            
             var obj = ConvertDictionaryOpt(DictionaryOpt);
             var to = (from element in obj select GetNumberedPercentageFromKeyValue(element)).OrderBy(element =>
                 element.position);
             return await ConvertOutputToJson(to, prettyPrint);
         }
 
-        protected override Option<(string, dynamic)> CalculateTupleFromString(string line)
+        protected override Option<(string, IBaseResult)> CalculateTupleFromString(string line)
         {
             return ConvertResultForNumberedPercentage(line, GetPattern());
         }

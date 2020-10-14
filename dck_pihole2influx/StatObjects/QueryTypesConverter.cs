@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
@@ -8,8 +7,6 @@ using Serilog;
 
 namespace dck_pihole2influx.StatObjects
 {
-    
-    
     /// <summary>
     /// Querytypes gives an overview about the different dns-querytypes and the percantage distribution
     ///
@@ -33,7 +30,7 @@ namespace dck_pihole2influx.StatObjects
     public class QueryTypesConverter : TelnetResultConverter, IBaseConverter
     {
         private static readonly ILogger Log = LoggingFactory<QueryTypesConverter>.CreateLogging();
-        
+
         public Dictionary<string, PatternValue> GetPattern()
         {
             return new Dictionary<string, PatternValue>();
@@ -50,7 +47,7 @@ namespace dck_pihole2influx.StatObjects
             return await ConvertOutputToJson(obj, prettyPrint);
         }
 
-        protected override Option<(string, dynamic)> CalculateTupleFromString(string line)
+        protected override Option<(string, IBaseResult)> CalculateTupleFromString(string line)
         {
             return ConvertColonSplittedLine(line, GetPattern());
         }

@@ -37,7 +37,7 @@ namespace dck_pihole2influx.StatObjects
             return await ConvertOutputToJson(obj, prettyPrint);
         }
 
-        protected override Option<(string, dynamic)> CalculateTupleFromString(string line)
+        protected override Option<(string, IBaseResult)> CalculateTupleFromString(string line)
         {
             return ConvertResultForStandard(line, GetPattern());
         }

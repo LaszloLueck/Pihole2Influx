@@ -13,7 +13,7 @@ namespace dck_pihole2influx.StatObjects
         private static readonly ILogger Log = LoggingFactory<TelnetResultConverter>.CreateLogging();
         private string _input;
 
-        public Option<ConcurrentDictionary<string, dynamic>> DictionaryOpt { get; private set; }
+        public Option<ConcurrentDictionary<string, IBaseResult>> DictionaryOpt { get; private set; }
 
         public async Task Convert(string input)
         {
@@ -25,7 +25,7 @@ namespace dck_pihole2influx.StatObjects
 
         public abstract Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint);
 
-        protected abstract Option<(string, dynamic)> CalculateTupleFromString(string line);
+        protected abstract Option<(string, IBaseResult)> CalculateTupleFromString(string line);
 
         public string GetTerminator()
         {
@@ -33,17 +33,17 @@ namespace dck_pihole2influx.StatObjects
         }
 
 
-        private async Task<Option<ConcurrentDictionary<string, dynamic>>> GetDtoFromResult()
+        private async Task<Option<ConcurrentDictionary<string, IBaseResult>>> GetDtoFromResult()
         {
             if (_input.Length == 0)
             {
                 Log.Warning("the input string (telnet result) contains no data, please check your configuration.");
-                return Option.None<ConcurrentDictionary<string, dynamic>>();
+                return Option.None<ConcurrentDictionary<string, IBaseResult>>();
             }
 
             try
             {
-                var ret = new ConcurrentDictionary<string, dynamic>();
+                var ret = new ConcurrentDictionary<string, IBaseResult>();
                 var tasks = new ConcurrentBag<Task>();
 
                 SplitInputString(_input, GetTerminator()).MatchSome(splitted =>
@@ -59,13 +59,13 @@ namespace dck_pihole2influx.StatObjects
 
                 await Task.WhenAll(tasks);
 
-                return ret.Count > 0 ? Option.Some(ret) : Option.None<ConcurrentDictionary<string, dynamic>>();
+                return ret.Count > 0 ? Option.Some(ret) : Option.None<ConcurrentDictionary<string, IBaseResult>>();
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "Error while create an object from return string");
                 Log.Warning(_input);
-                return Option.None<ConcurrentDictionary<string, dynamic>>();
+                return Option.None<ConcurrentDictionary<string, IBaseResult>>();
             }
         }
     }

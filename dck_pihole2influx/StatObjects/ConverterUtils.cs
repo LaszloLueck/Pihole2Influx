@@ -18,7 +18,7 @@ namespace dck_pihole2influx.StatObjects
     {
         private static readonly ILogger Log = LoggingFactory<ConverterUtils>.CreateLogging();
 
-        protected Option<(string, dynamic)> ConvertResultForStandard(string line,
+        protected Option<(string, IBaseResult)> ConvertResultForStandard(string line,
             Dictionary<string, PatternValue> pattern)
         {
             var convertedLineOpt = pattern.FirstOrNone(value => line.Contains(value.Key)).FlatMap(
@@ -29,85 +29,107 @@ namespace dck_pihole2influx.StatObjects
                     {
                         ValueTypes.Int => ValueConverterBase<int>
                             .Convert(line, key, (int) patternValue.AlternativeValue)
-                            .Map<(string, dynamic)>(
+                            .Map<(string, IBaseResult)>(
                                 value => (patternValue.GivenName,
-                                    ((BaseValue<int>) value).GetValue())),
+                                    new PrimitiveResultInt(((BaseValue<int>) value).GetValue()))),
                         ValueTypes.String => ValueConverterBase<string>
                             .Convert(line, key, (string) patternValue.AlternativeValue)
-                            .Map<(string, dynamic)>(value =>
-                                (patternValue.GivenName, ((BaseValue<string>) value).GetValue())),
+                            .Map<(string, IBaseResult)>(value =>
+                                (patternValue.GivenName,
+                                    new PrimitiveResultString(((BaseValue<string>) value).GetValue()))),
                         ValueTypes.Float => ValueConverterBase<float>
                             .Convert(line, key, (float) patternValue.AlternativeValue)
-                            .Map<(string, dynamic)>(value =>
-                                (patternValue.GivenName, ((BaseValue<float>) value).GetValue())),
-                        _ => Option.None<(string, dynamic)>()
+                            .Map<(string, IBaseResult)>(value =>
+                                (patternValue.GivenName,
+                                    new PrimitiveResultFloat(((BaseValue<float>) value).GetValue()))),
+                        _ => Option.None<(string, IBaseResult)>()
                     };
                 });
             return convertedLineOpt;
         }
 
-        protected Option<(string, dynamic)> ConvertResultForNumberedUrlList(string line,
-            Dictionary<string, PatternValue> patternDic)
+        protected Option<(string, IBaseResult)> ConvertResultForNumberedUrlAndIpList(string line,
+            Dictionary<string, PatternValue> _)
+        {
+            /// Every line looks like '0 24593 192.168.1.1 aaa.localdomain'
+            /// or '5 2587 192.168.1.120' when no hostname is provided.
+            /// For that reason we must pay attention!
+            /// (\d)\s(\d{1,})\s(?:[0-9]{1,3}\.){3}[0-9]{1,3}\s?(.*)
+
+            const string pattern = @"(\d)\s(\d{1,})\s(?:[0-9]{1,3}\.){3}[0-9]{1,3}\s?(.*)";
+
+
+            return Option.None<(string, IBaseResult)>();
+        }
+
+
+        protected Option<(string, IBaseResult)> ConvertResultForNumberedUrlList(string line,
+            Dictionary<string, PatternValue> _)
         {
             //Every line looks like '1 236 safebrowsing-cache.google.com'
             //Lets split the parameter by regex.
             //([0-9]{1,2}) ([0-9]{1,3}) ([\w\-\.\d]{1,})
-            const string pattern = @"([0-9]{1,2}) ([0-9]{1,}) ([\w\-\.\d]{1,})";
+            const string pattern = @"(\d)\s(\d{1,})\s(.*)";
 
-            MatchCollection matches = Regex.Matches(line, pattern);
+            var matches = Regex.Matches(line, pattern);
             return (from match in matches select GenerateOutputFromMatchOptInt(match)).FirstOrNone().Flatten();
         }
 
-        protected Option<(string, dynamic)> ConvertResultForNumberedPercentage(string line,
-            Dictionary<string, PatternValue> patternDic)
+        protected Option<(string, IBaseResult)> ConvertResultForNumberedPercentage(string line,
+            Dictionary<string, PatternValue> _)
         {
             //Every line looks like -2 22.31 blocklist blocklist
             //Lets split the parameter by regex.
             //([\-0-9]{1,2})+ ([0-9\.]{1,5})+ ([\w\-\.\d\ ]{1,})
-            const string pattern = @"([\-0-9]{1,2})+ ([0-9\.]{1,5})+ ([\w\-\.\d\ ]{1,})";
-            MatchCollection matches = Regex.Matches(line, pattern);
+            const string pattern = @"(-?\d)\s([\d\.]{1,})\s(.*)";
+            var matches = Regex.Matches(line, pattern);
             return (from match in matches select GenerateOutputFromMatchOptDouble(match)).FirstOrNone().Flatten();
         }
 
-        protected Option<(string, dynamic)> ConvertColonSplittedLine(string line,
-            Dictionary<string, PatternValue> patternDic)
+        protected Option<(string, IBaseResult)> ConvertColonSplittedLine(string line,
+            Dictionary<string, PatternValue> _)
         {
             //A line looks like this: A (IPv4): 67.73
             //Lets split them by colon and return the first part as key and the second part as double...
             var splitLine = line.Split(":");
             if (splitLine.Length != 2)
-                return Option.None<(string, dynamic)>();
+                return Option.None<(string, IBaseResult)>();
 
-            double dblValue = double.TryParse(splitLine[1], NumberStyles.Number, CultureInfo.InvariantCulture, out dblValue)
-                ? dblValue
-                : 0d;
-            
-            return Option.Some<(string, dynamic)>((splitLine[0], dblValue));
-            
+            double dblValue =
+                double.TryParse(splitLine[1], NumberStyles.Number, CultureInfo.InvariantCulture, out dblValue)
+                    ? dblValue
+                    : 0d;
+
+            IBaseResult retValue = new StringDoubleOutput(splitLine[0], dblValue);
+            return Option.Some<(string, IBaseResult)>((splitLine[0], retValue));
         }
 
-        private Option<(string, dynamic)> GenerateOutputFromMatchOptDouble(Match match)
+        private Option<(string, IBaseResult)> GenerateOutputFromMatchOptDouble(Match match)
         {
-            return (double.TryParse(match.Groups[2].Value, NumberStyles.Number, CultureInfo.InvariantCulture, out var intParsed)
-                    ? Option.Some(intParsed)
+            return (double.TryParse(match.Groups[2].Value, NumberStyles.Number, CultureInfo.InvariantCulture,
+                    out var doubleParsed)
+                    ? Option.Some(doubleParsed)
                     : Option.None<double>())
-                .Map<(string, dynamic)>(result => (match.Groups[1].Value, (intParsed, match.Groups[3].Value)));
+                .Map<(string, IBaseResult)>(result => (match.Groups[1].Value,
+                    new DoubleOutputNumberedList(doubleParsed, match.Groups[1].Value, match.Groups[3].Value)));
         }
 
-        private Option<(string, dynamic)> GenerateOutputFromMatchOptInt(Match match)
+        private Option<(string, IBaseResult)> GenerateOutputFromMatchOptInt(Match match)
         {
             return (int.TryParse(match.Groups[2].Value, out var intParsed)
                     ? Option.Some(intParsed)
                     : Option.None<int>())
-                .Map<(string, dynamic)>(result => (match.Groups[1].Value, (intParsed, match.Groups[3].Value)));
+                .Map<(string, IBaseResult)>(result => (match.Groups[1].Value,
+                    new IntOutputNumberedList(intParsed, match.Groups[1].Value, match.Groups[3].Value)));
         }
 
-        protected ConcurrentDictionary<string, dynamic> ConvertDictionaryOpt(Option<ConcurrentDictionary<string, dynamic>> inputOpt)
+        protected ConcurrentDictionary<string, IBaseResult> ConvertDictionaryOpt(
+            Option<ConcurrentDictionary<string, IBaseResult>> inputOpt)
         {
             return inputOpt.ValueOr(() =>
             {
                 Log.Warning("Cannot convert dictionary to json, dictionary is none!");
-                return new ConcurrentDictionary<string, dynamic>();
+                return new ConcurrentDictionary<string, IBaseResult>();
             });
         }
 
@@ -145,7 +167,7 @@ namespace dck_pihole2influx.StatObjects
                     .Where(s => !string.IsNullOrWhiteSpace(s) && s != terminator)
                     .AsParallel()
                     .AsOrdered();
-                
+
                 return Option.Some(splitted);
             }
             catch (Exception ex)
@@ -155,12 +177,11 @@ namespace dck_pihole2influx.StatObjects
             }
         }
 
-        protected NumberedPercentageItem GetNumberedPercentageFromKeyValue(KeyValuePair<string, dynamic> keyvalue)
+        protected NumberedPercentageItem GetNumberedPercentageFromKeyValue(KeyValuePair<string, IBaseResult> keyvalue)
         {
             int key = int.TryParse(keyvalue.Key, out key) ? key : 0;
-            var tpl = ((double, string)) keyvalue.Value;
-            return new NumberedPercentageItem(key, tpl.Item1, tpl.Item2);
+            var tpl = (StringDoubleOutput) keyvalue.Value;
+            return new NumberedPercentageItem(key, tpl.Value, tpl.Key);
         }
-        
     }
 }
