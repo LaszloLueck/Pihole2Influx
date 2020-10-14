@@ -31,8 +31,10 @@ namespace dck_pihole2influx.StatObjects
         public override async Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)
         {
             var obj = ConvertDictionaryOpt(DictionaryOpt);
-            var to = (from element in obj select GetNumberedPercentageFromKeyValue(element)).OrderBy(element =>
-                element.position);
+            var to = obj
+                .OrderBy(element => element.Key)
+                .Select(element => (DoubleOutputNumberedList)element.Value);
+
             return await ConvertOutputToJson(to, prettyPrint);
         }
 

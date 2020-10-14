@@ -18,7 +18,7 @@ namespace dck_pihole2influx.StatObjects
     {
         private static readonly ILogger Log = LoggingFactory<ConverterUtils>.CreateLogging();
 
-        protected Option<(string, IBaseResult)> ConvertResultForStandard(string line,
+        protected static Option<(string, IBaseResult)> ConvertResultForStandard(string line,
             Dictionary<string, PatternValue> pattern)
         {
             var convertedLineOpt = pattern.FirstOrNone(value => line.Contains(value.Key)).FlatMap(
@@ -48,7 +48,7 @@ namespace dck_pihole2influx.StatObjects
             return convertedLineOpt;
         }
 
-        protected Option<(string, IBaseResult)> ConvertResultForNumberedUrlAndIpList(string line,
+        protected static Option<(string, IBaseResult)> ConvertResultForNumberedUrlAndIpList(string line,
             Dictionary<string, PatternValue> _)
         {
             /// Every line looks like '0 24593 192.168.1.1 aaa.localdomain'
@@ -56,14 +56,13 @@ namespace dck_pihole2influx.StatObjects
             /// For that reason we must pay attention!
             /// (\d)\s(\d{1,})\s(?:[0-9]{1,3}\.){3}[0-9]{1,3}\s?(.*)
 
-            const string pattern = @"(\d)\s(\d{1,})\s(?:[0-9]{1,3}\.){3}[0-9]{1,3}\s?(.*)";
+            const string pattern = @"(\d)\s(\d{1,})\s(\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)\s?(.*)";
+            var matches = Regex.Matches(line, pattern);
 
-
-            return Option.None<(string, IBaseResult)>();
+            return (from match in matches select GenerateOutputFromQuadruple(match)).FirstOrNone().Flatten();
         }
 
-
-        protected Option<(string, IBaseResult)> ConvertResultForNumberedUrlList(string line,
+        protected static Option<(string, IBaseResult)> ConvertResultForNumberedUrlList(string line,
             Dictionary<string, PatternValue> _)
         {
             //Every line looks like '1 236 safebrowsing-cache.google.com'
@@ -75,7 +74,7 @@ namespace dck_pihole2influx.StatObjects
             return (from match in matches select GenerateOutputFromMatchOptInt(match)).FirstOrNone().Flatten();
         }
 
-        protected Option<(string, IBaseResult)> ConvertResultForNumberedPercentage(string line,
+        protected static Option<(string, IBaseResult)> ConvertResultForNumberedPercentage(string line,
             Dictionary<string, PatternValue> _)
         {
             //Every line looks like -2 22.31 blocklist blocklist
@@ -86,7 +85,7 @@ namespace dck_pihole2influx.StatObjects
             return (from match in matches select GenerateOutputFromMatchOptDouble(match)).FirstOrNone().Flatten();
         }
 
-        protected Option<(string, IBaseResult)> ConvertColonSplittedLine(string line,
+        protected static Option<(string, IBaseResult)> ConvertColonSplittedLine(string line,
             Dictionary<string, PatternValue> _)
         {
             //A line looks like this: A (IPv4): 67.73
@@ -104,7 +103,7 @@ namespace dck_pihole2influx.StatObjects
             return Option.Some<(string, IBaseResult)>((splitLine[0], retValue));
         }
 
-        private Option<(string, IBaseResult)> GenerateOutputFromMatchOptDouble(Match match)
+        private static Option<(string, IBaseResult)> GenerateOutputFromMatchOptDouble(Match match)
         {
             return (double.TryParse(match.Groups[2].Value, NumberStyles.Number, CultureInfo.InvariantCulture,
                     out var doubleParsed)
@@ -114,7 +113,7 @@ namespace dck_pihole2influx.StatObjects
                     new DoubleOutputNumberedList(doubleParsed, match.Groups[1].Value, match.Groups[3].Value)));
         }
 
-        private Option<(string, IBaseResult)> GenerateOutputFromMatchOptInt(Match match)
+        private static Option<(string, IBaseResult)> GenerateOutputFromMatchOptInt(Match match)
         {
             return (int.TryParse(match.Groups[2].Value, out var intParsed)
                     ? Option.Some(intParsed)
@@ -123,7 +122,33 @@ namespace dck_pihole2influx.StatObjects
                     new IntOutputNumberedList(intParsed, match.Groups[1].Value, match.Groups[3].Value)));
         }
 
-        protected ConcurrentDictionary<string, IBaseResult> ConvertDictionaryOpt(
+        private static Option<(string, IBaseResult)> GenerateOutputFromQuadruple(Match match)
+        {
+            //0 24593 192.168.1.1 aaa.localdomain or 0 24593 192.168.1.1
+
+            var countOpt = int.TryParse(match.Groups[2].Value, out var iCount)
+                ? Option.Some(iCount)
+                : Option.None<int>();
+
+            var positionOpt = int.TryParse(match.Groups[2].Value, out var iPosition)
+                ? Option.Some(iPosition)
+                : Option.None<int>();
+
+            var result = countOpt.FlatMap<(string, IBaseResult)>(count =>
+            {
+                return positionOpt.Map<(string, IBaseResult)>(position =>
+                {
+                    var hostOpt = match.Groups[4].SomeWhen(value => value.Value.Length > 0).Map(group => group.Value);
+
+                    return (match.Groups[1].Value,
+                        new DoubleStringOutputList(position, count, match.Groups[3].Value, hostOpt));
+                });
+            });
+
+            return result;
+        }
+
+        protected static ConcurrentDictionary<string, IBaseResult> ConvertDictionaryOpt(
             Option<ConcurrentDictionary<string, IBaseResult>> inputOpt)
         {
             return inputOpt.ValueOr(() =>
@@ -133,14 +158,7 @@ namespace dck_pihole2influx.StatObjects
             });
         }
 
-        protected NumberedUrlItem GetNumberdUrlFromKeyValue(KeyValuePair<string, dynamic> keyValue)
-        {
-            int key = int.TryParse(keyValue.Key, out key) ? key : 0;
-            var tpl = ((int, string)) keyValue.Value;
-            return new NumberedUrlItem(key, tpl.Item1, tpl.Item2);
-        }
-
-        protected async Task<string> ConvertOutputToJson<T>(T output, bool prettyPrint)
+        protected static async Task<string> ConvertOutputToJson<T>(T output, bool prettyPrint)
         {
             try
             {
@@ -158,12 +176,25 @@ namespace dck_pihole2influx.StatObjects
             }
         }
 
-        protected Option<ParallelQuery<string>> SplitInputString(string input, string terminator)
+        protected static (string, dynamic) ConvertIBaseResultToPrimitive(KeyValuePair<string, IBaseResult> input)
+        {
+            (string, dynamic) ret = input.Value switch
+            {
+                PrimitiveResultString primitiveResultString => (input.Key, primitiveResultString.Value),
+                PrimitiveResultFloat primitiveResultFloat => (input.Key, primitiveResultFloat.Value),
+                PrimitiveResultInt primitiveResultInt => (input.Key, primitiveResultInt.Value),
+                _ => ("", "")
+            };
+
+            return ret;
+        }
+
+        protected static Option<ParallelQuery<string>> SplitInputString(string input, string terminator)
         {
             try
             {
                 var splitted = input
-                    .Split("\n")
+                    .Split("\r\n")
                     .Where(s => !string.IsNullOrWhiteSpace(s) && s != terminator)
                     .AsParallel()
                     .AsOrdered();
@@ -175,13 +206,6 @@ namespace dck_pihole2influx.StatObjects
                 Log.Error(ex, "An error occured while splitting the input line");
                 return Option.None<ParallelQuery<string>>();
             }
-        }
-
-        protected NumberedPercentageItem GetNumberedPercentageFromKeyValue(KeyValuePair<string, IBaseResult> keyvalue)
-        {
-            int key = int.TryParse(keyvalue.Key, out key) ? key : 0;
-            var tpl = (StringDoubleOutput) keyvalue.Value;
-            return new NumberedPercentageItem(key, tpl.Value, tpl.Key);
         }
     }
 }

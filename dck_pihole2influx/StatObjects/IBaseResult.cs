@@ -1,3 +1,5 @@
+using Optional;
+
 namespace dck_pihole2influx.StatObjects
 {
     public interface IBaseResult
@@ -6,38 +8,38 @@ namespace dck_pihole2influx.StatObjects
 
     public class PrimitiveResultString : IBaseResult
     {
-        public readonly string _value;
+        public string Value { get; }
 
         public PrimitiveResultString(string value)
         {
-            _value = value;
+            Value = value;
         }
     }
 
     public class PrimitiveResultInt : IBaseResult
     {
-        public readonly int _value;
+        public int Value { get; }
 
         public PrimitiveResultInt(int value)
         {
-            _value = value;
+            Value = value;
         }
     }
 
     public class PrimitiveResultFloat : IBaseResult
     {
-        public readonly float _value;
+        public float Value { get; }
 
         public PrimitiveResultFloat(float value)
         {
-            _value = value;
+            Value = value;
         }
     }
 
     public class StringDoubleOutput : IBaseResult
     {
-        public readonly string Key;
-        public readonly double Value;
+        public string Key { get; }
+        public double Value { get; }
 
         public StringDoubleOutput(string key, double value)
         {
@@ -48,9 +50,9 @@ namespace dck_pihole2influx.StatObjects
 
     public class IntOutputNumberedList : IBaseResult
     {
-        public readonly int Count;
-        public readonly string Position;
-        public readonly string IpOrHost;
+        public int Count { get; }
+        public string Position { get; }
+        public string IpOrHost { get; }
 
         public IntOutputNumberedList(int count, string position, string ipOrHost)
         {
@@ -60,11 +62,27 @@ namespace dck_pihole2influx.StatObjects
         }
     }
 
+    public class DoubleStringOutputList : IBaseResult
+    {
+        public int Count { get; }
+        public int Position { get; }
+        public string IpAddress { get; }
+        public Option<string> HostName { get; }
+
+        public DoubleStringOutputList(int position, int count, string ipAddress, Option<string> hostName)
+        {
+            Position = position;
+            Count = count;
+            IpAddress = ipAddress;
+            HostName = hostName;
+        }
+    }
+
     public class DoubleOutputNumberedList : IBaseResult
     {
-        public readonly double Count;
-        public readonly string Position;
-        public readonly string IpOrHost;
+        public double Count { get; }
+        public string Position { get; }
+        public string IpOrHost { get; }
 
         public DoubleOutputNumberedList(double count, string position, string ipOrHost)
         {

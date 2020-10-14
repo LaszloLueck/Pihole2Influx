@@ -28,17 +28,26 @@ namespace dck_pihole2influx.test
     ---EOM---";
 
             _telnetResultConverter.Convert(testee).Wait();
-            var dictionaryExpected = new Dictionary<string, dynamic>
+            // var dictionaryExpected = new Dictionary<string, dynamic>
+            // {
+            //     {"-2", (22.31d, "blocklist blocklist")},
+            //     {"-1", (8.24d, "cache cache")},
+            //     {"0", (35.31d, "192.168.1.1 opnsense.localdomain")},
+            //     {"1", (19.39d, "1.0.0.1 one.one.one.one")},
+            //     {"2", (15.6d, "1.1.1.1 one.one.one.one")}
+            // };
+            
+            var dictionaryExpected = new Dictionary<string, IBaseResult>
             {
-                {"-2", (22.31d, "blocklist blocklist")},
-                {"-1", (8.24d, "cache cache")},
-                {"0", (35.31d, "192.168.1.1 opnsense.localdomain")},
-                {"1", (19.39d, "1.0.0.1 one.one.one.one")},
-                {"2", (15.6d, "1.1.1.1 one.one.one.one")}
+                {"-2", new DoubleOutputNumberedList(22.31d, "-2", "blocklist blocklist")},
+                {"-1", new DoubleOutputNumberedList(8.24d, "-1", "cache cache")},
+                {"0", new DoubleOutputNumberedList(35.31d, "0", "192.168.1.1 opnsense.localdomain")},
+                {"1", new DoubleOutputNumberedList(19.39d, "1", "1.0.0.1 one.one.one.one")},
+                {"2", new DoubleOutputNumberedList(15.6d, "2", "1.1.1.1 one.one.one.one")}
             };
 
             var dictionaryResult =
-                _telnetResultConverter.DictionaryOpt.ValueOr(new ConcurrentDictionary<string, dynamic>());
+                _telnetResultConverter.DictionaryOpt.ValueOr(new ConcurrentDictionary<string, IBaseResult>());
             dictionaryResult.Should().BeEquivalentTo(dictionaryExpected);
 
             var tokenResult = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result);

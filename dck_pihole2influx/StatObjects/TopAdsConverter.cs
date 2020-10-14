@@ -32,11 +32,7 @@ namespace dck_pihole2influx.StatObjects
         {
             var obj = ConvertDictionaryOpt(DictionaryOpt);
 
-            var to = obj.OrderBy(element =>
-            {
-                var concreteObject = (IntOutputNumberedList) element.Value;
-                return concreteObject.Position;
-            });
+            var to = obj.OrderBy(element => element.Key);
             return await ConvertOutputToJson(to, prettyPrint);
         }
 

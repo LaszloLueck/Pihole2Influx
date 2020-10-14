@@ -35,26 +35,27 @@ OTHER: 5.19
 ---EOM---";
 
             _telnetResultConverter.Convert(testee).Wait();
-            var dictionaryExpected = new Dictionary<string, dynamic>
+
+            var dictionaryExpected = new Dictionary<string, IBaseResult>
             {
-                {"A (IPv4)", 67.73d},
-                {"AAAA (IPv6)", 22.01d},
-                {"ANY", 0.00d},
-                {"SRV", 1.72d},
-                {"SOA", 0.04d},
-                {"PTR", 1.75d},
-                {"TXT", 0.55d},
-                {"NAPTR", 0.04d},
-                {"MX", 0.00d},
-                {"DS", 0.80d},
-                {"RRSIG", 0.00d},
-                {"DNSKEY", 0.17d},
-                {"OTHER", 5.19}
+                {"A (IPv4)", new StringDoubleOutput("A (IPv4)", 67.73d)},
+                {"AAAA (IPv6)", new StringDoubleOutput("AAAA IPv6", 22.01d)},
+                {"ANY", new StringDoubleOutput("ANY", 0.00d)},
+                {"SRV", new StringDoubleOutput("SRV", 1.72d)},
+                {"SOA", new StringDoubleOutput("SOA", 0.04d)},
+                {"PTR", new StringDoubleOutput("PTR", 1.75d)},
+                {"TXT", new StringDoubleOutput("TXT", 0.55d)},
+                {"NAPTR", new StringDoubleOutput("NAPTR", 0.04d)},
+                {"MX", new StringDoubleOutput("MX", 0.00d)},
+                {"DS", new StringDoubleOutput("DS", 0.80d)},
+                {"RRSIG", new StringDoubleOutput("RRSIG", 0.00d)},
+                {"DNSKEY", new StringDoubleOutput("DNSKEY", 0.17d)},
+                {"OTHER", new StringDoubleOutput("OTHER", 5.19)}
             };
 
             var resultDic = _telnetResultConverter
                 .DictionaryOpt
-                .ValueOr(new ConcurrentDictionary<string, dynamic>());
+                .ValueOr(new ConcurrentDictionary<string, IBaseResult>());
             
             resultDic.Should().BeEquivalentTo(dictionaryExpected);
 

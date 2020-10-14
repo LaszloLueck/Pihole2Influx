@@ -36,23 +36,23 @@ status enabled
 
 ";
             _telnetResultConverter.Convert(testee).Wait();
-            var dictionaryExpected = new Dictionary<string, dynamic>
+            var dictionaryExpected = new Dictionary<string, IBaseResult>
             {
-                {StatsConverter.DomainsBeingBlocked, 116007},
-                {StatsConverter.DnsQueriesToday, 30163},
-                {StatsConverter.AdsBlockedToday, 5650},
-                {StatsConverter.AdsPercentageToday, 18.731558F},
-                {StatsConverter.UniqueDomains, 1056},
-                {StatsConverter.QueriesForwarded, 4275},
-                {StatsConverter.QueriesCached, 20238},
-                {StatsConverter.ClientsEverSeen, 11},
-                {StatsConverter.UniqueClients, 9},
-                {StatsConverter.Status, "enabled"}
+                {StatsConverter.DomainsBeingBlocked, new PrimitiveResultInt(116007)},
+                {StatsConverter.DnsQueriesToday, new PrimitiveResultInt(30163)},
+                {StatsConverter.AdsBlockedToday, new PrimitiveResultInt(5650)},
+                {StatsConverter.AdsPercentageToday, new PrimitiveResultFloat(18.731558F)},
+                {StatsConverter.UniqueDomains, new PrimitiveResultInt(1056)},
+                {StatsConverter.QueriesForwarded, new PrimitiveResultInt(4275)},
+                {StatsConverter.QueriesCached, new PrimitiveResultInt(20238)},
+                {StatsConverter.ClientsEverSeen, new PrimitiveResultInt(11)},
+                {StatsConverter.UniqueClients, new PrimitiveResultInt(9)},
+                {StatsConverter.Status, new PrimitiveResultString("enabled")}
             };
 
             var resultDic = _telnetResultConverter
                 .DictionaryOpt
-                .ValueOr(new ConcurrentDictionary<string, dynamic>());
+                .ValueOr(new ConcurrentDictionary<string, IBaseResult>());
             
             resultDic.Should().BeEquivalentTo(dictionaryExpected);
 

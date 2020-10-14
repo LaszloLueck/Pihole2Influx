@@ -33,13 +33,11 @@ namespace dck_pihole2influx.StatObjects
         public override async Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)
         {
             var obj = ConvertDictionaryOpt(DictionaryOpt);
-            
-            var to = obj.OrderBy(element =>
-            {
-                var concreteObject = (IntOutputNumberedList) element.Value;
-                return concreteObject.Position;
-            });
-            
+
+            var to = obj
+                .OrderBy(element => element.Key)
+                .Select(element => (IntOutputNumberedList) element.Value);
+
             return await ConvertOutputToJson(to, prettyPrint);
         }
 

@@ -29,18 +29,18 @@ cache-inserted: 98590
 
 ";
             _telnetResultConverter.Convert(testee).Wait();
-            var dictionaryExpected = new Dictionary<string, dynamic>
+            var expectedDictionary = new Dictionary<string, IBaseResult>
             {
-                {CacheInfoConverter.CacheSize, 10000},
-                {CacheInfoConverter.CacheLiveFreed, 0},
-                {CacheInfoConverter.CacheInserted, 98590}
+                {CacheInfoConverter.CacheSize, new PrimitiveResultInt(10000)},
+                {CacheInfoConverter.CacheLiveFreed, new PrimitiveResultInt(0)},
+                {CacheInfoConverter.CacheInserted, new PrimitiveResultInt(98590)}
             };
 
             var resultDic = _telnetResultConverter
                 .DictionaryOpt
-                .ValueOr(new ConcurrentDictionary<string, dynamic>());
+                .ValueOr(new ConcurrentDictionary<string, IBaseResult>());
 
-            resultDic.Should().BeEquivalentTo(dictionaryExpected);
+            resultDic.Should().BeEquivalentTo(expectedDictionary);
 
             var resultTokens = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync( false).Result);
 
@@ -62,17 +62,17 @@ cache-inserted: 98590
 
 
 ";
-            var dictionaryExpected = new Dictionary<string, dynamic>
+            var expectedDictionary = new Dictionary<string, IBaseResult>
             {
-                {CacheInfoConverter.CacheSize, 10000},
-                {CacheInfoConverter.CacheInserted, 98590}
+                {CacheInfoConverter.CacheSize, new PrimitiveResultInt(10000)},
+                {CacheInfoConverter.CacheInserted, new PrimitiveResultInt(98590)}
             };
 
             _telnetResultConverter.Convert(testee).Wait();
 
-            var resultDic = _telnetResultConverter.DictionaryOpt.ValueOr(new ConcurrentDictionary<string, dynamic>());
+            var resultDic = _telnetResultConverter.DictionaryOpt.ValueOr(new ConcurrentDictionary<string, IBaseResult>());
             
-            resultDic.Should().BeEquivalentTo(dictionaryExpected);
+            resultDic.Should().BeEquivalentTo(expectedDictionary);
             
             var jsonExpected = $"{{\"{CacheInfoConverter.CacheSize}\":10000,\"{CacheInfoConverter.CacheInserted}\":98590}}";
 
@@ -97,15 +97,15 @@ cache-inserted: abcde
 ";
             _telnetResultConverter.Convert(testee).Wait();
 
-            var expectedDictionary = new Dictionary<string, dynamic>
+            var expectedDictionary = new Dictionary<string, IBaseResult>
             {
-                {CacheInfoConverter.CacheSize, 10000},
-                {CacheInfoConverter.CacheLiveFreed, 0},
-                {CacheInfoConverter.CacheInserted, 0}
+                {CacheInfoConverter.CacheSize, new PrimitiveResultInt(10000)},
+                {CacheInfoConverter.CacheLiveFreed, new PrimitiveResultInt(0)},
+                {CacheInfoConverter.CacheInserted, new PrimitiveResultInt(0)}
             };
-
+            
             var resultDictionary = _telnetResultConverter.DictionaryOpt
-                .ValueOr(new ConcurrentDictionary<string, dynamic>());
+                .ValueOr(new ConcurrentDictionary<string, IBaseResult>());
 
             resultDictionary.Should().BeEquivalentTo(expectedDictionary);
 

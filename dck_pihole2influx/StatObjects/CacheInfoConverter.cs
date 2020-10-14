@@ -1,8 +1,12 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using dck_pihole2influx.Transport.Telnet;
+using Newtonsoft.Json;
 using Optional;
+using Quartz.Util;
 
 namespace dck_pihole2influx.StatObjects
 {
@@ -33,7 +37,14 @@ namespace dck_pihole2influx.StatObjects
 
         public override async Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)
         {
-            var obj = ConvertDictionaryOpt(DictionaryOpt);
+            var obj = ConvertDictionaryOpt(DictionaryOpt)
+                .Select(ConvertIBaseResultToPrimitive)
+                .ToList()
+                .ToDictionary(element => element.Item1, element => element.Item2);
+
+            var s = JsonConvert.SerializeObject(obj);
+
+
             return await ConvertOutputToJson(obj, prettyPrint);
         }
 

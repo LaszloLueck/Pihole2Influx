@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using dck_pihole2influx.Transport.Telnet;
 using Optional;
@@ -26,9 +27,12 @@ namespace dck_pihole2influx.StatObjects
             return PiholeCommands.Topclients;
         }
 
-        public override Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)
+        public override async Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)
         {
-            throw new NotImplementedException();
+            var obj = ConvertDictionaryOpt(DictionaryOpt)
+                .Select(ConvertIBaseResultToPrimitive)
+                .ToDictionary(element => element.Item1, element => element.Item2);
+            return await ConvertOutputToJson(obj, prettyPrint);
         }
 
         protected override Option<(string, IBaseResult)> CalculateTupleFromString(string line)
