@@ -33,6 +33,8 @@ namespace dck_pihole2influx.test
 
 ";
             _telnetResultConverter.Convert(testee).Wait();
+            
+            
 
         }
         
