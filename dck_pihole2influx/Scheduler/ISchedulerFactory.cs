@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Quartz;
+﻿using System.Threading.Tasks;
 
 namespace dck_pihole2influx.Scheduler
 {

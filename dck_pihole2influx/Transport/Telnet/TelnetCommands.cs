@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace dck_pihole2influx.Transport.Telnet

@@ -16,6 +16,6 @@ namespace dck_pihole2influx.Transport.Telnet
 
         void DisposeClient();
 
-        void Dispose();
+        void ClientDispose();
     }
 }

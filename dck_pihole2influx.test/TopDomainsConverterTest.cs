@@ -40,24 +40,14 @@ namespace dck_pihole2influx.test
                 orderby entry.Key
                 select entry;
 
-            // var expectedList = new Dictionary<string, dynamic>
-            // {
-            //     {"0", (8462, "x.y.z.de")},
-            //     {"1", (236, "safebrowsing-cache.google.com")},
-            //     {"2", (116, "pi.hole")},
-            //     {"3", (109, "z.y.x.de")},
-            //     {"4", (93, "safebrowsing.google.com")},
-            //     {"5", (96, "plus.google.com")}
-            // };
-
             var expectedList = new Dictionary<string, IBaseResult>
             {
-                {"0", new IntOutputNumberedList(8462, "0", "x.y.z.de")},
-                {"1", new IntOutputNumberedList(236, "1", "safebrowsing-cache.google.com")},
-                {"2", new IntOutputNumberedList(116, "2", "pi.hole")},
-                {"3", new IntOutputNumberedList(109, "3", "z.y.x.de")},
-                {"4", new IntOutputNumberedList(93, "4", "safebrowsing.google.com")},
-                {"5", new IntOutputNumberedList(96, "5", "plus.google.com")}
+                {"0", new IntOutputNumberedElement(8462, "0", "x.y.z.de")},
+                {"1", new IntOutputNumberedElement(236, "1", "safebrowsing-cache.google.com")},
+                {"2", new IntOutputNumberedElement(116, "2", "pi.hole")},
+                {"3", new IntOutputNumberedElement(109, "3", "z.y.x.de")},
+                {"4", new IntOutputNumberedElement(93, "4", "safebrowsing.google.com")},
+                {"5", new IntOutputNumberedElement(96, "5", "plus.google.com")}
             };
 
             resultList.Should().BeEquivalentTo(expectedList);

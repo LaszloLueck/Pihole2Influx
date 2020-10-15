@@ -27,6 +27,11 @@ namespace dck_pihole2influx.StatObjects
 
     public class ValueConverterBase<T>
     {
+        protected ValueConverterBase()
+        {
+            
+        }
+        
         private static readonly ILogger Log = LoggingFactory<ValueConverterBase<T>>.CreateLogging();
 
         private static string RemoveKeyAndTrim(string key, string input)

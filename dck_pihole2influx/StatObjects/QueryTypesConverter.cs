@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using dck_pihole2influx.Logging;
 using dck_pihole2influx.Transport.Telnet;
 using Optional;
-using Serilog;
 
 namespace dck_pihole2influx.StatObjects
 {
@@ -29,7 +27,6 @@ namespace dck_pihole2influx.StatObjects
     /// </summary>
     public class QueryTypesConverter : TelnetResultConverter, IBaseConverter
     {
-        private static readonly ILogger Log = LoggingFactory<QueryTypesConverter>.CreateLogging();
 
         public Dictionary<string, PatternValue> GetPattern()
         {

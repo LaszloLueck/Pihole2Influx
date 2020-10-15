@@ -8,14 +8,23 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
+using Newtonsoft.Json;
 using Optional;
 using Optional.Collections;
+using Optional.Json;
 using Serilog;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace dck_pihole2influx.StatObjects
 {
     public class ConverterUtils
     {
+
+        protected ConverterUtils()
+        {
+            
+        }
+        
         private static readonly ILogger Log = LoggingFactory<ConverterUtils>.CreateLogging();
 
         protected static Option<(string, IBaseResult)> ConvertResultForStandard(string line,
@@ -110,7 +119,7 @@ namespace dck_pihole2influx.StatObjects
                     ? Option.Some(doubleParsed)
                     : Option.None<double>())
                 .Map<(string, IBaseResult)>(result => (match.Groups[1].Value,
-                    new DoubleOutputNumberedList(doubleParsed, match.Groups[1].Value, match.Groups[3].Value)));
+                    new DoubleOutputNumberedElement(doubleParsed, match.Groups[1].Value, match.Groups[3].Value)));
         }
 
         private static Option<(string, IBaseResult)> GenerateOutputFromMatchOptInt(Match match)
@@ -119,14 +128,14 @@ namespace dck_pihole2influx.StatObjects
                     ? Option.Some(intParsed)
                     : Option.None<int>())
                 .Map<(string, IBaseResult)>(result => (match.Groups[1].Value,
-                    new IntOutputNumberedList(intParsed, match.Groups[1].Value, match.Groups[3].Value)));
+                    new IntOutputNumberedElement(intParsed, match.Groups[1].Value, match.Groups[3].Value)));
         }
 
         private static Option<(string, IBaseResult)> GenerateOutputFromQuadruple(Match match)
         {
             //0 24593 192.168.1.1 aaa.localdomain or 0 24593 192.168.1.1
 
-            var countOpt = int.TryParse(match.Groups[2].Value, out var iCount)
+            var countOpt = int.TryParse(match.Groups[1].Value, out var iCount)
                 ? Option.Some(iCount)
                 : Option.None<int>();
 
@@ -141,7 +150,7 @@ namespace dck_pihole2influx.StatObjects
                     var hostOpt = match.Groups[4].SomeWhen(value => value.Value.Length > 0).Map(group => group.Value);
 
                     return (match.Groups[1].Value,
-                        new DoubleStringOutputList(position, count, match.Groups[3].Value, hostOpt));
+                        new DoubleStringOutputElement(position, count, match.Groups[3].Value, hostOpt));
                 });
             });
 

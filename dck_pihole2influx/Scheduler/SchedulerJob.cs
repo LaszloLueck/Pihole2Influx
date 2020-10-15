@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -64,7 +63,7 @@ namespace dck_pihole2influx.Scheduler
                         }
 
                         await telnetClient.WriteCommand(PiholeCommands.Quit);
-                        telnetClient.Dispose();
+                        telnetClient.ClientDispose();
                     });
                     await t;
                     mutex.Release();

@@ -1,9 +1,11 @@
-using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using dck_pihole2influx.Transport.Telnet;
+using Newtonsoft.Json;
 using Optional;
+using Optional.Json;
 
 namespace dck_pihole2influx.StatObjects
 {
@@ -30,9 +32,23 @@ namespace dck_pihole2influx.StatObjects
         public override async Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)
         {
             var obj = ConvertDictionaryOpt(DictionaryOpt)
-                .Select(ConvertIBaseResultToPrimitive)
-                .ToDictionary(element => element.Item1, element => element.Item2);
-            return await ConvertOutputToJson(obj, prettyPrint);
+                .OrderBy(element => element.Key)
+                .Select(element => (DoubleStringOutputElement) element.Value);
+
+
+
+            var textWriter = new StringWriter();
+            var outJsonWriter = new JsonTextWriter(textWriter);
+            var doubleStringOutputLists = obj as DoubleStringOutputElement[] ?? obj.ToArray();
+            var oc = new OptionConverter();
+            foreach (var output in doubleStringOutputLists)
+            {
+                oc.WriteJson(outJsonWriter, output, Newtonsoft.Json.JsonSerializer.Create());
+            }
+            var res = textWriter.ToString();
+            
+
+            return await ConvertOutputToJson(doubleStringOutputLists, prettyPrint);
         }
 
         protected override Option<(string, IBaseResult)> CalculateTupleFromString(string line)

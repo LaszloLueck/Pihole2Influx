@@ -1,10 +1,8 @@
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using dck_pihole2influx.Transport.Telnet;
 using Optional;
-using Optional.Linq;
 
 namespace dck_pihole2influx.StatObjects
 {
@@ -36,7 +34,7 @@ namespace dck_pihole2influx.StatObjects
 
             var to = obj
                 .OrderBy(element => element.Key)
-                .Select(element => (IntOutputNumberedList) element.Value);
+                .Select(element => (IntOutputNumberedElement) element.Value);
 
             return await ConvertOutputToJson(to, prettyPrint);
         }

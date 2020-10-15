@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using dck_pihole2influx.Transport.Telnet;
-using Newtonsoft.Json;
 using Optional;
-using Quartz.Util;
 
 namespace dck_pihole2influx.StatObjects
 {
@@ -23,7 +19,7 @@ namespace dck_pihole2influx.StatObjects
         public const string CacheLiveFreed = "CacheLiveFreed";
         public const string CacheInserted = "CacheInserted";
 
-        public Dictionary<string, PatternValue> GetPattern() => new Dictionary<string, PatternValue>
+        private static Dictionary<string, PatternValue> GetPattern() => new Dictionary<string, PatternValue>
         {
             {"cache-size:", new PatternValue(CacheSize, ValueTypes.Int, 0)},
             {"cache-live-freed:", new PatternValue(CacheLiveFreed, ValueTypes.Int, 0)},
@@ -39,11 +35,7 @@ namespace dck_pihole2influx.StatObjects
         {
             var obj = ConvertDictionaryOpt(DictionaryOpt)
                 .Select(ConvertIBaseResultToPrimitive)
-                .ToList()
                 .ToDictionary(element => element.Item1, element => element.Item2);
-
-            var s = JsonConvert.SerializeObject(obj);
-
 
             return await ConvertOutputToJson(obj, prettyPrint);
         }

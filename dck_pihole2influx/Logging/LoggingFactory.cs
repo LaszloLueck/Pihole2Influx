@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using Optional;
-using Serilog;
-using Serilog.Core;
+﻿using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 
 namespace dck_pihole2influx.Logging

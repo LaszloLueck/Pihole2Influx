@@ -48,13 +48,13 @@ namespace dck_pihole2influx.StatObjects
         }
     }
 
-    public class IntOutputNumberedList : IBaseResult
+    public class IntOutputNumberedElement : IBaseResult
     {
         public int Count { get; }
         public string Position { get; }
         public string IpOrHost { get; }
 
-        public IntOutputNumberedList(int count, string position, string ipOrHost)
+        public IntOutputNumberedElement(int count, string position, string ipOrHost)
         {
             Count = count;
             Position = position;
@@ -62,14 +62,14 @@ namespace dck_pihole2influx.StatObjects
         }
     }
 
-    public class DoubleStringOutputList : IBaseResult
+    public class DoubleStringOutputElement : IBaseResult
     {
         public int Count { get; }
         public int Position { get; }
         public string IpAddress { get; }
         public Option<string> HostName { get; }
 
-        public DoubleStringOutputList(int position, int count, string ipAddress, Option<string> hostName)
+        public DoubleStringOutputElement(int position, int count, string ipAddress, Option<string> hostName)
         {
             Position = position;
             Count = count;
@@ -78,13 +78,13 @@ namespace dck_pihole2influx.StatObjects
         }
     }
 
-    public class DoubleOutputNumberedList : IBaseResult
+    public class DoubleOutputNumberedElement : IBaseResult
     {
         public double Count { get; }
         public string Position { get; }
         public string IpOrHost { get; }
 
-        public DoubleOutputNumberedList(double count, string position, string ipOrHost)
+        public DoubleOutputNumberedElement(double count, string position, string ipOrHost)
         {
             Count = count;
             Position = position;

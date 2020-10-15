@@ -11,11 +11,16 @@
     <PackageReference Include="Quartz.Plugins" Version="3.2.0" />
     <PackageReference Include="Serilog.Enrichers.Context" Version="4.2.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.14.0.22654">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Telnet" Version="0.8.6" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
     <Folder Include="Transport\InfluxDb" />
+    <Folder Include="Utils" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="quartz.config" />

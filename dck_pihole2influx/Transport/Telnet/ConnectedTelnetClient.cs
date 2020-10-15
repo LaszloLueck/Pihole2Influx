@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using PrimS.Telnet;
@@ -7,7 +6,7 @@ using Serilog;
 
 namespace dck_pihole2influx.Transport.Telnet
 {
-    public class ConnectedTelnetClient : IConnectedTelnetClient, IDisposable
+    public class ConnectedTelnetClient : IConnectedTelnetClient
     {
         private static readonly ILogger Log = LoggingFactory<ConnectedTelnetClient>.CreateLogging();
         private readonly Client _client;
@@ -48,7 +47,7 @@ namespace dck_pihole2influx.Transport.Telnet
             _client.Dispose();
         }
 
-        public void Dispose()
+        public void ClientDispose()
         {
             DisposeClient();
         }

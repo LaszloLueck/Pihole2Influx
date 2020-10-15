@@ -27,7 +27,7 @@ namespace dck_pihole2influx.StatObjects
 
         protected abstract Option<(string, IBaseResult)> CalculateTupleFromString(string line);
 
-        public string GetTerminator()
+        public virtual string GetTerminator()
         {
             return "---EOM---";
         }
