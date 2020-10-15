@@ -8,12 +8,9 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
-using Newtonsoft.Json;
 using Optional;
 using Optional.Collections;
-using Optional.Json;
 using Serilog;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace dck_pihole2influx.StatObjects
 {
@@ -203,7 +200,7 @@ namespace dck_pihole2influx.StatObjects
             try
             {
                 var splitted = input
-                    .Split("\r\n")
+                    .Split("\n")
                     .Where(s => !string.IsNullOrWhiteSpace(s) && s != terminator)
                     .AsParallel()
                     .AsOrdered();

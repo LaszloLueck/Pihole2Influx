@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
-using Optional;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
+using Newtonsoft.Json;
+using Optional;
 
-namespace Optional.Json
+namespace dck_pihole2influx.Optional.Json
 {
     public class OptionConverter : JsonConverter
     {
@@ -63,6 +63,7 @@ namespace Optional.Json
             }
 
             var innerValue = getValueMethod.Invoke(null, new[] { value });
+            
             serializer.Serialize(writer, innerValue);
         }
 

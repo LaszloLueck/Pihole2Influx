@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using dck_pihole2influx.Optional.Json;
 using dck_pihole2influx.Transport.Telnet;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Optional;
-using Optional.Json;
 
 namespace dck_pihole2influx.StatObjects
 {
@@ -37,18 +38,27 @@ namespace dck_pihole2influx.StatObjects
 
 
 
-            var textWriter = new StringWriter();
-            var outJsonWriter = new JsonTextWriter(textWriter);
-            var doubleStringOutputLists = obj as DoubleStringOutputElement[] ?? obj.ToArray();
-            var oc = new OptionConverter();
-            foreach (var output in doubleStringOutputLists)
+            //We have some trouble with serializing Options, so we must write our own json-contractconverter
+            var t = Task.Run(async () =>
             {
-                oc.WriteJson(outJsonWriter, output, Newtonsoft.Json.JsonSerializer.Create());
-            }
-            var res = textWriter.ToString();
-            
 
-            return await ConvertOutputToJson(doubleStringOutputLists, prettyPrint);
+                var textWriter = new StringWriter();
+                var outJsonWriter = new JsonTextWriter(textWriter);
+                var doubleStringOutputLists = obj as DoubleStringOutputElement[] ?? obj.ToArray();
+                var js = new JsonSerializer();
+                js.NullValueHandling = NullValueHandling.Ignore;
+                js.ContractResolver = new OptionalContractResolver();
+                js.Serialize(outJsonWriter, doubleStringOutputLists);
+                await outJsonWriter.FlushAsync();
+                await textWriter.FlushAsync();
+                var tRes = textWriter.ToString();
+                await outJsonWriter.CloseAsync();
+                textWriter.Close();
+                JToken jToken = JsonHelper.RemoveEmptyChildren(JToken.Parse(tRes));
+                return jToken.ToString();
+            });
+
+            return await t;
         }
 
         protected override Option<(string, IBaseResult)> CalculateTupleFromString(string line)
@@ -61,4 +71,5 @@ namespace dck_pihole2influx.StatObjects
             return new Dictionary<string, PatternValue>();
         }
     }
+
 }
