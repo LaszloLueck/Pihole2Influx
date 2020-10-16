@@ -168,12 +168,14 @@ namespace dck_pihole2influx.StatObjects
         {
             try
             {
-                await using var stream = new MemoryStream();
-                await JsonSerializer.SerializeAsync(stream, output, output.GetType(),
-                    new JsonSerializerOptions() {WriteIndented = prettyPrint});
-                stream.Position = 0;
-                using var reader = new StreamReader(stream);
-                return await reader.ReadToEndAsync();
+                await using (var stream = new MemoryStream())
+                {
+                    await JsonSerializer.SerializeAsync(stream, output, output.GetType(),
+                        new JsonSerializerOptions() {WriteIndented = prettyPrint});
+                    stream.Position = 0;
+                    using var reader = new StreamReader(stream);
+                    return await reader.ReadToEndAsync();
+                }
             }
             catch (Exception ex)
             {

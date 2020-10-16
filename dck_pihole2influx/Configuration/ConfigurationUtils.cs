@@ -1,13 +1,10 @@
 using System;
-using dck_pihole2influx.Logging;
 using Optional;
-using Serilog;
 
 namespace dck_pihole2influx.Configuration
 {
     public class ConfigurationUtils : IConfigurationUtils
     {
-        private static readonly ILogger Log = LoggingFactory<ConfigurationUtils>.CreateLogging();
         public Option<string> ReadEnvironmentVariable(string value)
         {
             return Environment.GetEnvironmentVariable(value).SomeNotNull();

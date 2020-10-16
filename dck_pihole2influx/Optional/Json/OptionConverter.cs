@@ -14,13 +14,15 @@ namespace dck_pihole2influx.Optional.Json
             return objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(Option<>);
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
+            JsonSerializer serializer)
         {
             if (reader == null) throw new ArgumentNullException(nameof(reader));
             if (objectType == null) throw new ArgumentNullException(nameof(objectType));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
-            var innerType = objectType.GetGenericArguments()?.FirstOrDefault() ?? throw new InvalidOperationException("No inner type found.");
+            var innerType = objectType.GetGenericArguments()?.FirstOrDefault() ??
+                            throw new InvalidOperationException("No inner type found.");
             var noneMethod = MakeStaticGenericMethodInfo(nameof(None), innerType);
             var someMethod = MakeStaticGenericMethodInfo(nameof(Some), innerType);
 
@@ -36,7 +38,7 @@ namespace dck_pihole2influx.Optional.Json
                 return noneMethod.Invoke(null, new object[] { });
             }
 
-            return someMethod.Invoke(noneMethod, new[] { innerValue });
+            return someMethod.Invoke(noneMethod, new[] {innerValue});
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -50,29 +52,38 @@ namespace dck_pihole2influx.Optional.Json
                 return;
             }
 
-            var innerType = value.GetType()?.GetGenericArguments()?.FirstOrDefault() ?? throw new InvalidOperationException("No inner type found.");
+            var innerType = value.GetType()?.GetGenericArguments()?.FirstOrDefault() ??
+                            throw new InvalidOperationException("No inner type found.");
             var hasValueMethod = MakeStaticGenericMethodInfo(nameof(HasValue), innerType);
             var getValueMethod = MakeStaticGenericMethodInfo(nameof(GetValue), innerType);
 
-            var hasValue = (bool)hasValueMethod.Invoke(null, new[] { value });
+            try
+            {
+                var hasValue = (bool) hasValueMethod.Invoke(null, new[] {value});
 
-            if (!hasValue)
+                if (!hasValue)
+                {
+                    writer.WriteNull();
+                    return;
+                }
+            }
+            catch (NullReferenceException)
             {
                 writer.WriteNull();
                 return;
             }
 
-            var innerValue = getValueMethod.Invoke(null, new[] { value });
-            
+            var innerValue = getValueMethod.Invoke(null, new[] {value});
+
             serializer.Serialize(writer, innerValue);
         }
 
         private MethodInfo MakeStaticGenericMethodInfo(string name, params Type[] typeArguments)
         {
             return GetType()
-                ?.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static)
-                ?.MakeGenericMethod(typeArguments)
-                ?? throw new InvalidOperationException($"Could not make generic MethodInfo for method '{name}'.");
+                       .GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static)
+                       ?.MakeGenericMethod(typeArguments)
+                   ?? throw new InvalidOperationException($"Could not make generic MethodInfo for method '{name}'.");
         }
 
         private static bool HasValue<T>(Option<T> option) => option.HasValue;
