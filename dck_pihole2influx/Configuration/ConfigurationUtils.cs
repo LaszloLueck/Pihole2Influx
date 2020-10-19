@@ -18,10 +18,7 @@ namespace dck_pihole2influx.Configuration
                     int parsedValue = int.TryParse(innerValue, out parsedValue) ? parsedValue : defaultValue;
                     return parsedValue;
                 },
-                none: () =>
-                {
-                    return defaultValue;
-                });
+                none: () => defaultValue);
         }
         
         
