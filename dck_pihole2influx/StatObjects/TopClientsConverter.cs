@@ -45,16 +45,17 @@ namespace dck_pihole2influx.StatObjects
                 var textWriter = new StringWriter();
                 var outJsonWriter = new JsonTextWriter(textWriter);
                 var doubleStringOutputLists = obj as DoubleStringOutputElement[] ?? obj.ToArray();
-                var js = new JsonSerializer();
-                js.NullValueHandling = NullValueHandling.Ignore;
-                js.ContractResolver = new OptionalContractResolver();
+                var js = new JsonSerializer
+                {
+                    NullValueHandling = NullValueHandling.Ignore, ContractResolver = new OptionalContractResolver()
+                };
                 js.Serialize(outJsonWriter, doubleStringOutputLists);
                 await outJsonWriter.FlushAsync();
                 await textWriter.FlushAsync();
                 var tRes = textWriter.ToString();
                 await outJsonWriter.CloseAsync();
                 textWriter.Close();
-                JToken jToken = JsonHelper.RemoveEmptyChildren(JToken.Parse(tRes));
+                var jToken = JsonHelper.RemoveEmptyChildren(JToken.Parse(tRes));
                 return jToken.ToString();
             });
 

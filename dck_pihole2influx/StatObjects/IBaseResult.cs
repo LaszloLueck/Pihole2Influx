@@ -78,6 +78,20 @@ namespace dck_pihole2influx.StatObjects
         }
     }
 
+    public class OvertimeOutputElement : IBaseResult
+    {
+        public long TimeStamp { get; }
+        public int PermitValue { get; }
+        public int BlockValue { get; }
+        
+        public OvertimeOutputElement(long timeStamp, int permitValue, int blockValue)
+        {
+            TimeStamp = timeStamp;
+            PermitValue = permitValue;
+            BlockValue = blockValue;
+        }
+    }
+
     public class DoubleOutputNumberedElement : IBaseResult
     {
         public double Count { get; }

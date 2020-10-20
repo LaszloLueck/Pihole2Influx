@@ -16,12 +16,10 @@ namespace dck_pihole2influx.StatObjects
 {
     public class ConverterUtils
     {
-
         protected ConverterUtils()
         {
-            
         }
-        
+
         private static readonly ILogger Log = LoggingFactory<ConverterUtils>.CreateLogging();
 
         protected static Option<(string, IBaseResult)> ConvertResultForStandard(string line,
@@ -52,6 +50,14 @@ namespace dck_pihole2influx.StatObjects
                     };
                 });
             return convertedLineOpt;
+        }
+
+        protected static Option<(string, IBaseResult)> ConvertResultForOvertime(string line,
+            Dictionary<string, PatternValue> _)
+        {
+            const string pattern = @"([0-9]{1,})\s([0-9]{1,})\s([0-9]{1,})";
+            var matches = Regex.Matches(line, pattern);
+            return (from match in matches select GenerateOutputForOvertime(match)).FirstOrNone().Flatten();
         }
 
         protected static Option<(string, IBaseResult)> ConvertResultForNumberedUrlAndIpList(string line,
@@ -126,6 +132,30 @@ namespace dck_pihole2influx.StatObjects
                     : Option.None<int>())
                 .Map<(string, IBaseResult)>(result => (match.Groups[1].Value,
                     new IntOutputNumberedElement(intParsed, match.Groups[1].Value, match.Groups[3].Value)));
+        }
+
+        private static Option<(string, IBaseResult)> GenerateOutputForOvertime(Match match)
+        {
+            Option<long> timeStampOpt = long.TryParse(match.Groups[1].Value, out var longParsed)
+                ? Option.Some(longParsed)
+                : Option.None<long>();
+
+            Option<int> permitOpt = int.TryParse(match.Groups[2].Value, out var permitParsed)
+                ? Option.Some(permitParsed)
+                : Option.None<int>();
+
+            Option<int> blockOpt = int.TryParse(match.Groups[3].Value, out var blockParsed)
+                ? Option.Some(blockParsed)
+                : Option.None<int>();
+
+            return timeStampOpt.FlatMap(timeStamp =>
+            {
+                return permitOpt.FlatMap(permit =>
+                {
+                    return blockOpt.Map<(string, IBaseResult)>(block =>
+                        (timeStamp.ToString(), new OvertimeOutputElement(timeStamp, permit, block)));
+                });
+            });
         }
 
         private static Option<(string, IBaseResult)> GenerateOutputFromQuadruple(Match match)
