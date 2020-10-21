@@ -46,6 +46,7 @@ Currently they are:
 <li>List of query-types (e.g. A, AAAA, DS)</li>
 <li>List of forward destinations (cache, dns, block)</li>
 <li>List of top clients</li>
+<li>overtime</li>
 </ul>
 </li>
 </ul>
@@ -58,7 +59,6 @@ What is missing:
 <ul>
 <li>Version information</li>
 <li>database statistics</li>
-<li>overtime</li>
 </ul>
 </li>
 <li>many tests</li>
