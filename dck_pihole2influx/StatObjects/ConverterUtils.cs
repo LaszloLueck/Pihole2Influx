@@ -106,12 +106,12 @@ namespace dck_pihole2influx.StatObjects
             if (splitLine.Length != 2)
                 return Option.None<(string, IBaseResult)>();
 
-            double dblValue =
-                double.TryParse(splitLine[1], NumberStyles.Number, CultureInfo.InvariantCulture, out dblValue)
+            decimal dblValue =
+                decimal.TryParse(splitLine[1], NumberStyles.Number , CultureInfo.InvariantCulture, out dblValue)
                     ? dblValue
-                    : 0d;
+                    : 0;
 
-            IBaseResult retValue = new StringDoubleOutput(splitLine[0], dblValue);
+            IBaseResult retValue = new StringDecimalOutput(splitLine[0], dblValue);
             return Option.Some<(string, IBaseResult)>((splitLine[0], retValue));
         }
 
@@ -198,14 +198,12 @@ namespace dck_pihole2influx.StatObjects
         {
             try
             {
-                await using (var stream = new MemoryStream())
-                {
-                    await JsonSerializer.SerializeAsync(stream, output, output.GetType(),
-                        new JsonSerializerOptions() {WriteIndented = prettyPrint});
-                    stream.Position = 0;
-                    using var reader = new StreamReader(stream);
-                    return await reader.ReadToEndAsync();
-                }
+                await using var stream = new MemoryStream();
+                await JsonSerializer.SerializeAsync(stream, output, output.GetType(),
+                    new JsonSerializerOptions() {WriteIndented = prettyPrint});
+                stream.Position = 0;
+                using var reader = new StreamReader(stream);
+                return await reader.ReadToEndAsync();
             }
             catch (Exception ex)
             {

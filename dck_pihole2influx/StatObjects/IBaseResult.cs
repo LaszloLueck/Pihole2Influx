@@ -36,15 +36,15 @@ namespace dck_pihole2influx.StatObjects
         }
     }
 
-    public class StringDoubleOutput : IBaseResult
+    public class StringDecimalOutput : IBaseResult
     {
         public string Key { get; }
-        public double Value { get; }
+        public decimal Value { get; }
 
-        public StringDoubleOutput(string key, double value)
+        public StringDecimalOutput(string key, decimal val)
         {
             Key = key;
-            Value = value;
+            Value = val;
         }
     }
 

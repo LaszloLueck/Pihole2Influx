@@ -27,4 +27,8 @@
       <ProjectReference Include="..\dck_pihole2influx\dck_pihole2influx.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="TestResults" />
+    </ItemGroup>
+
 </Project>
