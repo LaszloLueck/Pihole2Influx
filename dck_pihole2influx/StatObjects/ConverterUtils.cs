@@ -107,7 +107,7 @@ namespace dck_pihole2influx.StatObjects
                 return Option.None<(string, IBaseResult)>();
 
             decimal dblValue =
-                decimal.TryParse(splitLine[1], NumberStyles.Number , CultureInfo.InvariantCulture, out dblValue)
+                decimal.TryParse(splitLine[1], NumberStyles.Number, CultureInfo.InvariantCulture, out dblValue)
                     ? dblValue
                     : 0;
 
@@ -198,12 +198,14 @@ namespace dck_pihole2influx.StatObjects
         {
             try
             {
-                await using var stream = new MemoryStream();
-                await JsonSerializer.SerializeAsync(stream, output, output.GetType(),
-                    new JsonSerializerOptions() {WriteIndented = prettyPrint});
-                stream.Position = 0;
-                using var reader = new StreamReader(stream);
-                return await reader.ReadToEndAsync();
+                await using (var stream = new MemoryStream())
+                {
+                    await JsonSerializer.SerializeAsync(stream, output, output.GetType(),
+                         new JsonSerializerOptions() {WriteIndented = prettyPrint});
+                    stream.Position = 0;
+                    using var reader = new StreamReader(stream);
+                    return await reader.ReadToEndAsync();
+                }
             }
             catch (Exception ex)
             {

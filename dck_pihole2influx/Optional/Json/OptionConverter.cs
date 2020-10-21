@@ -21,7 +21,7 @@ namespace dck_pihole2influx.Optional.Json
             if (objectType == null) throw new ArgumentNullException(nameof(objectType));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
-            var innerType = objectType.GetGenericArguments()?.FirstOrDefault() ??
+            var innerType = objectType.GetGenericArguments().FirstOrDefault() ??
                             throw new InvalidOperationException("No inner type found.");
             var noneMethod = MakeStaticGenericMethodInfo(nameof(None), innerType);
             var someMethod = MakeStaticGenericMethodInfo(nameof(Some), innerType);
@@ -52,7 +52,7 @@ namespace dck_pihole2influx.Optional.Json
                 return;
             }
 
-            var innerType = value.GetType()?.GetGenericArguments()?.FirstOrDefault() ??
+            var innerType = value.GetType().GetGenericArguments().FirstOrDefault() ??
                             throw new InvalidOperationException("No inner type found.");
             var hasValueMethod = MakeStaticGenericMethodInfo(nameof(HasValue), innerType);
             var getValueMethod = MakeStaticGenericMethodInfo(nameof(GetValue), innerType);

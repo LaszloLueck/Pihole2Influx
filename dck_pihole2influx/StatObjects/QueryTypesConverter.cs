@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using dck_pihole2influx.Transport.Telnet;
-using Newtonsoft.Json;
 using Optional;
 
 namespace dck_pihole2influx.StatObjects
