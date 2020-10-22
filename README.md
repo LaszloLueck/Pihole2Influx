@@ -47,6 +47,7 @@ Currently they are:
 <li>List of forward destinations (cache, dns, block)</li>
 <li>List of top clients</li>
 <li>overtime</li>
+<li>Version information</li>
 </ul>
 </li>
 </ul>
@@ -57,7 +58,6 @@ What is missing:
 <li>Create a default dashboard for influx</li>
 <li>Get all possible data from pihole<br />
 <ul>
-<li>Version information</li>
 <li>database statistics</li>
 </ul>
 </li>
