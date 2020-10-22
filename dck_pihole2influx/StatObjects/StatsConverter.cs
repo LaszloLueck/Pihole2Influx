@@ -20,7 +20,7 @@ namespace dck_pihole2influx.StatObjects
     ///unique_clients 9
     ///status enabled
     /// </summary>
-    public class StatsConverter : TelnetResultConverter
+    public class StatsConverter : TelnetResultConverter, IBaseConverter
     {
         public const string DomainsBeingBlocked = "DomainsBeingBlocked";
         public const string DnsQueriesToday = "DnsQueriesToday";
