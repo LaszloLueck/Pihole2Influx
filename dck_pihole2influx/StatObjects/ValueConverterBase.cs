@@ -2,7 +2,6 @@
 using System.Globalization;
 using dck_pihole2influx.Logging;
 using Optional;
-using Serilog;
 
 namespace dck_pihole2influx.StatObjects
 {
@@ -32,7 +31,7 @@ namespace dck_pihole2influx.StatObjects
             
         }
         
-        private static readonly ILogger Log = LoggingFactory<ValueConverterBase<T>>.CreateLogging();
+        private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<ValueConverterBase<T>>.GetLogger();
 
         private static string RemoveKeyAndTrim(string key, string input)
         {

@@ -4,15 +4,15 @@ using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using dck_pihole2influx.Transport.Telnet;
 using Optional;
-using Serilog;
 
 namespace dck_pihole2influx.StatObjects
 {
     public abstract class TelnetResultConverter : ConverterUtils
     {
-        private static readonly ILogger Log = LoggingFactory<TelnetResultConverter>.CreateLogging();
+        private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<TelnetResultConverter>.GetLogger();
         private string _input;
 
+        
         public Option<ConcurrentDictionary<string, IBaseResult>> DictionaryOpt { get; private set; }
 
         public async Task Convert(string input)

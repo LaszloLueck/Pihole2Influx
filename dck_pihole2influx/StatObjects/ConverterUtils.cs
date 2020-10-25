@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using Optional;
 using Optional.Collections;
-using Serilog;
 
 namespace dck_pihole2influx.StatObjects
 {
@@ -20,7 +19,7 @@ namespace dck_pihole2influx.StatObjects
         {
         }
 
-        private static readonly ILogger Log = LoggingFactory<ConverterUtils>.CreateLogging();
+        private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<ConverterUtils>.GetLogger();
 
         protected static Option<(string, IBaseResult)> ConvertResultForStandard(string line,
             Dictionary<string, PatternValue> pattern)

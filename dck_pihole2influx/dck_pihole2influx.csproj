@@ -6,11 +6,10 @@
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="InfluxDB.LineProtocol" Version="1.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Optional" Version="4.0.0" />
     <PackageReference Include="Quartz" Version="3.2.2" />
     <PackageReference Include="Quartz.Plugins" Version="3.2.2" />
-    <PackageReference Include="Serilog.Enrichers.Context" Version="4.2.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="8.14.0.22654">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

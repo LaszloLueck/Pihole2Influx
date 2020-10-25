@@ -1,6 +1,5 @@
 ﻿using System;
 using dck_pihole2influx.Logging;
-using Serilog;
 
 namespace dck_pihole2influx.Configuration
 {
@@ -20,7 +19,7 @@ namespace dck_pihole2influx.Configuration
         public readonly Configuration Configuration;
 
         private readonly IConfigurationUtils _configurationUtils;
-        private static readonly ILogger Log = LoggingFactory<ConfigurationFactory>.CreateLogging();
+        private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<ConfigurationFactory>.GetLogger();
 
         public ConfigurationFactory(IConfigurationUtils configurationUtils)
         {

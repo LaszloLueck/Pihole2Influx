@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 namespace dck_pihole2influx.test
 {
     [TestClass]
-    public class VersionInfoConverterTest
+    public class VersionInfoConverterTest : TestHelperUtils
     {
         private readonly TelnetResultConverter _telnetResultConverter;
 
@@ -46,14 +46,14 @@ date 2020-08-09 22:09:43 +0100
 
             var jsonExpected =
                 "{\"Tag\":\"v5.2\",\"Hash\":\"dbd4a69\",\"Branch\":\"master\",\"Version\":\"v5.2\",\"Date\":\"2020-08-09 22:09:43 +0100\"}";
-            var jObjectExpected =
-                new JObject(JObject.Parse(jsonExpected).Properties().OrderBy(element => element.Name)).ToString();
+            var orderedJsonExpected = OrderJsonObjectStringByName(jsonExpected).ValueOr("");
 
-            var jObjectResult = new JObject(JObject
-                .Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result).Properties()
-                .OrderBy(element => element.Name)).ToString();
+            var orderedJsonResult =
+                OrderJsonObjectStringByName(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result).ValueOr("");
 
-            jObjectExpected.Should().Be(jObjectResult);
+            orderedJsonExpected.Should().NotBeEmpty();
+            orderedJsonResult.Should().NotBeEmpty();
+            orderedJsonExpected.Should().Be(orderedJsonResult);
         }
     }
 }

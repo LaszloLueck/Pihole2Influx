@@ -10,7 +10,7 @@ using Optional;
 namespace dck_pihole2influx.test
 {
     [TestClass]
-    public class TopDomainsConverterTest
+    public class TopDomainsConverterTest : TestHelperUtils
     {
         private readonly TelnetResultConverter _telnetResultConverter;
 
@@ -44,8 +44,8 @@ namespace dck_pihole2influx.test
             {
                 {"0", new IntOutputNumberedElement(8462, "0", "x.y.z.de")},
                 {"1", new IntOutputNumberedElement(236, "1", "safebrowsing-cache.google.com")},
-                {"2", new IntOutputNumberedElement(116, "2", "pi.hole")},
                 {"3", new IntOutputNumberedElement(109, "3", "z.y.x.de")},
+                {"2", new IntOutputNumberedElement(116, "2", "pi.hole")},
                 {"4", new IntOutputNumberedElement(93, "4", "safebrowsing.google.com")},
                 {"5", new IntOutputNumberedElement(96, "5", "plus.google.com")}
             };
@@ -53,13 +53,15 @@ namespace dck_pihole2influx.test
             resultList.Should().BeEquivalentTo(expectedList);
 
             var expectedJson =
-                "[{\"position\":0,\"count\":8462,\"url\":\"x.y.z.de\"},{\"position\":1,\"count\":236,\"url\":\"safebrowsing-cache.google.com\"},{\"position\":2,\"count\":116,\"url\":\"pi.hole\"},{\"position\":3,\"count\":109,\"url\":\"z.y.x.de\"},{\"position\":4,\"count\":93,\"url\":\"safebrowsing.google.com\"},{\"position\":5,\"count\":96,\"url\":\"plus.google.com\"}]";
+                "[{\"Count\":8462,\"Position\":\"0\",\"IpOrHost\":\"x.y.z.de\"},{\"Count\":236,\"Position\":\"1\",\"IpOrHost\":\"safebrowsing-cache.google.com\"},{\"Count\":116,\"Position\":\"2\",\"IpOrHost\":\"pi.hole\"},{\"Count\":109,\"Position\":\"3\",\"IpOrHost\":\"z.y.x.de\"},{\"Count\":93,\"Position\":\"4\",\"IpOrHost\":\"safebrowsing.google.com\"},{\"Count\":96,\"Position\":\"5\",\"IpOrHost\":\"plus.google.com\"}]";
 
-            var expectedToken = JToken.Parse(expectedJson);
+            var orderedJsonExpected = OrderJsonArrayStringByName(expectedJson, "Position").ValueOr("");
+            var orderedJsonCurrent = OrderJsonArrayStringByName(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result, "Position").ValueOr("");
 
-            var currentToken = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result);
+            orderedJsonCurrent.Should().NotBeEmpty();
+            orderedJsonExpected.Should().NotBeEmpty();
+            orderedJsonCurrent.Should().Be(orderedJsonExpected);
 
-            currentToken.Should().BeEquivalentTo(expectedToken);
         }
 
         [TestMethod]

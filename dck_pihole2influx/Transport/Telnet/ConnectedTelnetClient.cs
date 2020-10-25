@@ -2,18 +2,17 @@
 using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using PrimS.Telnet;
-using Serilog;
 
 namespace dck_pihole2influx.Transport.Telnet
 {
     public class ConnectedTelnetClient : IConnectedTelnetClient
     {
-        private static readonly ILogger Log = LoggingFactory<ConnectedTelnetClient>.CreateLogging();
+        private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<ConnectedTelnetClient>.GetLogger();
         private readonly Client _client;
 
         public ConnectedTelnetClient(string telnetHost, int telnetPort)
         {
-            Log.Information($"Connect to Telnet-Host at {telnetHost}:{telnetPort}");
+            Log.Info($"Connect to Telnet-Host at {telnetHost}:{telnetPort}");
             _client = new Client(telnetHost, telnetPort, new CancellationToken());
         }
 
