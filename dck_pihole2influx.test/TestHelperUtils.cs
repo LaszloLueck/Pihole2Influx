@@ -8,6 +8,12 @@ namespace dck_pihole2influx.test
 {
     public class TestHelperUtils
     {
+
+        protected TestHelperUtils()
+        {
+            
+        }
+        
         private static readonly IMySimpleLogger Logger = MySimpleLoggerImpl<TestHelperUtils>.GetLogger();
         
         public static Option<string> OrderJsonObjectStringByName(string json)

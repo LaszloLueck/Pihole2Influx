@@ -4,7 +4,6 @@ using System.Linq;
 using dck_pihole2influx.StatObjects;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 using Optional;
 
 namespace dck_pihole2influx.test

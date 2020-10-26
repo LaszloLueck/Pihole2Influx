@@ -12,7 +12,7 @@ namespace dck_pihole2influx.Logging
     }
 
 
-    public class MySimpleLogger<T> : IMySimpleLogger
+    public class MySimpleConsoleLogger<T> : IMySimpleLogger
     {
         public void Info(string message)
         {
@@ -41,7 +41,7 @@ namespace dck_pihole2influx.Logging
     {
         public static IMySimpleLogger GetLogger()
         {
-            return new MySimpleLogger<T>();
+            return new MySimpleConsoleLogger<T>();
         }
     }
     
