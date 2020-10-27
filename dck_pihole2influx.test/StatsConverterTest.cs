@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 namespace dck_pihole2influx.test
 {
     [TestClass]
-    public class StatsConverterTest
+    public class StatsConverterTest : TestHelperUtils
     {
         private readonly TelnetResultConverter _telnetResultConverter;
 
@@ -60,11 +60,16 @@ status enabled
             var expectedJson =
                 "{\"QueriesCached\":20238,\"DnsQueriesToday\":30163,\"AdsPercentageToday\":18.731558,\"Status\":\"enabled\",\"AdsBlockedToday\":5650,\"UniqueClients\":9,\"DomainsBeingBlocked\":116007,\"QueriesForwarded\":4275,\"ClientsEverSeen\":11,\"UniqueDomains\":1056}";
 
-            var expectedToken = JToken.Parse(expectedJson);
+            var orderedExpectedJson = OrderJsonObjectString(expectedJson).ValueOr("");
 
-            var resultToken = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result);
+            var orderedCurrentJson =
+                OrderJsonObjectString(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result)
+                    .ValueOr("");
 
-            resultToken.Should().BeEquivalentTo(expectedToken);
+            orderedExpectedJson.Should().NotBeEmpty();
+            orderedCurrentJson.Should().NotBeEmpty();
+
+            orderedCurrentJson.Should().Be(orderedExpectedJson);
         }
         
         //All other possible checks (missing values, wrong types) are tested in CacheInfoConverterTest.cs

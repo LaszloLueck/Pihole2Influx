@@ -54,8 +54,8 @@ namespace dck_pihole2influx.test
             var expectedJson =
                 "[{\"Count\":8462,\"Position\":\"0\",\"IpOrHost\":\"x.y.z.de\"},{\"Count\":236,\"Position\":\"1\",\"IpOrHost\":\"safebrowsing-cache.google.com\"},{\"Count\":116,\"Position\":\"2\",\"IpOrHost\":\"pi.hole\"},{\"Count\":109,\"Position\":\"3\",\"IpOrHost\":\"z.y.x.de\"},{\"Count\":93,\"Position\":\"4\",\"IpOrHost\":\"safebrowsing.google.com\"},{\"Count\":96,\"Position\":\"5\",\"IpOrHost\":\"plus.google.com\"}]";
 
-            var orderedJsonExpected = OrderJsonArrayStringByName(expectedJson, "Position").ValueOr("");
-            var orderedJsonCurrent = OrderJsonArrayStringByName(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result, "Position").ValueOr("");
+            var orderedJsonExpected = OrderJsonArrayString(expectedJson, "Position").ValueOr("");
+            var orderedJsonCurrent = OrderJsonArrayString(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result, "Position").ValueOr("");
 
             orderedJsonCurrent.Should().NotBeEmpty();
             orderedJsonExpected.Should().NotBeEmpty();

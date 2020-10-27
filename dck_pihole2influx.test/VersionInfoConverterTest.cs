@@ -45,10 +45,10 @@ date 2020-08-09 22:09:43 +0100
 
             var jsonExpected =
                 "{\"Tag\":\"v5.2\",\"Hash\":\"dbd4a69\",\"Branch\":\"master\",\"Version\":\"v5.2\",\"Date\":\"2020-08-09 22:09:43 +0100\"}";
-            var orderedJsonExpected = OrderJsonObjectStringByName(jsonExpected).ValueOr("");
+            var orderedJsonExpected = OrderJsonObjectString(jsonExpected).ValueOr("");
 
             var orderedJsonResult =
-                OrderJsonObjectStringByName(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result).ValueOr("");
+                OrderJsonObjectString(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result).ValueOr("");
 
             orderedJsonExpected.Should().NotBeEmpty();
             orderedJsonResult.Should().NotBeEmpty();

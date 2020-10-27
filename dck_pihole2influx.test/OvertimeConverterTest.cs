@@ -4,16 +4,14 @@ using System.Linq;
 using dck_pihole2influx.StatObjects;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 
 namespace dck_pihole2influx.test
 {
     [TestClass]
-    public class OvertimeConverterTest
+    public class OvertimeConverterTest : TestHelperUtils
     {
-
         private readonly TelnetResultConverter _telnetResultConverter;
-        
+
         public OvertimeConverterTest()
         {
             _telnetResultConverter = new OvertimeConverter();
@@ -58,16 +56,23 @@ namespace dck_pihole2influx.test
                 .ToDictionary(element => element.Key, element => element.Value);
 
 
-            dictionaryExpected.Should().BeEquivalentTo(resultDic, options => options.IncludingFields().IncludingProperties().AllowingInfiniteRecursion().IncludingNestedObjects());
+            dictionaryExpected.Should().BeEquivalentTo(resultDic,
+                options => options.IncludingFields().IncludingProperties().AllowingInfiniteRecursion()
+                    .IncludingNestedObjects());
 
-            var expectedJson = "[{\"TimeStamp\":1603127100,\"PermitValue\":444,\"BlockValue\":21},{\"TimeStamp\":1603127700,\"PermitValue\":636,\"BlockValue\":99},{\"TimeStamp\":1603128300,\"PermitValue\":888,\"BlockValue\":58},{\"TimeStamp\":1603128900,\"PermitValue\":917,\"BlockValue\":33},{\"TimeStamp\":1603129500,\"PermitValue\":400,\"BlockValue\":15},{\"TimeStamp\":1603130100,\"PermitValue\":1329,\"BlockValue\":77},{\"TimeStamp\":1603130700,\"PermitValue\":1057,\"BlockValue\":99},{\"TimeStamp\":1603131300,\"PermitValue\":771,\"BlockValue\":100},{\"TimeStamp\":1603131900,\"PermitValue\":1158,\"BlockValue\":119},{\"TimeStamp\":1603132500,\"PermitValue\":1658,\"BlockValue\":57}]";
-            var expectedToken = JToken.Parse(expectedJson);
+            var expectedJson =
+                "[{\"TimeStamp\":1603127100,\"PermitValue\":444,\"BlockValue\":21},{\"TimeStamp\":1603127700,\"PermitValue\":636,\"BlockValue\":99},{\"TimeStamp\":1603128300,\"PermitValue\":888,\"BlockValue\":58},{\"TimeStamp\":1603128900,\"PermitValue\":917,\"BlockValue\":33},{\"TimeStamp\":1603129500,\"PermitValue\":400,\"BlockValue\":15},{\"TimeStamp\":1603130100,\"PermitValue\":1329,\"BlockValue\":77},{\"TimeStamp\":1603130700,\"PermitValue\":1057,\"BlockValue\":99},{\"TimeStamp\":1603131300,\"PermitValue\":771,\"BlockValue\":100},{\"TimeStamp\":1603131900,\"PermitValue\":1158,\"BlockValue\":119},{\"TimeStamp\":1603132500,\"PermitValue\":1658,\"BlockValue\":57}]";
 
-            var resultToken = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result);
-            resultToken.Should().BeEquivalentTo(expectedToken);
+            var orderedExpectedJson = OrderJsonArrayString(expectedJson, "TimeStamp").ValueOr("");
 
+            var orderedCurrentJson = OrderJsonArrayString(
+                _telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result, "TimeStamp"
+            ).ValueOr("");
+
+            orderedExpectedJson.Should().NotBeEmpty();
+            orderedCurrentJson.Should().NotBeEmpty();
+
+            orderedCurrentJson.Should().Be(orderedExpectedJson);
         }
-        
-        
     }
 }

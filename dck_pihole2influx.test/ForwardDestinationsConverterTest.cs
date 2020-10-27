@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using dck_pihole2influx.StatObjects;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 
 namespace dck_pihole2influx.test
 {
     [TestClass]
-    public class ForwardDestinationsConverterTest
+    public class ForwardDestinationsConverterTest : TestHelperUtils
     {
         private readonly TelnetResultConverter _telnetResultConverter;
 
@@ -28,7 +27,7 @@ namespace dck_pihole2influx.test
     ---EOM---";
 
             _telnetResultConverter.Convert(testee).Wait();
-           
+
             var dictionaryExpected = new Dictionary<string, IBaseResult>
             {
                 {"-2", new DoubleOutputNumberedElement(22.31d, "-2", "blocklist blocklist")},
@@ -42,14 +41,19 @@ namespace dck_pihole2influx.test
                 _telnetResultConverter.DictionaryOpt.ValueOr(new ConcurrentDictionary<string, IBaseResult>());
             dictionaryResult.Should().BeEquivalentTo(dictionaryExpected);
 
-            var tokenResult = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result);
 
-            var jsonExpected = "[{\"position\":-2,\"percentage\":22.31,\"entry\":\"blocklist blocklist\"},{\"position\":-1,\"percentage\":8.24,\"entry\":\"cache cache\"},{\"position\":0,\"percentage\":35.31,\"entry\":\"192.168.1.1 opnsense.localdomain\"},{\"position\":1,\"percentage\":19.39,\"entry\":\"1.0.0.1 one.one.one.one\"},{\"position\":2,\"percentage\":15.6,\"entry\":\"1.1.1.1 one.one.one.one\"}]";
-            var tokenExpected = JToken.Parse(jsonExpected);
+            var jsonExpected =
+                "[{\"Count\":8.24,\"Position\":\"-1\",\"IpOrHost\":\"cache cache\"},{\"Count\":22.31,\"Position\":\"-2\",\"IpOrHost\":\"blocklist blocklist\"},{\"Count\":35.31,\"Position\":\"0\",\"IpOrHost\":\"192.168.1.1 opnsense.localdomain\"},{\"Count\":19.39,\"Position\":\"1\",\"IpOrHost\":\"1.0.0.1 one.one.one.one\"},{\"Count\":15.6,\"Position\":\"2\",\"IpOrHost\":\"1.1.1.1 one.one.one.one\"}]";
 
-            tokenResult.Should().BeEquivalentTo(tokenExpected);
+            var orderedExpectedJson = OrderJsonArrayString(jsonExpected, "Position").ValueOr("");
+            var orderedCurrentJson =
+                OrderJsonArrayString(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result, "Position")
+                    .ValueOr("");
 
+            orderedExpectedJson.Should().NotBeEmpty();
+            orderedCurrentJson.Should().NotBeEmpty();
+
+            orderedCurrentJson.Should().Be(orderedExpectedJson);
         }
-
     }
 }

@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 namespace dck_pihole2influx.test
 {
     [TestClass]
-    public class QueryTypesConverterTest
+    public class QueryTypesConverterTest : TestHelperUtils
     {
         private readonly TelnetResultConverter _telnetResultConverter;
 
@@ -61,12 +61,17 @@ OTHER: 5.19
             resultDic.Should().BeEquivalentTo(dictionaryExpected);
 
             var expectedJson = "[{\"Key\":\"ANY\",\"Value\":0.00},{\"Key\":\"MX\",\"Value\":0.00},{\"Key\":\"RRSIG\",\"Value\":0.00},{\"Key\":\"SOA\",\"Value\":0.04},{\"Key\":\"NAPTR\",\"Value\":0.04},{\"Key\":\"DNSKEY\",\"Value\":0.17},{\"Key\":\"TXT\",\"Value\":0.55},{\"Key\":\"DS\",\"Value\":0.80},{\"Key\":\"SRV\",\"Value\":1.72},{\"Key\":\"PTR\",\"Value\":1.75},{\"Key\":\"OTHER\",\"Value\":5.19},{\"Key\":\"AAAA (IPv6)\",\"Value\":22.01},{\"Key\":\"A (IPv4)\",\"Value\":67.73}]";
-            var expectedToken = JToken.Parse(expectedJson);
 
-            var resultToken = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result);
-            resultToken.Should().BeEquivalentTo(expectedToken);
+            var orderedExpectedJson = OrderJsonArrayString(expectedJson, "Key").ValueOr("");
 
+            var orderedCurrentJson =
+                OrderJsonArrayString(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result, "Key")
+                    .ValueOr("");
 
+            orderedExpectedJson.Should().NotBeEmpty();
+            orderedCurrentJson.Should().NotBeEmpty();
+
+            orderedCurrentJson.Should().Be(orderedExpectedJson);
         }
     }
 }
