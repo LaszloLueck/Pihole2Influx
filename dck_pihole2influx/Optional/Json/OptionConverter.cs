@@ -78,12 +78,18 @@ namespace dck_pihole2influx.Optional.Json
             serializer.Serialize(writer, innerValue);
         }
 
+#nullable enable
+        private MethodInfo? GetMethodInfo(string name, params Type[] typeArguments)
+        {
+            BindingFlags bindingAttr = BindingFlags.NonPublic | BindingFlags.Static;
+            return GetType().GetMethod(name, bindingAttr)?.MakeGenericMethod(typeArguments);
+        }
+#nullable disable
+
         private MethodInfo MakeStaticGenericMethodInfo(string name, params Type[] typeArguments)
         {
-            return GetType()
-                       .GetMethod(name, BindingFlags.NonPublic | BindingFlags.Static)
-                       ?.MakeGenericMethod(typeArguments)
-                   ?? throw new InvalidOperationException($"Could not make generic MethodInfo for method '{name}'.");
+            return GetMethodInfo(name, typeArguments) ??
+                   throw new InvalidOperationException($"Could not make generic MethodInfo for method '{name}'.");
         }
 
         private static bool HasValue<T>(Option<T> option) => option.HasValue;
