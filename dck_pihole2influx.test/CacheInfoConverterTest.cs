@@ -9,7 +9,7 @@ using Newtonsoft.Json.Linq;
 namespace dck_pihole2influx.test
 {
     [TestClass]
-    public class CacheInfoConverterTest
+    public class CacheInfoConverterTest : TestHelperUtils
     {
         private readonly TelnetResultConverter _telnetResultConverter;
 
@@ -42,15 +42,20 @@ cache-inserted: 98590
 
             resultDic.Should().BeEquivalentTo(expectedDictionary);
 
-            var resultTokens = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync( false).Result);
 
             var jsonExpected =
                 $"{{\"{CacheInfoConverter.CacheSize}\":10000,\"{CacheInfoConverter.CacheLiveFreed}\":0,\"{CacheInfoConverter.CacheInserted}\":98590}}";
 
-            var expectedToken = JToken.Parse(jsonExpected);
+            var orderedExpectedJson = OrderJsonObjectString(jsonExpected).ValueOr("");
 
+            var orderedCurrentJson =
+                OrderJsonObjectString(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result)
+                    .ValueOr("");
 
-            resultTokens.Should().BeEquivalentTo(expectedToken);
+            orderedCurrentJson.Should().NotBeEmpty();
+            orderedExpectedJson.Should().NotBeEmpty();
+
+            orderedCurrentJson.Should().Be(orderedExpectedJson);
         }
 
         [TestMethod, Description("Return None because one or more parameter are missing in result")]
@@ -76,12 +81,16 @@ cache-inserted: 98590
             
             var jsonExpected = $"{{\"{CacheInfoConverter.CacheSize}\":10000,\"{CacheInfoConverter.CacheInserted}\":98590}}";
 
-            var expectedToken = JToken.Parse(jsonExpected);
+            var orderedExpectedJson = OrderJsonObjectString(jsonExpected).ValueOr("");
+            var orderedCurrentJson =
+                OrderJsonObjectString(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result)
+                    .ValueOr("");
 
-            var resultToken = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync( false).Result);
+            orderedExpectedJson.Should().NotBeEmpty();
+            orderedCurrentJson.Should().NotBeEmpty();
 
-            resultToken.Should().BeEquivalentTo(expectedToken);
-            
+            orderedCurrentJson.Should().Be(orderedExpectedJson);
+
         }
 
         [TestMethod]
@@ -111,11 +120,16 @@ cache-inserted: abcde
 
             var expectedJson =
                 $"{{\"{CacheInfoConverter.CacheSize}\":10000,\"{CacheInfoConverter.CacheLiveFreed}\":0,\"{CacheInfoConverter.CacheInserted}\":0}}";
-            var expectedToken = JToken.Parse(expectedJson);
 
-            var resultToken = JToken.Parse(_telnetResultConverter.GetJsonObjectFromDictionaryAsync( false).Result);
+            var orderedExpectedJson = OrderJsonObjectString(expectedJson).ValueOr("");
+            var orderedCurrentJson =
+                OrderJsonObjectString(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result)
+                    .ValueOr("");
 
-            resultToken.Should().BeEquivalentTo(expectedToken);
+            orderedExpectedJson.Should().NotBeEmpty();
+            orderedCurrentJson.Should().NotBeEmpty();
+
+            orderedCurrentJson.Should().Be(orderedExpectedJson);
         }
 
         [TestMethod]
