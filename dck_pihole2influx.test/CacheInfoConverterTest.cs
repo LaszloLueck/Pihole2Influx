@@ -2,9 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using dck_pihole2influx.StatObjects;
 using FluentAssertions;
-using FluentAssertions.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 
 namespace dck_pihole2influx.test
 {
