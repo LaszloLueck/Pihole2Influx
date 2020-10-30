@@ -16,7 +16,8 @@ namespace dck_pihole2influx.StatObjects
                 new ForwardDestinationsConverter(),
                 new TopClientsConverter(),
                 new OvertimeConverter(),
-                new VersionInfoConverter()
+                new VersionInfoConverter(),
+                new DbStatsConverter()
             };
         }
         

@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using dck_pihole2influx.StatObjects;
+using dck_pihole2influx.Transport.Telnet;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -55,6 +56,7 @@ status enabled
             
             resultDic.Should().BeEquivalentTo(dictionaryExpected);
 
+            _telnetResultConverter.GetPiholeCommand().ToString().Should().Be(PiholeCommands.Stats.ToString());
 
             var expectedJson =
                 "{\"QueriesCached\":20238,\"DnsQueriesToday\":30163,\"AdsPercentageToday\":18.731558,\"Status\":\"enabled\",\"AdsBlockedToday\":5650,\"UniqueClients\":9,\"DomainsBeingBlocked\":116007,\"QueriesForwarded\":4275,\"ClientsEverSeen\":11,\"UniqueDomains\":1056}";

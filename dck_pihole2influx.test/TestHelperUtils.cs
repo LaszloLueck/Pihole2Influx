@@ -15,8 +15,8 @@ namespace dck_pihole2influx.test
         }
         
         private static readonly IMySimpleLogger Logger = MySimpleLoggerImpl<TestHelperUtils>.GetLogger();
-        
-        public static Option<string> OrderJsonObjectString(string json)
+
+        protected static Option<string> OrderJsonObjectString(string json)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace dck_pihole2influx.test
             }
         }
 
-        public static Option<string> OrderJsonArrayString(string json, string orderBy)
+        protected static Option<string> OrderJsonArrayString(string json, string orderBy)
         {
             try
             {

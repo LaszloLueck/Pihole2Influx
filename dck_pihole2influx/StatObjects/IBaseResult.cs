@@ -26,6 +26,16 @@ namespace dck_pihole2influx.StatObjects
         }
     }
 
+    public class PrimitiveResultLong : IBaseResult
+    {
+        public long Value { get; }
+
+        public PrimitiveResultLong(long value)
+        {
+            Value = value;
+        }
+    }
+
     public class PrimitiveResultFloat : IBaseResult
     {
         public float Value { get; }

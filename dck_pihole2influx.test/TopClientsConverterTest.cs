@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using dck_pihole2influx.StatObjects;
+using dck_pihole2influx.Transport.Telnet;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Optional;
@@ -56,6 +57,8 @@ namespace dck_pihole2influx.test
                 _telnetResultConverter.DictionaryOpt.ValueOr(new ConcurrentDictionary<string, IBaseResult>());
 
             resultDictionary.Should().BeEquivalentTo(expectedDictionary);
+            
+            _telnetResultConverter.GetPiholeCommand().ToString().Should().Be(PiholeCommands.Topclients.ToString());
 
 
             var expectedJson =

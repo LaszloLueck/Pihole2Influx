@@ -67,10 +67,14 @@ namespace dck_pihole2influx.StatObjects
                         : f;
                     IBaseValue retFloat = new BaseValue<float>(floatValue);
                     return Option.Some(retFloat);
+                case long l:
+                    long longValue = long.TryParse(RemoveKeyAndTrim(key, input), out longValue) ? longValue : l;
+                    IBaseValue retLong = new BaseValue<long>(longValue);
+                    return Option.Some(retLong);
                 default:
                     Log.Warning($"An inconvertible type found and get back an None. Type is {typeof(T).FullName}");
                     return Option.None<IBaseValue>();
             }
         }
-    }
+    } 
 }

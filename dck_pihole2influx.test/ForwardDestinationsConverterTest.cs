@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using dck_pihole2influx.StatObjects;
+using dck_pihole2influx.Transport.Telnet;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -41,6 +42,9 @@ namespace dck_pihole2influx.test
                 _telnetResultConverter.DictionaryOpt.ValueOr(new ConcurrentDictionary<string, IBaseResult>());
             dictionaryResult.Should().BeEquivalentTo(dictionaryExpected);
 
+            _telnetResultConverter.GetPiholeCommand().ToString().Should()
+                .Be(PiholeCommands.Forwarddestinations.ToString());
+            
 
             var jsonExpected =
                 "[{\"Count\":8.24,\"Position\":\"-1\",\"IpOrHost\":\"cache cache\"},{\"Count\":22.31,\"Position\":\"-2\",\"IpOrHost\":\"blocklist blocklist\"},{\"Count\":35.31,\"Position\":\"0\",\"IpOrHost\":\"192.168.1.1 opnsense.localdomain\"},{\"Count\":19.39,\"Position\":\"1\",\"IpOrHost\":\"1.0.0.1 one.one.one.one\"},{\"Count\":15.6,\"Position\":\"2\",\"IpOrHost\":\"1.1.1.1 one.one.one.one\"}]";

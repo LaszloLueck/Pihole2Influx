@@ -4,6 +4,7 @@ namespace dck_pihole2influx.StatObjects
     {
         String,
         Int,
-        Float
+        Float,
+        Long
     }
 }

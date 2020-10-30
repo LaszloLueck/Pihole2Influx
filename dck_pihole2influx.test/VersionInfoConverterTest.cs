@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using dck_pihole2influx.StatObjects;
+using dck_pihole2influx.Transport.Telnet;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -42,6 +43,8 @@ date 2020-08-09 22:09:43 +0100
                     .OrderBy(element => element.Key);
 
             dictionaryResult.Should().BeEquivalentTo(dictionaryExpected);
+            
+            _telnetResultConverter.GetPiholeCommand().ToString().Should().Be(PiholeCommands.Version.ToString());
 
             var jsonExpected =
                 "{\"Tag\":\"v5.2\",\"Hash\":\"dbd4a69\",\"Branch\":\"master\",\"Version\":\"v5.2\",\"Date\":\"2020-08-09 22:09:43 +0100\"}";

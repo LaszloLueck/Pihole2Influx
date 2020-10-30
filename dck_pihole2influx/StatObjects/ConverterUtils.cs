@@ -15,11 +15,11 @@ namespace dck_pihole2influx.StatObjects
 {
     public class ConverterUtils
     {
+        private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<ConverterUtils>.GetLogger();
+
         protected ConverterUtils()
         {
         }
-
-        private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<ConverterUtils>.GetLogger();
 
         protected static Option<(string, IBaseResult)> ConvertResultForStandard(string line,
             Dictionary<string, PatternValue> pattern)
@@ -45,6 +45,10 @@ namespace dck_pihole2influx.StatObjects
                             .Map<(string, IBaseResult)>(value =>
                                 (patternValue.GivenName,
                                     new PrimitiveResultFloat(((BaseValue<float>) value).GetValue()))),
+                        ValueTypes.Long => ValueConverterBase<long>
+                            .Convert(line, key, (long) patternValue.AlternativeValue)
+                            .Map<(string, IBaseResult)>(value => (patternValue.GivenName, 
+                                new PrimitiveResultLong(((BaseValue<long>)value).GetValue()))),
                         _ => Option.None<(string, IBaseResult)>()
                     };
                 });
@@ -200,7 +204,7 @@ namespace dck_pihole2influx.StatObjects
                 await using (var stream = new MemoryStream())
                 {
                     await JsonSerializer.SerializeAsync(stream, output, output.GetType(),
-                         new JsonSerializerOptions() {WriteIndented = prettyPrint});
+                        new JsonSerializerOptions() {WriteIndented = prettyPrint});
                     stream.Position = 0;
                     using var reader = new StreamReader(stream);
                     return await reader.ReadToEndAsync();
@@ -220,6 +224,7 @@ namespace dck_pihole2influx.StatObjects
                 PrimitiveResultString primitiveResultString => (input.Key, primitiveResultString.Value),
                 PrimitiveResultFloat primitiveResultFloat => (input.Key, primitiveResultFloat.Value),
                 PrimitiveResultInt primitiveResultInt => (input.Key, primitiveResultInt.Value),
+                PrimitiveResultLong primitiveResultLong => (input.Key, primitiveResultLong.Value),
                 _ => ("", "")
             };
 

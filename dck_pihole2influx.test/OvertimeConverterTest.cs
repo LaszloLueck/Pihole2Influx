@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using dck_pihole2influx.StatObjects;
+using dck_pihole2influx.Transport.Telnet;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -55,6 +56,7 @@ namespace dck_pihole2influx.test
                 .OrderBy(element => element.Key)
                 .ToDictionary(element => element.Key, element => element.Value);
 
+            _telnetResultConverter.GetPiholeCommand().ToString().Should().Be(PiholeCommands.Overtime.ToString());
 
             dictionaryExpected.Should().BeEquivalentTo(resultDic,
                 options => options.IncludingFields().IncludingProperties().AllowingInfiniteRecursion()

@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using dck_pihole2influx.StatObjects;
+using dck_pihole2influx.Transport.Telnet;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -56,6 +57,8 @@ OTHER: 5.19
             var resultDic = _telnetResultConverter
                 .DictionaryOpt
                 .ValueOr(new ConcurrentDictionary<string, IBaseResult>());
+            
+            _telnetResultConverter.GetPiholeCommand().ToString().Should().Be(PiholeCommands.Querytypes.ToString());
             
             resultDic.Should().BeEquivalentTo(dictionaryExpected);
 
