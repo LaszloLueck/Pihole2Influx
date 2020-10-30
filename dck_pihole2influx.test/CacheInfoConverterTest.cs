@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using dck_pihole2influx.StatObjects;
+using dck_pihole2influx.Transport.Telnet;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -40,6 +41,8 @@ cache-inserted: 98590
 
             resultDic.Should().BeEquivalentTo(expectedDictionary);
 
+            _telnetResultConverter.GetPiholeCommand().ToString().Should().Be(PiholeCommands.Cacheinfo.ToString());
+            
 
             var jsonExpected =
                 $"{{\"{CacheInfoConverter.CacheSize}\":10000,\"{CacheInfoConverter.CacheLiveFreed}\":0,\"{CacheInfoConverter.CacheInserted}\":98590}}";
