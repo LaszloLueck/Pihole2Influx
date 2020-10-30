@@ -48,6 +48,7 @@ Currently they are:
 <li>List of top clients</li>
 <li>overtime</li>
 <li>Version information</li>
+<li>database statistics</li>
 </ul>
 </li>
 </ul>
@@ -56,11 +57,6 @@ What is missing:
 <ul>
 <li>Write the data to influxdb</li>
 <li>Create a default dashboard for influx</li>
-<li>Get all possible data from pihole<br />
-<ul>
-<li>database statistics</li>
-</ul>
-</li>
-<li>many tests</li>
+<li>better test coverage (currently only 70%)</li>
 </ul>
 
