@@ -43,12 +43,9 @@ namespace dck_pihole2influx.StatObjects
             switch (alternative)
             {
                 case int i:
-                    int parsedValue = int.TryParse(RemoveKeyAndTrim(key, input), out parsedValue)
-                        ? parsedValue
-                        : i;
-                    IBaseValue retInt = new BaseValue<int>(parsedValue);
-
-                    return Option.Some(retInt);
+                    return int.TryParse(RemoveKeyAndTrim(key, input), out var intValue)
+                        ? Option.Some((IBaseValue)new BaseValue<int>(intValue))
+                        : Option.Some((IBaseValue)new BaseValue<int>(i));
                 case string s:
                     try
                     {
@@ -62,15 +59,14 @@ namespace dck_pihole2influx.StatObjects
                         return Option.Some(retString);
                     }
                 case float f:
-                    float floatValue = float.TryParse(RemoveKeyAndTrim(key, input), NumberStyles.Float, CultureInfo.InvariantCulture, out floatValue)
-                        ? floatValue
-                        : f;
-                    IBaseValue retFloat = new BaseValue<float>(floatValue);
-                    return Option.Some(retFloat);
+                    return float.TryParse(RemoveKeyAndTrim(key, input), NumberStyles.Float,
+                        CultureInfo.InvariantCulture, out var floatValue)
+                        ? Option.Some((IBaseValue) new BaseValue<float>(floatValue))
+                        : Option.Some((IBaseValue) new BaseValue<float>(f));
                 case long l:
-                    long longValue = long.TryParse(RemoveKeyAndTrim(key, input), out longValue) ? longValue : l;
-                    IBaseValue retLong = new BaseValue<long>(longValue);
-                    return Option.Some(retLong);
+                    return long.TryParse(RemoveKeyAndTrim(key, input), out var longValue)
+                        ? Option.Some((IBaseValue) new BaseValue<long>(longValue))
+                        : Option.Some((IBaseValue) new BaseValue<long>(l));
                 default:
                     Log.Warning($"An inconvertible type found and get back an None. Type is {typeof(T).FullName}");
                     return Option.None<IBaseValue>();
