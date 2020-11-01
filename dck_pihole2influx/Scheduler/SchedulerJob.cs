@@ -60,6 +60,7 @@ namespace dck_pihole2influx.Scheduler
                             var resultString = await worker.GetJsonObjectFromDictionaryAsync(true);
                             Log.Info(resultString);
                             
+                            
                         }
 
                         await telnetClient.WriteCommand(PiholeCommands.Quit);
