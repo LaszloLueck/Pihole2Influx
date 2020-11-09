@@ -6,7 +6,7 @@ namespace dck_pihole2influx.Configuration
         public const int DefaultPiholePort = 4711;
         public const string DefaultInfluxDbHostOrIp = "127.0.0.1";
         public const int DefaultInfluxDbPort = 8086;
-        public const string DefaultInfluxDbDatabaseName = "influxdb";
+        public const string DefaultInfluxDbDatabaseName = "pihole2influx";
         public const string DefaultInfluxDbUserName = "";
         public const string DefaultInfluxDbPassword = "";
         public const string DefaultPiholeUser = "";

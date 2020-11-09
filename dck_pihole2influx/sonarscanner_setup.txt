@@ -5,12 +5,12 @@ if the command dotnet sonarscanner not work (not found) the path to executable m
 export PATH="$PATH:/root/.dotnet/tools" --> where root is your home directory  
 
 
-Send the buildresults to SonarQube on 192.168.1.5
-dotnet sonarscanner begin /name:"Pihole2Influx" /d:sonar.host.url="http://192.168.1.5:9000" /k:"3d075ac072aaf2b2b721e086939347b29728c396" /d:sonar.cs.opencover.reportsPaths="TestResults/coverage.opencover.xml"
+Send the buildresults to SonarQube on 192.168.1.4
+dotnet sonarscanner begin /name:"Pihole2Influx" /d:sonar.host.url="http://192.168.1.4:9000" /k:"3d075ac072aaf2b2b721e086939347b29728c396" /d:sonar.cs.opencover.reportsPaths="TestResults/coverage.opencover.xml" /d:sonar.login="f6106b1c3a4f1925d7c0a42a8f240745db0af1fb"
 dotnet clean
 dotnet build /t:rebuild
-dotnet test dck_pihole2influx.test  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="../TestResults/"
-dotnet sonarscanner end
+dotnet test dck_pihole2influx.test  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="../TestResults/" 
+dotnet sonarscanner end /d:sonar.login="f6106b1c3a4f1925d7c0a42a8f240745db0af1fb"
 
 To check quality while coding install nuget package
 - SonarAnalyzer.CSharp

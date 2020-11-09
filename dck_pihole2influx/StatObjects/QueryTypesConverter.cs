@@ -28,7 +28,6 @@ namespace dck_pihole2influx.StatObjects
     /// </summary>
     public class QueryTypesConverter : TelnetResultConverter, IBaseConverter
     {
-
         public Dictionary<string, PatternValue> GetPattern()
         {
             return new Dictionary<string, PatternValue>();

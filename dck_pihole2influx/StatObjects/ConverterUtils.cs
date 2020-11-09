@@ -165,11 +165,11 @@ namespace dck_pihole2influx.StatObjects
         {
             //0 24593 192.168.1.1 aaa.localdomain or 0 24593 192.168.1.1
 
-            var countOpt = int.TryParse(match.Groups[1].Value, out var iCount)
+            var countOpt = int.TryParse(match.Groups[2].Value, out var iCount)
                 ? Option.Some(iCount)
                 : Option.None<int>();
 
-            var positionOpt = int.TryParse(match.Groups[2].Value, out var iPosition)
+            var positionOpt = int.TryParse(match.Groups[1].Value, out var iPosition)
                 ? Option.Some(iPosition)
                 : Option.None<int>();
 

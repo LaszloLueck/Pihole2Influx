@@ -13,7 +13,7 @@ namespace dck_pihole2influx.test
         {
             var testee = Workers.GetJobsToDo().Count;
 
-            testee.Should().Be(10);
+            testee.Should().Be(1);
 
         }
         

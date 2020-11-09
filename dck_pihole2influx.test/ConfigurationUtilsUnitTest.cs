@@ -67,7 +67,7 @@ namespace dck_pihole2influx.test
             testee.PiholePassword.Should().Be("");
             testee.InfluxDbHostOrIp.Should().Be("127.0.0.1");
             testee.InfluxDbPort.Should().Be(8086);
-            testee.InfluxDbDatabaseName.Should().Be("influxdb");
+            testee.InfluxDbDatabaseName.Should().Be("pihole2influx");
             testee.InfluxDbUserName.Should().Be("");
             testee.InfluxDbPassword.Should().Be("");
             testee.ConcurrentRequestsToPihole.Should().Be(1);

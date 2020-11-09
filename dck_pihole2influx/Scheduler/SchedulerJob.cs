@@ -1,10 +1,16 @@
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using dck_pihole2influx.Configuration;
 using dck_pihole2influx.Logging;
 using dck_pihole2influx.StatObjects;
+using dck_pihole2influx.Transport.InfluxDb;
+using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using dck_pihole2influx.Transport.Telnet;
+using Optional;
 using Quartz;
 
 namespace dck_pihole2influx.Scheduler
@@ -33,6 +39,10 @@ namespace dck_pihole2influx.Scheduler
                     $"Connect to Pihole and process data with {ConfigurationFactory.ConcurrentRequestsToPihole} parallel process(es).");
                 Log.Info("Connect to pihole and get stats");
 
+                InfluxConnectionFactory influxConnector =
+                    new InfluxDbConnector().GetInfluxDbConnection();
+                influxConnector.Connect(ConfigurationFactory);
+
                 //throttle the amount of concurrent telnet-requests to pihole.
                 //if it is not set per env-var, the default is 1 (one request per time). 
                 var mutex = new SemaphoreSlim(ConfigurationFactory.ConcurrentRequestsToPihole);
@@ -59,8 +69,17 @@ namespace dck_pihole2influx.Scheduler
                             await worker.Convert(result);
                             var resultString = await worker.GetJsonObjectFromDictionaryAsync(true);
                             Log.Info(resultString);
-                            
-                            
+
+                            switch (worker)
+                            {
+                                case TopClientsConverter topClientsConverter:
+                                    var items = CalculateMeasurementsTopClients(topClientsConverter.DictionaryOpt);
+                                    influxConnector.MeasureTopClients(items);
+                                    break;
+                                default:
+                                    Log.Warning($"No conversion for Type {worker.GetType().FullName} available");
+                                    break;
+                            }
                         }
 
                         await telnetClient.WriteCommand(PiholeCommands.Quit);
@@ -70,7 +89,25 @@ namespace dck_pihole2influx.Scheduler
                     mutex.Release();
                 });
                 await Task.WhenAll(enumerable);
+                influxConnector.DisposeConnector();
             });
+        }
+
+        private List<MeasurementTopClient> CalculateMeasurementsTopClients(
+            Option<ConcurrentDictionary<string, IBaseResult>> dictOpt)
+        {
+            return dictOpt.Map(dic =>
+            {
+                return (from tuple in dic select tuple).Select(tpl =>
+                {
+                    var convValue = (DoubleStringOutputElement) tpl.Value;
+                    return new MeasurementTopClient()
+                    {
+                        ClientIp = convValue.IpAddress, HostName = convValue.HostName.ValueOr(""),
+                        Position = convValue.Position + 1, Count = convValue.Count, Time = DateTime.Now
+                    };
+                });
+            }).ValueOr(new List<MeasurementTopClient>()).ToList();
         }
     }
 }
