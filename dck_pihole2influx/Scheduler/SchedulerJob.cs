@@ -74,7 +74,7 @@ namespace dck_pihole2influx.Scheduler
                             {
                                 case TopClientsConverter topClientsConverter:
                                     var items = CalculateMeasurementsTopClients(topClientsConverter.DictionaryOpt);
-                                    influxConnector.MeasureTopClients(items);
+                                    influxConnector.WriteMeasurements(items);
                                     break;
                                 default:
                                     Log.Warning($"No conversion for Type {worker.GetType().FullName} available");
@@ -93,7 +93,7 @@ namespace dck_pihole2influx.Scheduler
             });
         }
 
-        private List<MeasurementTopClient> CalculateMeasurementsTopClients(
+        private static List<MeasurementTopClient> CalculateMeasurementsTopClients(
             Option<ConcurrentDictionary<string, IBaseResult>> dictOpt)
         {
             return dictOpt.Map(dic =>
