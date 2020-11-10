@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using dck_pihole2influx.StatObjects;
 using dck_pihole2influx.Transport.InfluxDb;
 using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using dck_pihole2influx.Transport.Telnet;
+using InfluxDB.Client.Writes;
 using Optional;
 using Quartz;
 
@@ -76,6 +78,9 @@ namespace dck_pihole2influx.Scheduler
                                     var items = CalculateMeasurementsTopClients(topClientsConverter.DictionaryOpt);
                                     influxConnector.WriteMeasurements(items);
                                     break;
+                                case DbStatsConverter dbStatsConverter:
+                                    CalculateAndSendDbStatsInfo(dbStatsConverter.DictionaryOpt, influxConnector);
+                                    break;
                                 default:
                                     Log.Warning($"No conversion for Type {worker.GetType().FullName} available");
                                     break;
@@ -90,6 +95,40 @@ namespace dck_pihole2influx.Scheduler
                 });
                 await Task.WhenAll(enumerable);
                 influxConnector.DisposeConnector();
+            });
+        }
+
+        private void CalculateAndSendDbStatsInfo(
+            Option<ConcurrentDictionary<string, IBaseResult>> dictOpt, InfluxConnectionFactory connectionFactory)
+        {
+            dictOpt.MatchSome(dic =>
+            {
+                foreach (var kv in dic.ToList())
+                {
+                    switch (kv.Key)
+                    {
+                        case DbStatsConverter.DatabaseFileSize:
+                            var valueAsDouble = ((PrimitiveResultString) kv.Value).Value.Replace("MB", "").TrimStart()
+                                .TrimEnd();
+                            var toProcess = double.TryParse(valueAsDouble, NumberStyles.Number,
+                                CultureInfo.InvariantCulture,
+                                out var doubleParsed)
+                                ? doubleParsed
+                                : 0;
+                            var dataPointFileSize = PointData.Measurement(DbStatsConverter.DatabaseFileSize)
+                                .Field(DbStatsConverter.DatabaseFileSize, toProcess);
+                            connectionFactory.WritePoint(dataPointFileSize);
+                            break;
+                        case DbStatsConverter.QueriesInDatabase:
+                            var dataPoint = PointData.Measurement(DbStatsConverter.QueriesInDatabase)
+                                .Field(DbStatsConverter.QueriesInDatabase, ((PrimitiveResultLong) kv.Value).Value);
+                            connectionFactory.WritePoint(dataPoint);
+                            break;
+                        case DbStatsConverter.SqLiteVersion:
+                            connectionFactory.WriteStringRecord(new StringRecordEntry(){Key = DbStatsConverter.SqLiteVersion, Value = ((PrimitiveResultString)kv.Value).Value});
+                            break;
+                    }
+                }
             });
         }
 

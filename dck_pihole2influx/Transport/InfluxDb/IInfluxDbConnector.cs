@@ -3,6 +3,8 @@ using System.Linq;
 using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
+using InfluxDB.Client.Core;
+using InfluxDB.Client.Writes;
 
 namespace dck_pihole2influx.Transport.InfluxDb
 {
@@ -32,10 +34,28 @@ namespace dck_pihole2influx.Transport.InfluxDb
             _writeApi = _influxDbClientFactory.GetWriteApi();
         }
 
+        public void WriteStringRecord<T>(T stringRecord) where T : StringRecordEntry
+        {
+            var toProcess = $"{stringRecord.Key}={stringRecord.Value}";
+            _writeApi.WriteRecord(WritePrecision.S, toProcess);
+        }
+
         public void WriteStringRecords<T>(IEnumerable<T> stringRecords) where T: StringRecordEntry
         {
             var returnList = (from element in stringRecords select $"{element.Key}={element.Value}").ToList();
             _writeApi.WriteRecords(WritePrecision.S, returnList);
+        }
+
+        public void WritePoint(PointData point)
+        {
+            _writeApi.WritePoint(point);
+            _writeApi.Flush();
+        }
+        
+        public void WritePoints(List<PointData> points)
+        {
+            _writeApi.WritePoints(points.ToArray());
+            _writeApi.Flush();
         }
 
         public void WriteMeasurements<T>(List<T> measurements) where T: IBaseMeasurement

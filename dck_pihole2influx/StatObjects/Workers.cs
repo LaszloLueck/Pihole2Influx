@@ -14,10 +14,10 @@ namespace dck_pihole2influx.StatObjects
                 //new TopAdsConverter(),
                 //new QueryTypesConverter(),
                 //new ForwardDestinationsConverter(),
-                new TopClientsConverter()
+                new TopClientsConverter(),
                 //new OvertimeConverter(),
                 //new VersionInfoConverter(),
-                //new DbStatsConverter()
+                new DbStatsConverter()
             };
         }
         
