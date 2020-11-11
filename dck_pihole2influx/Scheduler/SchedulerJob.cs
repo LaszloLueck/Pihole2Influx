@@ -68,7 +68,7 @@ namespace dck_pihole2influx.Scheduler
                             await telnetClient.WriteCommand(PiholeCommands.Quit);
                             telnetClient.ClientDispose();
 
-                            await worker.Convert(result).ContinueWith(task =>
+                            var t = await worker.Convert(result).ContinueWith(task =>
                             {
                                 switch (worker)
                                 {
@@ -80,6 +80,11 @@ namespace dck_pihole2influx.Scheduler
                                         var dbStatsItems = CalculateDbStatsInfo(dbStatsConverter.DictionaryOpt);
                                         influxConnector.WriteMeasurements(dbStatsItems);
                                         break;
+                                    case QueryTypesConverter queryTypesConverter:
+                                        var queryTypesItems =
+                                            CalculateQueryTypesInfo(queryTypesConverter.DictionaryOpt);
+                                        influxConnector.WriteMeasurements(queryTypesItems);
+                                        break;
                                     default:
                                         Log.Warning($"No conversion for Type {worker.GetType().FullName} available");
                                         break;
@@ -87,6 +92,8 @@ namespace dck_pihole2influx.Scheduler
 
                                 return task;
                             });
+
+                            await Task.WhenAll(t);
                         }
                     });
                     await t;
@@ -95,6 +102,19 @@ namespace dck_pihole2influx.Scheduler
                 });
                 await Task.WhenAll(enumerable);
             });
+        }
+
+        private static List<MeasurementQueryType> CalculateQueryTypesInfo(
+            Option<ConcurrentDictionary<string, IBaseResult>> dicOpt)
+        {
+            return dicOpt.Map(dic =>
+            {
+                return (from tuple in dic select tuple).Select(kv =>
+                {
+                    var confValue = (StringDecimalOutput) kv.Value;
+                    return new MeasurementQueryType() {DnsType = confValue.Key, Value = confValue.Value};
+                });
+            }).ValueOr(new List<MeasurementQueryType>()).ToList();
         }
 
         private static List<MeasurementDbStats> CalculateDbStatsInfo(

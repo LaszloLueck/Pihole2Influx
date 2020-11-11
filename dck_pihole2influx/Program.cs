@@ -19,7 +19,7 @@ namespace dck_pihole2influx
             Log.Info("starting app!");
             Log.Info("Build up the scheduler");
             ISchedulerFactory schedulerFactory =
-                new CustomSchedulerFactory<SchedulerJob>("job1", "group1", "trigger1", 10);
+                new CustomSchedulerFactory<SchedulerJob>("job1", "group1", "trigger1", 60);
             await schedulerFactory.RunScheduler();
 
             Log.Info("App is in running state!");
