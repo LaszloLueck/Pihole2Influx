@@ -236,7 +236,7 @@ namespace dck_pihole2influx.StatObjects
             try
             {
                 var splitted = input
-                    .Split(Environment.NewLine)
+                    .Split("\n")
                     .Where(s => !string.IsNullOrWhiteSpace(s) && s != terminator)
                     .AsParallel()
                     .AsOrdered();

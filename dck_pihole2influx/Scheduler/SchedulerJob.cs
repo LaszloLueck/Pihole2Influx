@@ -11,7 +11,6 @@ using dck_pihole2influx.StatObjects;
 using dck_pihole2influx.Transport.InfluxDb;
 using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using dck_pihole2influx.Transport.Telnet;
-using InfluxDB.Client.Writes;
 using Optional;
 using Quartz;
 
@@ -41,14 +40,12 @@ namespace dck_pihole2influx.Scheduler
                     $"Connect to Pihole and process data with {ConfigurationFactory.ConcurrentRequestsToPihole} parallel process(es).");
                 Log.Info("Connect to pihole and get stats");
 
-                InfluxConnectionFactory influxConnector =
-                    new InfluxDbConnector().GetInfluxDbConnection();
-                influxConnector.Connect(ConfigurationFactory);
-
                 //throttle the amount of concurrent telnet-requests to pihole.
                 //if it is not set per env-var, the default is 1 (one request per time). 
                 var mutex = new SemaphoreSlim(ConfigurationFactory.ConcurrentRequestsToPihole);
-
+                InfluxConnectionFactory influxConnector =
+                    new InfluxDbConnector().GetInfluxDbConnection();
+                influxConnector.Connect(ConfigurationFactory);
                 var enumerable = Workers.GetJobsToDo().Select(async worker =>
                 {
                     await mutex.WaitAsync();
@@ -68,68 +65,60 @@ namespace dck_pihole2influx.Scheduler
 
                             await telnetClient.WriteCommand(worker.GetPiholeCommand());
                             var result = await telnetClient.ReadResult(worker.GetTerminator());
-                            await worker.Convert(result);
-                            var resultString = await worker.GetJsonObjectFromDictionaryAsync(true);
-                            Log.Info(resultString);
+                            await telnetClient.WriteCommand(PiholeCommands.Quit);
+                            telnetClient.ClientDispose();
 
-                            switch (worker)
+                            await worker.Convert(result).ContinueWith(task =>
                             {
-                                case TopClientsConverter topClientsConverter:
-                                    var items = CalculateMeasurementsTopClients(topClientsConverter.DictionaryOpt);
-                                    influxConnector.WriteMeasurements(items);
-                                    break;
-                                case DbStatsConverter dbStatsConverter:
-                                    CalculateAndSendDbStatsInfo(dbStatsConverter.DictionaryOpt, influxConnector);
-                                    break;
-                                default:
-                                    Log.Warning($"No conversion for Type {worker.GetType().FullName} available");
-                                    break;
-                            }
-                        }
+                                switch (worker)
+                                {
+                                    case TopClientsConverter topClientsConverter:
+                                        var items = CalculateMeasurementsTopClients(topClientsConverter.DictionaryOpt);
+                                        influxConnector.WriteMeasurements(items);
+                                        break;
+                                    case DbStatsConverter dbStatsConverter:
+                                        var dbStatsItems = CalculateDbStatsInfo(dbStatsConverter.DictionaryOpt);
+                                        influxConnector.WriteMeasurements(dbStatsItems);
+                                        break;
+                                    default:
+                                        Log.Warning($"No conversion for Type {worker.GetType().FullName} available");
+                                        break;
+                                }
 
-                        await telnetClient.WriteCommand(PiholeCommands.Quit);
-                        telnetClient.ClientDispose();
+                                return task;
+                            });
+                        }
                     });
                     await t;
+                    influxConnector.DisposeConnector();
                     mutex.Release();
                 });
                 await Task.WhenAll(enumerable);
-                influxConnector.DisposeConnector();
             });
         }
 
-        private void CalculateAndSendDbStatsInfo(
-            Option<ConcurrentDictionary<string, IBaseResult>> dictOpt, InfluxConnectionFactory connectionFactory)
+        private static List<MeasurementDbStats> CalculateDbStatsInfo(
+            Option<ConcurrentDictionary<string, IBaseResult>> dicOpt)
         {
-            dictOpt.MatchSome(dic =>
+            return dicOpt.Map(dic =>
             {
-                foreach (var kv in dic.ToList())
+                var entriesInDb = ((PrimitiveResultLong) dic[DbStatsConverter.QueriesInDatabase]).Value;
+                var databaseFileSizeAsString = ((PrimitiveResultString) dic[DbStatsConverter.DatabaseFileSize]).Value;
+                var databaseVersion = ((PrimitiveResultString) dic[DbStatsConverter.SqLiteVersion]).Value;
+                var databaseFileSizeAsStringCut = databaseFileSizeAsString.Replace("MB", "").TrimEnd().TrimStart();
+                var databaseFileSize = double.TryParse(databaseFileSizeAsStringCut, NumberStyles.Number, CultureInfo.InvariantCulture, out var doubleValue)
+                    ? doubleValue
+                    : 0;
+
+                var retValue = new MeasurementDbStats()
                 {
-                    switch (kv.Key)
-                    {
-                        case DbStatsConverter.DatabaseFileSize:
-                            var valueAsDouble = ((PrimitiveResultString) kv.Value).Value.Replace("MB", "").TrimStart()
-                                .TrimEnd();
-                            var toProcess = double.TryParse(valueAsDouble, NumberStyles.Number,
-                                CultureInfo.InvariantCulture,
-                                out var doubleParsed)
-                                ? doubleParsed
-                                : 0;
-                            var dataPointFileSize = PointData.Measurement(DbStatsConverter.DatabaseFileSize)
-                                .Field(DbStatsConverter.DatabaseFileSize, toProcess);
-                            connectionFactory.WritePoint(dataPointFileSize);
-                            break;
-                        case DbStatsConverter.QueriesInDatabase:
-                            var dataPoint = PointData.Measurement(DbStatsConverter.QueriesInDatabase)
-                                .Field(DbStatsConverter.QueriesInDatabase, ((PrimitiveResultLong) kv.Value).Value);
-                            connectionFactory.WritePoint(dataPoint);
-                            break;
-                        case DbStatsConverter.SqLiteVersion:
-                            connectionFactory.WriteStringRecord(new StringRecordEntry(){Key = DbStatsConverter.SqLiteVersion, Value = ((PrimitiveResultString)kv.Value).Value});
-                            break;
-                    }
-                }
-            });
+                    DatabaseEntries = entriesInDb, DatabaseFileSize = databaseFileSize,
+                    DatabaseVersion = databaseVersion, Time = DateTime.Now
+                };
+
+
+                return new List<MeasurementDbStats> {retValue};
+            }).ValueOr(new List<MeasurementDbStats>()).ToList();
         }
 
         private static List<MeasurementTopClient> CalculateMeasurementsTopClients(
