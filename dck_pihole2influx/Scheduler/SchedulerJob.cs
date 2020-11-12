@@ -97,6 +97,11 @@ namespace dck_pihole2influx.Scheduler
                                         var statsItems = CalculateStats(statsConverter.DictionaryOpt);
                                         influxConnector.WriteMeasurements(statsItems);
                                         break;
+                                     case ForwardDestinationsConverter forwardDestinationsConverter:
+                                         var forwardDestinationItems =
+                                             CalculateForwardDestinations(forwardDestinationsConverter.DictionaryOpt);
+                                         influxConnector.WriteMeasurements(forwardDestinationItems);
+                                         break;
                                     default:
                                         Log.Warning($"No conversion for Type {worker.GetType().FullName} available");
                                         break;
@@ -115,6 +120,8 @@ namespace dck_pihole2influx.Scheduler
                 await Task.WhenAll(enumerable);
             });
         }
+
+
 
         private static List<MeasurementStats> CalculateStats(Option<ConcurrentDictionary<string, IBaseResult>> dicOpt)
         {
@@ -149,6 +156,23 @@ namespace dck_pihole2influx.Scheduler
 
             }).ValueOr(new List<MeasurementStats>()).ToList();
         }
+        
+        private static List<MeasurementForwardDestinations> CalculateForwardDestinations(
+            Option<ConcurrentDictionary<string, IBaseResult>> dictOpt)
+        {
+            return dictOpt.Map(dic =>
+            {
+                return (from tuple in dic select tuple).Select(tuple =>
+                {
+                    var convValue = (DoubleOutputNumberedElement) tuple.Value;
+                    return new MeasurementForwardDestinations()
+                    {
+                        IpOrHostName = convValue.IpOrHost, Percentage = convValue.Count, Position = convValue.Position,
+                        Time = DateTime.Now
+                    };
+                });
+            }).ValueOr(new List<MeasurementForwardDestinations>()).ToList();
+        }
 
         private static List<MeasurementOvertime> CalculateOvertime(
             Option<ConcurrentDictionary<string, IBaseResult>> dicOpt)
@@ -159,7 +183,7 @@ namespace dck_pihole2influx.Scheduler
                 {
                     var convValue = (OvertimeOutputElement) tuple.Value;
                     var convertedDateTime = DateTimeOffset.FromUnixTimeSeconds(convValue.TimeStamp).DateTime;
-                    return new MeasurementOvertime{BlockValue = convValue.BlockValue, PermitValue = convValue.PermitValue, Time= convertedDateTime};
+                    return new MeasurementOvertime{BlockValue = convValue.BlockValue, PermitValue = convValue.PermitValue, Time= convertedDateTime.Add(TimeSpan.FromSeconds(2))};
 
                 });
             }).ValueOr(new List<MeasurementOvertime>()).OrderBy(e => e.Time).ToList();

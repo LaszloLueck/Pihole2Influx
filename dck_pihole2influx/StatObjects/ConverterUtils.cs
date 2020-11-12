@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using Optional;
 using Optional.Collections;
+using Optional.Linq;
 
 namespace dck_pihole2influx.StatObjects
 {
@@ -120,12 +121,20 @@ namespace dck_pihole2influx.StatObjects
 
         private static Option<(string, IBaseResult)> GenerateOutputFromMatchOptDouble(Match match)
         {
-            return (double.TryParse(match.Groups[2].Value, NumberStyles.Number, CultureInfo.InvariantCulture,
-                    out var doubleParsed)
-                    ? Option.Some(doubleParsed)
-                    : Option.None<double>())
-                .Map<(string, IBaseResult)>(result => (match.Groups[1].Value,
-                    new DoubleOutputNumberedElement(doubleParsed, match.Groups[1].Value, match.Groups[3].Value)));
+            var percentageOpt = (double.TryParse(match.Groups[2].Value, NumberStyles.Number, CultureInfo.InvariantCulture,
+                out var doubleParsed)
+                ? Option.Some(doubleParsed)
+                : Option.None<double>());
+
+            var positionOpt =
+                int.TryParse(match.Groups[1].Value, NumberStyles.Number, CultureInfo.InvariantCulture,
+                    out var positionParsed)
+                    ? Option.Some(positionParsed)
+                    : Option.None<int>();
+
+            return (from percentage in percentageOpt
+                from position in positionOpt
+                select (match.Groups[1].Value, (IBaseResult) new DoubleOutputNumberedElement(percentage, position, match.Groups[3].Value)));
         }
 
         private static Option<(string, IBaseResult)> GenerateOutputFromMatchOptInt(Match match)

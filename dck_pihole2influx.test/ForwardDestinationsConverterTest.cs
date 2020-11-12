@@ -26,11 +26,11 @@ namespace dck_pihole2influx.test
 
             var dictionaryExpected = new Dictionary<string, IBaseResult>
             {
-                {"-2", new DoubleOutputNumberedElement(22.31d, "-2", "blocklist blocklist")},
-                {"-1", new DoubleOutputNumberedElement(8.24d, "-1", "cache cache")},
-                {"0", new DoubleOutputNumberedElement(35.31d, "0", "192.168.1.1 opnsense.localdomain")},
-                {"1", new DoubleOutputNumberedElement(19.39d, "1", "1.0.0.1 one.one.one.one")},
-                {"2", new DoubleOutputNumberedElement(15.6d, "2", "1.1.1.1 one.one.one.one")}
+                {"-2", new DoubleOutputNumberedElement(22.31d, -2, "blocklist blocklist")},
+                {"-1", new DoubleOutputNumberedElement(8.24d, -1, "cache cache")},
+                {"0", new DoubleOutputNumberedElement(35.31d, 0, "192.168.1.1 opnsense.localdomain")},
+                {"1", new DoubleOutputNumberedElement(19.39d, 1, "1.0.0.1 one.one.one.one")},
+                {"2", new DoubleOutputNumberedElement(15.6d, 2, "1.1.1.1 one.one.one.one")}
             };
 
             var dictionaryResult =
@@ -42,7 +42,7 @@ namespace dck_pihole2influx.test
             
 
             var jsonExpected =
-                "[{\"Count\":8.24,\"Position\":\"-1\",\"IpOrHost\":\"cache cache\"},{\"Count\":22.31,\"Position\":\"-2\",\"IpOrHost\":\"blocklist blocklist\"},{\"Count\":35.31,\"Position\":\"0\",\"IpOrHost\":\"192.168.1.1 opnsense.localdomain\"},{\"Count\":19.39,\"Position\":\"1\",\"IpOrHost\":\"1.0.0.1 one.one.one.one\"},{\"Count\":15.6,\"Position\":\"2\",\"IpOrHost\":\"1.1.1.1 one.one.one.one\"}]";
+                "[{\"Count\":8.24,\"Position\":-1,\"IpOrHost\":\"cache cache\"},{\"Count\":22.31,\"Position\":-2,\"IpOrHost\":\"blocklist blocklist\"},{\"Count\":35.31,\"Position\":0,\"IpOrHost\":\"192.168.1.1 opnsense.localdomain\"},{\"Count\":19.39,\"Position\":1,\"IpOrHost\":\"1.0.0.1 one.one.one.one\"},{\"Count\":15.6,\"Position\":2,\"IpOrHost\":\"1.1.1.1 one.one.one.one\"}]";
 
             var orderedExpectedJson = OrderJsonArrayString(jsonExpected, "Position").ValueOr("");
             var orderedCurrentJson =

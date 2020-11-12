@@ -105,10 +105,10 @@ namespace dck_pihole2influx.StatObjects
     public class DoubleOutputNumberedElement : IBaseResult
     {
         public double Count { get; }
-        public string Position { get; }
+        public int Position { get; }
         public string IpOrHost { get; }
 
-        public DoubleOutputNumberedElement(double count, string position, string ipOrHost)
+        public DoubleOutputNumberedElement(double count, int position, string ipOrHost)
         {
             Count = count;
             Position = position;
