@@ -9,6 +9,6 @@ namespace dck_pihole2influx.Transport.InfluxDb.Measurements
         [Column(IsTimestamp = true)] public DateTime Time;
         [Column("percentage")] public double Percentage { get; set; }
         [Column("position")] public int Position { get; set; }
-        [Column("ipOrHostName")] public string IpOrHostName { get; set; }
+        [Column("ipOrHostName", IsTag = true)] public string IpOrHostName { get; set; }
     }
 }
