@@ -4,7 +4,7 @@ using InfluxDB.Client.Core;
 namespace dck_pihole2influx.Transport.InfluxDb.Measurements
 {
     [Measurement("cacheinfo")]
-    public class CacheInfoMeasurement : IBaseMeasurement
+    public class MeasurementCacheInfo : IBaseMeasurement
     {
         [Column(IsTimestamp = true)] public DateTime Time;
         [Column("cacheSize")] public int CacheSize { get; set; }

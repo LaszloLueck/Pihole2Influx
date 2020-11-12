@@ -85,6 +85,14 @@ namespace dck_pihole2influx.Scheduler
                                             CalculateQueryTypesInfo(queryTypesConverter.DictionaryOpt);
                                         influxConnector.WriteMeasurements(queryTypesItems);
                                         break;
+                                    case CacheInfoConverter cacheInfoConverter:
+                                        var cacheInfoItems = CalculateCacheInfo(cacheInfoConverter.DictionaryOpt);
+                                        influxConnector.WriteMeasurements(cacheInfoItems);
+                                        break;
+                                    case OvertimeConverter overtimeConverter:
+                                        var overTimeItems = CalculateOvertime(overtimeConverter.DictionaryOpt);
+                                        influxConnector.WriteMeasurements(overTimeItems);
+                                        break;
                                     default:
                                         Log.Warning($"No conversion for Type {worker.GetType().FullName} available");
                                         break;
@@ -104,6 +112,41 @@ namespace dck_pihole2influx.Scheduler
             });
         }
 
+        private static List<MeasurementOvertime> CalculateOvertime(
+            Option<ConcurrentDictionary<string, IBaseResult>> dicOpt)
+        {
+            return dicOpt.Map(dic =>
+            {
+                return (from tuple in dic select tuple).Select(tuple =>
+                {
+                    var convValue = (OvertimeOutputElement) tuple.Value;
+                    var convertedDateTime = DateTimeOffset.FromUnixTimeSeconds(convValue.TimeStamp).DateTime;
+                    return new MeasurementOvertime{BlockValue = convValue.BlockValue, PermitValue = convValue.PermitValue, Time= convertedDateTime};
+
+                });
+            }).ValueOr(new List<MeasurementOvertime>()).OrderBy(e => e.Time).ToList();
+        }
+        
+        private static List<MeasurementCacheInfo> CalculateCacheInfo(
+            Option<ConcurrentDictionary<string, IBaseResult>> dicOpt)
+        {
+            return dicOpt.Map(dic =>
+            {
+                var cacheSize = ((PrimitiveResultInt) dic[CacheInfoConverter.CacheSize]).Value;
+                var cacheLiveFreed = ((PrimitiveResultInt) dic[CacheInfoConverter.CacheLiveFreed]).Value;
+                var cacheInserted = ((PrimitiveResultInt) dic[CacheInfoConverter.CacheInserted]).Value;
+
+                var returnValue = new MeasurementCacheInfo()
+                {
+                    CacheInserted = cacheInserted,
+                    CacheSize = cacheSize,
+                    CacheLiveFreed = cacheLiveFreed
+                };
+                return new List<MeasurementCacheInfo>{returnValue};
+
+            }).ValueOr(new List<MeasurementCacheInfo>()).ToList();
+        }
+        
         private static List<MeasurementQueryType> CalculateQueryTypesInfo(
             Option<ConcurrentDictionary<string, IBaseResult>> dicOpt)
         {

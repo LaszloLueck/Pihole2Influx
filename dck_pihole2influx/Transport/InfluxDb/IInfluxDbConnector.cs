@@ -30,7 +30,6 @@ namespace dck_pihole2influx.Transport.InfluxDb
         public void Connect(Configuration.Configuration configuration)
         {
             var connectionString = $"http://{configuration.InfluxDbHostOrIp}:{configuration.InfluxDbPort}";
-            Log.Info($"Connect to influx {connectionString}");
             _influxDbClientFactory = InfluxDBClientFactory.CreateV1(connectionString, configuration.InfluxDbUserName,
                 configuration.InfluxDbPassword.ToCharArray(), configuration.InfluxDbDatabaseName, "autogen");
             _influxDbClientFactory.GetWriteApi().EventHandler += (sender, eventArgs) =>
@@ -50,13 +49,11 @@ namespace dck_pihole2influx.Transport.InfluxDb
 
         public void WriteMeasurements<T>(List<T> measurements) where T:IBaseMeasurement
         {
-            Log.Info($"Write data to influx!");
             _influxDbClientFactory.GetWriteApi().WriteMeasurements(WritePrecision.S, measurements);
         }
 
         public void DisposeConnector()
         {
-            Log.Info($"Flush data and dispose object");
             _influxDbClientFactory.GetWriteApi().Flush();
             _influxDbClientFactory.Dispose();
         }
