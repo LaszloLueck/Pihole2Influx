@@ -51,12 +51,17 @@ Currently they are:
 <li>database statistics</li>
 </ul>
 </li>
+<li>Write the data to influxdb</li>
+<li>Create a default dashboard for influx</li>
 </ul>
 
 What is missing:
 <ul>
-<li>Write the data to influxdb</li>
-<li>Create a default dashboard for influx</li>
 <li>better test coverage (currently only 70%)</li>
+  <li>installation instructions for running as docker container</li>
+  <li>startup instructions for running with docker-compose</li>
 </ul>
 
+## How it looks?
+If all is up and running, you should checkoud the sample grafana dashboard and it shoulld looking like the following screenshot.
+<img src="./grafana_screenshot.png"  alt="Grafana Screenshot"/>
