@@ -20,21 +20,7 @@ namespace dck_pihole2influx.test
         [TestMethod, Description("fill in with a valid return from the telnet method and convert the result.")]
         public void CheckValidTelnetStringAndReturnSomeResults()
         {
-            var testee = @"domains_being_blocked 116007
-dns_queries_today 30163
-ads_blocked_today 5650
-ads_percentage_today 18.731558
-unique_domains 1056
-queries_forwarded 4275
-queries_cached 20238
-clients_ever_seen 11
-unique_clients 9
-status enabled
----EOM---
-
-            
-
-";
+            var testee = "domains_being_blocked 116007\ndns_queries_today 30163\nads_blocked_today 5650\nads_percentage_today 18.731558\nunique_domains 1056\nqueries_forwarded 4275\nqueries_cached 20238\nclients_ever_seen 11\nunique_clients 9\nstatus enabled\n---EOM---\n\n\n";
             _telnetResultConverter.Convert(testee).Wait();
             var dictionaryExpected = new Dictionary<string, IBaseResult>
             {

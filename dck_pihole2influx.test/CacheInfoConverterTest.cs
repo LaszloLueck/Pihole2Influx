@@ -20,13 +20,7 @@ namespace dck_pihole2influx.test
         [TestMethod, Description("fill in with a valid return from the telnet method and convert the result.")]
         public void CheckValidTelnetStringAndReturnSomeResults()
         {
-            var testee = @"cache-size: 10000
-cache-live-freed: 0
-cache-inserted: 98590
----EOM---
-
-
-";
+            var testee = "cache-size: 10000\ncache-live-freed: 0\ncache-inserted: 98590\n---EOM---";
             _telnetResultConverter.Convert(testee).Wait();
             var expectedDictionary = new Dictionary<string, IBaseResult>
             {
@@ -62,12 +56,7 @@ cache-inserted: 98590
         [TestMethod, Description("Return None because one or more parameter are missing in result")]
         public void CheckValidTelnetButMissingKeyValueAndReturnNone()
         {
-            var testee = @"cache-size: 10000
-cache-inserted: 98590
----EOM---
-
-
-";
+            var testee = "cache-size: 10000\ncache-inserted: 98590\n---EOM---";
             var expectedDictionary = new Dictionary<string, IBaseResult>
             {
                 {CacheInfoConverter.CacheSize, new PrimitiveResultInt(10000)},
@@ -97,14 +86,7 @@ cache-inserted: 98590
         [TestMethod]
         public void CheckValidStructureTelnetStringInvalidValueAndReturnResultWithAlternate()
         {
-            var testee = @"cache-size: 10000
-cache-live-freed: 0
-cache-inserted: abcde
----EOM---
-
-
-
-";
+            var testee = "cache-size: 10000\ncache-live-freed: 0\ncache-inserted: abcde\n---EOM---\n\n\n";
             _telnetResultConverter.Convert(testee).Wait();
 
             var expectedDictionary = new Dictionary<string, IBaseResult>

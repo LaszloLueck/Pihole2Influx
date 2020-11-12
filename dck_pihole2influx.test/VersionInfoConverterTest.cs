@@ -21,12 +21,7 @@ namespace dck_pihole2influx.test
         [TestMethod, Description("fill in with a valid return from the telnet method and convert the result")]
         public void CheckValidTelnetStringAndReturnSomeResults()
         {
-            var testee = @"version v5.2
-tag v5.2
-branch master
-hash dbd4a69
-date 2020-08-09 22:09:43 +0100
----EOM---";
+            var testee = "version v5.2\ntag v5.2\nbranch master\nhash dbd4a69\ndate 2020-08-09 22:09:43 +0100\n\n\n---EOM---";
 
             _telnetResultConverter.Convert(testee).Wait();
             var dictionaryExpected = new Dictionary<string, IBaseResult>

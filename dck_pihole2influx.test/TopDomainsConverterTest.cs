@@ -23,16 +23,7 @@ namespace dck_pihole2influx.test
         [TestMethod]
         public void CheckValidTelnetStringAndReturnSomeResults()
         {
-            var testee = @"0 8462 x.y.z.de
-1 236 safebrowsing-cache.google.com
-2 116 pi.hole
-3 109 z.y.x.de
-4 93 safebrowsing.google.com
-5 96 plus.google.com
-
-
----EOM---
-";
+            var testee = "0 8462 x.y.z.de\n1 236 safebrowsing-cache.google.com\n2 116 pi.hole\n3 109 z.y.x.de\n4 93 safebrowsing.google.com\n5 96 plus.google.com\n\n---EOM---";
             _telnetResultConverter.Convert(testee).Wait();
 
             var resultList =

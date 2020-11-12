@@ -21,12 +21,7 @@ namespace dck_pihole2influx.test
         [TestMethod, Description("fill in with a valid return from the telnet method and convert the result")]
         public void CheckValidTelnetStringAndReturnSomeResults()
         {
-            var testee = @"queries in database: 4934790
-database filesize: 393.86 MB
-SQLite version: 3.31.1
-
----EOM---
-";
+            var testee = "queries in database: 4934790\ndatabase filesize: 393.86 MB\nSQLite version: 3.31.1\n\n---EOM---";
             _telnetResultConverter.Convert(testee).Wait();
             var expectedDictionary = new Dictionary<string, IBaseResult>
             {

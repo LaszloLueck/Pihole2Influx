@@ -20,12 +20,7 @@ namespace dck_pihole2influx.test
         [TestMethod, Description("fill in with a valid return from the telnet method and convert the result")]
         public void CheckValidTelnetStringAndReturnSomeResults()
         {
-            var testee = @"-2 22.31 blocklist blocklist
-    -1 8.24 cache cache
-    0 35.31 192.168.1.1 opnsense.localdomain
-    1 19.39 1.0.0.1 one.one.one.one
-    2 15.60 1.1.1.1 one.one.one.one
-    ---EOM---";
+            var testee = "-2 22.31 blocklist blocklist\n-1 8.24 cache cache\n0 35.31 192.168.1.1 opnsense.localdomain\n1 19.39 1.0.0.1 one.one.one.one\n2 15.60 1.1.1.1 one.one.one.one\n---EOM---";
 
             _telnetResultConverter.Convert(testee).Wait();
 

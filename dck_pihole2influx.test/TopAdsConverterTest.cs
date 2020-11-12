@@ -21,15 +21,7 @@ namespace dck_pihole2influx.test
         [TestMethod]
         public void CheckValidTelnetStringAndReturnSomeResults()
         {
-            var testee = @"0 8 googleads.g.doubleclick.net
-1 6 www.googleadservices.com
-2 1 cdn.mxpnl.com
-3 1 collector.githubapp.com
-4 1 www.googletagmanager.com
-5 1 s.zkcdn.net
-
----EOM---
-";
+            var testee = "0 8 googleads.g.doubleclick.net\n1 6 www.googleadservices.com\n2 1 cdn.mxpnl.com\n3 1 collector.githubapp.com\n4 1 www.googletagmanager.com\n5 1 s.zkcdn.net\n\n---EOM---\n";
             _telnetResultConverter.Convert(testee).Wait();
 
             var resultList =

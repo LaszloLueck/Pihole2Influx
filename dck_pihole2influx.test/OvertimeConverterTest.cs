@@ -21,19 +21,7 @@ namespace dck_pihole2influx.test
         [TestMethod, Description("fill in with a valid return from the telnet method and convert the result")]
         public void CheckValidTelnetStringAndReturnSomeResults()
         {
-            var testee = @"1603127100 444 21
-1603127700 636 99
-1603128300 888 58
-1603128900 917 33
-1603129500 400 15
-1603130100 1329 77
-1603130700 1057 99
-1603131300 771 100
-1603131900 1158 119
-1603132500 1658 57
-
-
----EOM---";
+            var testee = "1603127100 444 21\n1603127700 636 99\n1603128300 888 58\n1603128900 917 33\n1603129500 400 15\n1603130100 1329 77\n1603130700 1057 99\n1603131300 771 100\n1603131900 1158 119\n1603132500 1658 57\n\n---EOM---";
 
             _telnetResultConverter.Convert(testee).Wait();
             var dictionaryExpected = new Dictionary<string, OvertimeOutputElement>
