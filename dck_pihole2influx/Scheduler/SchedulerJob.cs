@@ -93,6 +93,10 @@ namespace dck_pihole2influx.Scheduler
                                         var overTimeItems = CalculateOvertime(overtimeConverter.DictionaryOpt);
                                         influxConnector.WriteMeasurements(overTimeItems);
                                         break;
+                                    case StatsConverter statsConverter:
+                                        var statsItems = CalculateStats(statsConverter.DictionaryOpt);
+                                        influxConnector.WriteMeasurements(statsItems);
+                                        break;
                                     default:
                                         Log.Warning($"No conversion for Type {worker.GetType().FullName} available");
                                         break;
@@ -110,6 +114,40 @@ namespace dck_pihole2influx.Scheduler
                 });
                 await Task.WhenAll(enumerable);
             });
+        }
+
+        private static List<MeasurementStats> CalculateStats(Option<ConcurrentDictionary<string, IBaseResult>> dicOpt)
+        {
+            return dicOpt.Map(dic =>
+            {
+                var domainsBeingBlocked = ((PrimitiveResultInt) dic[StatsConverter.DomainsBeingBlocked]).Value;
+                var dnsQueriesToday = ((PrimitiveResultInt) dic[StatsConverter.DnsQueriesToday]).Value;
+                var adsBlockedToday = ((PrimitiveResultInt) dic[StatsConverter.AdsBlockedToday]).Value;
+                var adsPercentageToday = ((PrimitiveResultFloat) dic[StatsConverter.AdsPercentageToday]).Value;
+                var uniqueDomain = ((PrimitiveResultInt) dic[StatsConverter.UniqueDomains]).Value;
+                var queriesForwarded = ((PrimitiveResultInt) dic[StatsConverter.QueriesForwarded]).Value;
+                var queriesCached = ((PrimitiveResultInt) dic[StatsConverter.QueriesCached]).Value;
+                var clientsEverSeen = ((PrimitiveResultInt) dic[StatsConverter.ClientsEverSeen]).Value;
+                var uniqueClients = ((PrimitiveResultInt) dic[StatsConverter.UniqueClients]).Value;
+                var status = ((PrimitiveResultString) dic[StatsConverter.Status]).Value;
+
+                var returnValue = new MeasurementStats()
+                {
+                    DomainsBeingBlocked = domainsBeingBlocked,
+                    DnsQueriesToday = dnsQueriesToday,
+                    AdsBlockedToday = adsBlockedToday,
+                    AdsPercentageToday = adsPercentageToday,
+                    UniqueDomains = uniqueDomain,
+                    QueriesForwarded = queriesForwarded,
+                    QueriesCached = queriesCached,
+                    ClientsEverSeen = clientsEverSeen,
+                    UniqueClients = uniqueClients,
+                    Status = status
+                };
+                
+                return new List<MeasurementStats>(){returnValue};
+
+            }).ValueOr(new List<MeasurementStats>()).ToList();
         }
 
         private static List<MeasurementOvertime> CalculateOvertime(
