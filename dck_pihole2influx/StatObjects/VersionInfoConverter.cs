@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dck_pihole2influx.Logging;
+using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using dck_pihole2influx.Transport.Telnet;
 using Optional;
 
@@ -20,6 +22,8 @@ namespace dck_pihole2influx.StatObjects
     
     public class VersionInfoConverter : TelnetResultConverter, IBaseConverter
     {
+        private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<VersionInfoConverter>.GetLogger();
+        
         public const string Version = "Version";
         public const string Tag = "Tag";
         public const string Branch = "Branch";
@@ -34,6 +38,15 @@ namespace dck_pihole2influx.StatObjects
             {"hash", new PatternValue(Hash, ValueTypes.String, "")},
             {"date", new PatternValue(Date, ValueTypes.String, "")}
         };
+
+        public override Task<List<IBaseMeasurement>> CalculateMeasurementData()
+        {
+            return Task.Run(() =>
+            {
+                Log.Warning("No implementation for CalculateMeasurementData found!");
+                return new List<IBaseMeasurement>();
+            });
+        }
 
         public override PiholeCommands GetPiholeCommand()
         {

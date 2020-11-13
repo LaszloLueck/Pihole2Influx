@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using dck_pihole2influx.Optional.Json;
+using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using dck_pihole2influx.Transport.Telnet;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -30,6 +32,25 @@ namespace dck_pihole2influx.StatObjects
             return PiholeCommands.Topclients;
         }
 
+        public override Task<List<IBaseMeasurement>> CalculateMeasurementData()
+        {
+            return Task.Run(() =>
+            {
+                return DictionaryOpt.Map(dic =>
+                {
+                    return (from tuple in dic select tuple).Select(tpl =>
+                    {
+                        var convValue = (DoubleStringOutputElement) tpl.Value;
+                        return (IBaseMeasurement) new MeasurementTopClient()
+                        {
+                            ClientIp = convValue.IpAddress, HostName = convValue.HostName.ValueOr(""),
+                            Position = convValue.Position + 1, Count = convValue.Count, Time = DateTime.Now
+                        };
+                    });
+                }).ValueOr(new List<IBaseMeasurement>()).ToList();
+            });
+        }
+
         public override async Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)
         {
             var obj = ConvertDictionaryOpt(DictionaryOpt)
@@ -37,11 +58,9 @@ namespace dck_pihole2influx.StatObjects
                 .Select(element => (DoubleStringOutputElement) element.Value);
 
 
-
             //We have some trouble with serializing Options, so we must write our own json-contractconverter
             var t = Task.Run(async () =>
             {
-
                 var textWriter = new StringWriter();
                 var outJsonWriter = new JsonTextWriter(textWriter);
                 var doubleStringOutputLists = obj as DoubleStringOutputElement[] ?? obj.ToArray();
@@ -72,5 +91,4 @@ namespace dck_pihole2influx.StatObjects
             return new Dictionary<string, PatternValue>();
         }
     }
-
 }

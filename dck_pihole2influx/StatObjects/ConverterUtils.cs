@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using Optional;
 using Optional.Collections;
+#pragma warning disable
 using Optional.Linq;
+#pragma warning restore
 
 namespace dck_pihole2influx.StatObjects
 {
@@ -48,8 +50,8 @@ namespace dck_pihole2influx.StatObjects
                                     new PrimitiveResultFloat(((BaseValue<float>) value).GetValue()))),
                         ValueTypes.Long => ValueConverterBase<long>
                             .Convert(line, key, (long) patternValue.AlternativeValue)
-                            .Map<(string, IBaseResult)>(value => (patternValue.GivenName, 
-                                new PrimitiveResultLong(((BaseValue<long>)value).GetValue()))),
+                            .Map<(string, IBaseResult)>(value => (patternValue.GivenName,
+                                new PrimitiveResultLong(((BaseValue<long>) value).GetValue()))),
                         _ => Option.None<(string, IBaseResult)>()
                     };
                 });
@@ -121,7 +123,8 @@ namespace dck_pihole2influx.StatObjects
 
         private static Option<(string, IBaseResult)> GenerateOutputFromMatchOptDouble(Match match)
         {
-            var percentageOpt = (double.TryParse(match.Groups[2].Value, NumberStyles.Number, CultureInfo.InvariantCulture,
+            var percentageOpt = (double.TryParse(match.Groups[2].Value, NumberStyles.Number,
+                CultureInfo.InvariantCulture,
                 out var doubleParsed)
                 ? Option.Some(doubleParsed)
                 : Option.None<double>());
@@ -134,7 +137,8 @@ namespace dck_pihole2influx.StatObjects
 
             return (from percentage in percentageOpt
                 from position in positionOpt
-                select (match.Groups[1].Value, (IBaseResult) new DoubleOutputNumberedElement(percentage, position, match.Groups[3].Value)));
+                select (match.Groups[1].Value,
+                    (IBaseResult) new DoubleOutputNumberedElement(percentage, position, match.Groups[3].Value)));
         }
 
         private static Option<(string, IBaseResult)> GenerateOutputFromMatchOptInt(Match match)

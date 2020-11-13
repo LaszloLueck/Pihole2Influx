@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using dck_pihole2influx.Transport.Telnet;
 using Optional;
 
@@ -25,6 +26,27 @@ namespace dck_pihole2influx.StatObjects
             {"cache-live-freed:", new PatternValue(CacheLiveFreed, ValueTypes.Int, 0)},
             {"cache-inserted:", new PatternValue(CacheInserted, ValueTypes.Int, 0)}
         };
+
+        public override Task<List<IBaseMeasurement>> CalculateMeasurementData()
+        {
+            return Task.Run(() =>
+            {
+                return DictionaryOpt.Map(dic =>
+                {
+                    var cacheSize = ((PrimitiveResultInt) dic[CacheSize]).Value;
+                    var cacheLiveFreed = ((PrimitiveResultInt) dic[CacheLiveFreed]).Value;
+                    var cacheInserted = ((PrimitiveResultInt) dic[CacheInserted]).Value;
+
+                    var returnValue = new MeasurementCacheInfo()
+                    {
+                        CacheInserted = cacheInserted,
+                        CacheSize = cacheSize,
+                        CacheLiveFreed = cacheLiveFreed
+                    };
+                    return new List<IBaseMeasurement> {returnValue};
+                }).ValueOr(new List<IBaseMeasurement>()).ToList();
+            });
+        }
 
         public override PiholeCommands GetPiholeCommand()
         {

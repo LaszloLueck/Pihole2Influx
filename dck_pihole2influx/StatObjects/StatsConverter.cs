@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using dck_pihole2influx.Transport.Telnet;
 using Optional;
 
@@ -32,7 +33,7 @@ namespace dck_pihole2influx.StatObjects
         public const string ClientsEverSeen = "ClientsEverSeen";
         public const string UniqueClients = "UniqueClients";
         public const string Status = "Status";
-        
+
         public Dictionary<string, PatternValue> GetPattern() => new Dictionary<string, PatternValue>
         {
             {"domains_being_blocked", new PatternValue(DomainsBeingBlocked, ValueTypes.Int, 0)},
@@ -46,6 +47,42 @@ namespace dck_pihole2influx.StatObjects
             {"unique_clients", new PatternValue(UniqueClients, ValueTypes.Int, 0)},
             {"status", new PatternValue(Status, ValueTypes.String, "")}
         };
+
+        public override Task<List<IBaseMeasurement>> CalculateMeasurementData()
+        {
+            return Task.Run(() =>
+            {
+                return DictionaryOpt.Map(dic =>
+                {
+                    var domainsBeingBlocked = ((PrimitiveResultInt) dic[DomainsBeingBlocked]).Value;
+                    var dnsQueriesToday = ((PrimitiveResultInt) dic[DnsQueriesToday]).Value;
+                    var adsBlockedToday = ((PrimitiveResultInt) dic[AdsBlockedToday]).Value;
+                    var adsPercentageToday = ((PrimitiveResultFloat) dic[AdsPercentageToday]).Value;
+                    var uniqueDomain = ((PrimitiveResultInt) dic[UniqueDomains]).Value;
+                    var queriesForwarded = ((PrimitiveResultInt) dic[QueriesForwarded]).Value;
+                    var queriesCached = ((PrimitiveResultInt) dic[QueriesCached]).Value;
+                    var clientsEverSeen = ((PrimitiveResultInt) dic[ClientsEverSeen]).Value;
+                    var uniqueClients = ((PrimitiveResultInt) dic[UniqueClients]).Value;
+                    var status = ((PrimitiveResultString) dic[Status]).Value;
+
+                    var returnValue = new MeasurementStats()
+                    {
+                        DomainsBeingBlocked = domainsBeingBlocked,
+                        DnsQueriesToday = dnsQueriesToday,
+                        AdsBlockedToday = adsBlockedToday,
+                        AdsPercentageToday = adsPercentageToday,
+                        UniqueDomains = uniqueDomain,
+                        QueriesForwarded = queriesForwarded,
+                        QueriesCached = queriesCached,
+                        ClientsEverSeen = clientsEverSeen,
+                        UniqueClients = uniqueClients,
+                        Status = status
+                    };
+
+                    return new List<IBaseMeasurement>() {returnValue};
+                }).ValueOr(new List<IBaseMeasurement>()).ToList();
+            });
+        }
 
         public override PiholeCommands GetPiholeCommand()
         {

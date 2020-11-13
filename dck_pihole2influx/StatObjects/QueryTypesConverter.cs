@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using dck_pihole2influx.Transport.Telnet;
 using Optional;
 
@@ -33,6 +34,22 @@ namespace dck_pihole2influx.StatObjects
             return new Dictionary<string, PatternValue>();
         }
 
+        public override Task<List<IBaseMeasurement>> CalculateMeasurementData()
+        {
+            return Task.Run(() =>
+            {
+                return DictionaryOpt.Map(dic =>
+                {
+                    return (from tuple in dic select tuple).Select(kv =>
+                    {
+                        var confValue = (StringDecimalOutput) kv.Value;
+                        return (IBaseMeasurement) new MeasurementQueryType()
+                            {DnsType = confValue.Key, Value = confValue.Value};
+                    });
+                }).ValueOr(new List<IBaseMeasurement>()).ToList();
+            });
+        }
+
         public override PiholeCommands GetPiholeCommand()
         {
             return PiholeCommands.Querytypes;
@@ -42,9 +59,9 @@ namespace dck_pihole2influx.StatObjects
         {
             var obj = ConvertDictionaryOpt(DictionaryOpt)
                 .OrderBy(element => ((StringDecimalOutput) element.Value).Value)
-                .Select(element => (StringDecimalOutput)element.Value);
+                .Select(element => (StringDecimalOutput) element.Value);
 
-            
+
             return await ConvertOutputToJson(obj, prettyPrint);
         }
 

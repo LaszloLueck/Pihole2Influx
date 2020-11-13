@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
+using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using dck_pihole2influx.Transport.Telnet;
 using Optional;
 
@@ -12,7 +14,7 @@ namespace dck_pihole2influx.StatObjects
         private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<TelnetResultConverter>.GetLogger();
         private string _input;
 
-        
+
         public Option<ConcurrentDictionary<string, IBaseResult>> DictionaryOpt { get; private set; }
 
         public async Task Convert(string input)
@@ -22,6 +24,8 @@ namespace dck_pihole2influx.StatObjects
         }
 
         public abstract PiholeCommands GetPiholeCommand();
+
+        public abstract Task<List<IBaseMeasurement>> CalculateMeasurementData();
 
         public abstract Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint);
 

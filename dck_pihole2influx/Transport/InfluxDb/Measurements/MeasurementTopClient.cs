@@ -10,6 +10,8 @@ namespace dck_pihole2influx.Transport.InfluxDb.Measurements
         [Column("position", IsTag = true)] public int Position { get; set; }
         [Column("hostName")] public string HostName { get; set; }
         [Column("count")] public int Count { get; set; }
+#pragma warning disable
         [Column(IsTimestamp = true)] public DateTime Time;
+#pragma warning restore
     }
 }

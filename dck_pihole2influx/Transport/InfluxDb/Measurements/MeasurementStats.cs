@@ -6,7 +6,9 @@ namespace dck_pihole2influx.Transport.InfluxDb.Measurements
     [Measurement("stats")]
     public class MeasurementStats : IBaseMeasurement
     {
+#pragma warning disable
         [Column(IsTimestamp = true)] public DateTime Time;
+#pragma warning restore
         [Column("domainsBeingBlocked")] public int DomainsBeingBlocked { get; set; }
         [Column("dnsQueriesToday")] public int DnsQueriesToday { get; set; }
         [Column("adsBlockedToday")] public int AdsBlockedToday { get; set; }

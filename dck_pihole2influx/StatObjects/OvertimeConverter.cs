@@ -1,12 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using dck_pihole2influx.Transport.Telnet;
 using Optional;
 
 namespace dck_pihole2influx.StatObjects
 {
-    
     /// <summary>
     /// Overtime contains a list of (collected per 10 minutes) permitted / blocked count urls.
     ///1603127100 444 21
@@ -26,6 +27,30 @@ namespace dck_pihole2influx.StatObjects
         public override PiholeCommands GetPiholeCommand()
         {
             return PiholeCommands.Overtime;
+        }
+
+        public override Task<List<IBaseMeasurement>> CalculateMeasurementData()
+        {
+            return Task.Run(() =>
+            {
+                return DictionaryOpt.Map(dic =>
+                    {
+                        return (from tuple in dic select tuple).Select(tuple =>
+                        {
+                            var convValue = (OvertimeOutputElement) tuple.Value;
+                            var convertedDateTime = DateTimeOffset.FromUnixTimeSeconds(convValue.TimeStamp).DateTime;
+                            return new MeasurementOvertime
+                            {
+                                BlockValue = convValue.BlockValue, PermitValue = convValue.PermitValue,
+                                Time = convertedDateTime.Add(TimeSpan.FromSeconds(2))
+                            };
+                        });
+                    })
+                    .ValueOr(new List<MeasurementOvertime>())
+                    .OrderBy(e => e.Time)
+                    .Select(element => (IBaseMeasurement) element)
+                    .ToList();
+            });
         }
 
         public override async Task<string> GetJsonObjectFromDictionaryAsync(bool prettyPrint)

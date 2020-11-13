@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using InfluxDB.Client;
@@ -26,7 +26,7 @@ namespace dck_pihole2influx.Transport.InfluxDb
         private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<InfluxConnectionFactory>.GetLogger();
 
         private InfluxDBClient _influxDbClientFactory;
-        
+
         public void Connect(Configuration.Configuration configuration)
         {
             var connectionString = $"http://{configuration.InfluxDbHostOrIp}:{configuration.InfluxDbPort}";
@@ -44,12 +44,11 @@ namespace dck_pihole2influx.Transport.InfluxDb
                         break;
                 }
             };
-
         }
 
-        public void WriteMeasurements<T>(List<T> measurements) where T:IBaseMeasurement
+        public Task WriteMeasurementsAsync<T>(List<T> measurements) where T : IBaseMeasurement
         {
-            _influxDbClientFactory.GetWriteApi().WriteMeasurements(WritePrecision.S, measurements);
+            return _influxDbClientFactory.GetWriteApiAsync().WriteMeasurementsAsync(WritePrecision.S, measurements);
         }
 
         public void DisposeConnector()
@@ -57,6 +56,5 @@ namespace dck_pihole2influx.Transport.InfluxDb
             _influxDbClientFactory.GetWriteApi().Flush();
             _influxDbClientFactory.Dispose();
         }
-        
     }
 }
