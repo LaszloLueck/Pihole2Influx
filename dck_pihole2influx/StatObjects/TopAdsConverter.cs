@@ -31,11 +31,22 @@ namespace dck_pihole2influx.StatObjects
         {
             return Task.Run(() =>
             {
-                Log.Warning("No implementation for CalculateMeasurementData found!");
-                return new List<IBaseMeasurement>();
+                return DictionaryOpt.Map(dic =>
+                {
+                    return (from tuple in dic select tuple.Value).Select(element =>
+                    {
+                        var convValue = (IntOutputNumberedElement) element;
+                        return (IBaseMeasurement) new MeasurementTopAds()
+                        {
+                            Count = convValue.Count,
+                            IpOrHost = convValue.IpOrHost,
+                            Position = convValue.Position
+                        };
+                    });
+                }).ValueOr(new List<IBaseMeasurement>()).ToList();
             });
         }
-
+        
         public override PiholeCommands GetPiholeCommand()
         {
             return PiholeCommands.Topads;

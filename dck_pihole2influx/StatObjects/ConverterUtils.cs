@@ -143,24 +143,31 @@ namespace dck_pihole2influx.StatObjects
 
         private static Option<(string, IBaseResult)> GenerateOutputFromMatchOptInt(Match match)
         {
-            return (int.TryParse(match.Groups[2].Value, out var intParsed)
-                    ? Option.Some(intParsed)
-                    : Option.None<int>())
-                .Map<(string, IBaseResult)>(result => (match.Groups[1].Value,
-                    new IntOutputNumberedElement(intParsed, match.Groups[1].Value, match.Groups[3].Value)));
+            var countOpt = int.TryParse(match.Groups[2].Value, out var iCount)
+                ? Option.Some(iCount)
+                : Option.None<int>();
+
+            var positionOpt = int.TryParse(match.Groups[1].Value, out var iPosition)
+                ? Option.Some(iPosition)
+                : Option.None<int>();
+
+            return (from count in countOpt
+                from position in positionOpt
+                select (match.Groups[1].Value,
+                    (IBaseResult) new IntOutputNumberedElement(count, position, match.Groups[3].Value)));
         }
 
         private static Option<(string, IBaseResult)> GenerateOutputForOvertime(Match match)
         {
-            Option<long> timeStampOpt = long.TryParse(match.Groups[1].Value, out var longParsed)
+            var timeStampOpt = long.TryParse(match.Groups[1].Value, out var longParsed)
                 ? Option.Some(longParsed)
                 : Option.None<long>();
 
-            Option<int> permitOpt = int.TryParse(match.Groups[2].Value, out var permitParsed)
+            var permitOpt = int.TryParse(match.Groups[2].Value, out var permitParsed)
                 ? Option.Some(permitParsed)
                 : Option.None<int>();
 
-            Option<int> blockOpt = int.TryParse(match.Groups[3].Value, out var blockParsed)
+            var blockOpt = int.TryParse(match.Groups[3].Value, out var blockParsed)
                 ? Option.Some(blockParsed)
                 : Option.None<int>();
 

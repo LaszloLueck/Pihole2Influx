@@ -32,19 +32,19 @@ namespace dck_pihole2influx.test
 
             var expectedList = new Dictionary<string, IBaseResult>
             {
-                {"0", new IntOutputNumberedElement(8, "0", "googleads.g.doubleclick.net")},
-                {"1", new IntOutputNumberedElement(6, "1", "www.googleadservices.com")},
-                {"3", new IntOutputNumberedElement(1, "3", "cdn.mxpnl.com")},
-                {"2", new IntOutputNumberedElement(1, "2", "collector.githubapp.com")},
-                {"4", new IntOutputNumberedElement(1, "4", "www.googletagmanager.com")},
-                {"5", new IntOutputNumberedElement(1, "5", "s.zkcdn.net")}
+                {"0", new IntOutputNumberedElement(8, 0, "googleads.g.doubleclick.net")},
+                {"1", new IntOutputNumberedElement(6, 1, "www.googleadservices.com")},
+                {"3", new IntOutputNumberedElement(1, 3, "cdn.mxpnl.com")},
+                {"2", new IntOutputNumberedElement(1, 2, "collector.githubapp.com")},
+                {"4", new IntOutputNumberedElement(1, 4, "www.googletagmanager.com")},
+                {"5", new IntOutputNumberedElement(1, 5, "s.zkcdn.net")}
             };
 
             resultList.Should().BeEquivalentTo(expectedList);
 
             _telnetResultConverter.GetPiholeCommand().ToString().Should().Be(PiholeCommands.Topads.ToString());
 
-            var expectedJson = "[{\"Count\":8,\"Position\":\"0\",\"IpOrHost\":\"googleads.g.doubleclick.net\"},{\"Count\":6,\"Position\":\"1\",\"IpOrHost\":\"www.googleadservices.com\"},{\"Count\":1,\"Position\":\"2\",\"IpOrHost\":\"cdn.mxpnl.com\"},{\"Count\":1,\"Position\":\"3\",\"IpOrHost\":\"collector.githubapp.com\"},{\"Count\":1,\"Position\":\"4\",\"IpOrHost\":\"www.googletagmanager.com\"},{\"Count\":1,\"Position\":\"5\",\"IpOrHost\":\"s.zkcdn.net\"}]";
+            var expectedJson = "[{\"Count\":8,\"Position\":0,\"IpOrHost\":\"googleads.g.doubleclick.net\"},{\"Count\":6,\"Position\":1,\"IpOrHost\":\"www.googleadservices.com\"},{\"Count\":1,\"Position\":2,\"IpOrHost\":\"cdn.mxpnl.com\"},{\"Count\":1,\"Position\":3,\"IpOrHost\":\"collector.githubapp.com\"},{\"Count\":1,\"Position\":4,\"IpOrHost\":\"www.googletagmanager.com\"},{\"Count\":1,\"Position\":5,\"IpOrHost\":\"s.zkcdn.net\"}]";
             var orderedExpectedJson = OrderJsonArrayString(expectedJson, "Position").ValueOr("");
             var orderedCurrentJson =
                 OrderJsonArrayString(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result, "Position")

@@ -61,10 +61,10 @@ namespace dck_pihole2influx.StatObjects
     public class IntOutputNumberedElement : IBaseResult
     {
         public int Count { get; }
-        public string Position { get; }
+        public int Position { get; }
         public string IpOrHost { get; }
 
-        public IntOutputNumberedElement(int count, string position, string ipOrHost)
+        public IntOutputNumberedElement(int count, int position, string ipOrHost)
         {
             Count = count;
             Position = position;
