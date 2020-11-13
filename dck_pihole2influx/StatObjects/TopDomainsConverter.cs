@@ -39,7 +39,7 @@ namespace dck_pihole2influx.StatObjects
                         {
                             Count = confValue.Count,
                             IpOrHost = confValue.IpOrHost,
-                            Position = confValue.Position
+                            Position = confValue.Position + 1
                         };
                     });
                 }).ValueOr(new List<IBaseMeasurement>()).ToList();
