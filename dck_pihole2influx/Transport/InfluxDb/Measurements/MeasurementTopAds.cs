@@ -12,7 +12,7 @@ namespace dck_pihole2influx.Transport.InfluxDb.Measurements
         
         [Column("count")] public int Count { get; set; }
         
-        [Column("position")] public int Position { get; set; }
+        [Column("position", IsTag = true)] public int Position { get; set; }
         
         [Column("iporhost")] public string IpOrHost { get; set; }
     }
