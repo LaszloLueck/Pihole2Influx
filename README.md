@@ -23,6 +23,7 @@ Docker is no need. You can build and run the complete system, if you have the fo
 - Run dotnet run
 
 But hey, there is much more fun to run this piece of code in a fancy docker container! ;)
+How? Look at the <a href="install.md">installation manual</a>!
 
 ## Specs
 The tool is written with C# but the used language is not so important, because the tool runs completely in a docker-container and you can run it everywhere where docker runs.
