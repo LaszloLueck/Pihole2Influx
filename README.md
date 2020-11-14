@@ -10,6 +10,20 @@ If you try this tool, please notice that you enable the telnet interface, on the
 Please follow the link for a description how you enable telnet for any network device.
 <a href="https://docs.pi-hole.net/ftldns/configfile/#socket_listening" target="blank">Link to ftl dns documentation</a>
 
+It would be very helpful if you have knowledge with the following technologies. There is a big chance that all things runs out of the box, but I assume that you are familiar with the basic things below
+- <a href="https://www.docker.com/" target="_blank">Docker</a> - installation and run the docker system
+- <a href="https://www.influxdata.com/" target="_blank">InfluxDb</a> - installation and runnable system. Create and manage time series databases
+- <a href="https://grafana.com/" target="_blank">Grafana</a> - installation and runnable system. Create and manage dashboards.
+
+Docker is no need. You can build and run the complete system, if you have the following things on your machine:
+- Microsoft .Net Core SDK for build and test
+- Change to the directory where the code is (best case where the dck_pihole2influx.sln is).
+- Run dotnet build
+- If that was finished ...
+- Run dotnet run
+
+But hey, there is much more fun to run this piece of code in a fancy docker container! ;)
+
 ## Specs
 The tool is written with C# but the used language is not so important, because the tool runs completely in a docker-container and you can run it everywhere where docker runs.
 The following image demonstrates the dataflow and the "position" of the application inside your technical landscape.
@@ -50,8 +64,8 @@ Currently they are:
 What is missing:
 <ul>
 <li>better test coverage (currently only 70%)</li>
-  <li>installation instructions for running as docker container</li>
-  <li>startup instructions for running with docker-compose</li>
+<li>~~installation instructions for running as docker container~~</li>
+<li>~~startup instructions for running with docker-compose~~</li>
 </ul>
 
 ## How it looks?
