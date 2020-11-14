@@ -16,7 +16,7 @@ It would be very helpful if you have knowledge with the following technologies. 
 - <a href="https://grafana.com/" target="_blank">Grafana</a> - installation and runnable system. Create and manage dashboards.
 
 Docker is no need. You can build and run the complete system, if you have the following things on your machine:
-- Microsoft .Net Core SDK for build and test
+- <a href="https://dotnet.microsoft.com/download/dotnet-core/3.1" target="_blank">Microsoft .Net Core SDK</a> (at least 3.1) for build and test
 - Change to the directory where the code is (best case where the dck_pihole2influx.sln is).
 - Run dotnet build
 - If that was finished ...
@@ -64,8 +64,6 @@ Currently they are:
 What is missing:
 <ul>
 <li>better test coverage (currently only 70%)</li>
-<li>~~installation instructions for running as docker container~~</li>
-<li>~~startup instructions for running with docker-compose~~</li>
 </ul>
 
 ## How it looks?
