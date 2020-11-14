@@ -71,10 +71,10 @@ namespace dck_pihole2influx.Scheduler
                         }
                     });
                     await t;
-                    influxConnector.DisposeConnector();
                     mutex.Release();
                 });
                 await Task.WhenAll(enumerable);
+                influxConnector.DisposeConnector();
             });
         }
     }
