@@ -141,3 +141,37 @@ date 2020-08-09 22:09:43 +0100
  That is a good startpoint to create your own fancy looking dashboards.
  
  And now have fun with that!
+ 
+ ## Build and run from sources without docker
+ There is no need to run the app as docker-container. The application is written as a c# console app. After the main task is started, an inner task runs forever
+ `Task.Delay(-1)` until you pressed Strg+c or reboot or whatever.
+ Before you compile an run the app, you must install the .NET Core Components at least in version 3.1. Please use the following link:
+ <a href="https://dotnet.microsoft.com/download/dotnet-core/3.1" target="_blank">Microsoft .Net Core SDK</a> (at least 3.1) for build and test
+ 
+ - Change to the directory where the code (best case where the dck_pihole2influx.sln) is.
+ - Please use the aboved described ENV-vars and add them to your current session.
+ - Run `dotnet build`
+ - If that was finished ...
+ - Run `dotnet run` and voila, hopefully the app started. If not, there are some helpful error-messages to check where the problem is.
+ In the dependencies there is all what you need to approve the application against the static code analysis tool called <a href="https://www.sonarqube.org/" target="_blank">Sonarqube</a>.
+ Please setup an up and running SonarQube instance.
+ Next step is to install the global dotnet-sonarscanner
+ 
+ `dotnet tool install --global dotnet-sonarscanner`
+ 
+ if you run
+ 
+ `dotnet sonarscanner`
+
+and you receive the message that nothing found, you will add the sonarscanner directory to you env-vars:
+
+`export PATH="$PATH:/root/.dotnet/tools" --> where root is your home directory`
+
+Then create a token of your sonar-user and a token for the application in Sonarqubes web-interface.
+With the tokens type the following in the console:
+```
+dotnet sonarscanner begin /name:"Pihole2Influx" /d:sonar.host.url="http://IPORHOSTOFSONARQUBE:PORT" /k:"TOKENOFTHEAPPLICATION" /d:sonar.cs.opencover.reportsPaths="TestResults/coverage.opencover.xml" /d:sonar.login="TOKENOFTHEUSER"
+dotnet build /t:rebuild
+dotnet test dck_pihole2influx.test  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="../TestResults/"
+dotnet sonarscanner end /d:sonar.login="TOKENOFTHEUSER"
+```

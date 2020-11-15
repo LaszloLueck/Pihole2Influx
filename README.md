@@ -15,15 +15,7 @@ It would be very helpful if you have knowledge with the following technologies. 
 - <a href="https://www.influxdata.com/" target="_blank">InfluxDb</a> - installation and runnable system. Create and manage time series databases
 - <a href="https://grafana.com/" target="_blank">Grafana</a> - installation and runnable system. Create and manage dashboards.
 
-Docker is no need. You can build and run the complete system, if you have the following things on your machine:
-- <a href="https://dotnet.microsoft.com/download/dotnet-core/3.1" target="_blank">Microsoft .Net Core SDK</a> (at least 3.1) for build and test
-- Change to the directory where the code is (best case where the dck_pihole2influx.sln is).
-- Run dotnet build
-- If that was finished ...
-- Run dotnet run
-
-But hey, there is much more fun to run this piece of code in a fancy docker container! ;)
-How? Look at the <a href="install.md">installation manual</a>!
+Docker is no need. You can build and run the complete system, please follow the instructions as described in the <a href="install.md">installation documentation</a>.
 
 ## Specs
 The tool is written with C# but the used language is not so important, because the tool runs completely in a docker-container and you can run it everywhere where docker runs.
