@@ -29,7 +29,7 @@ How? Look at the <a href="install.md">installation manual</a>!
 The tool is written with C# but the used language is not so important, because the tool runs completely in a docker-container and you can run it everywhere where docker runs.
 The following image demonstrates the dataflow and the "position" of the application inside your technical landscape.
 
-<img src="./working_dataflow.png"  alt="current dataflow"/>
+<img src="./images/working_dataflow.png"  alt="current dataflow"/>
 
 ## Installation
 Please look in the <a href="install.md">installation document</a> and check what you need to run the container.
@@ -69,4 +69,4 @@ What is missing:
 
 ## How it looks?
 If all is up and running, you should checkoud the sample grafana dashboard and it shoulld looking like the following screenshot.
-<img src="./grafana_screenshot.png"  alt="Grafana Screenshot"/>
+<img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
