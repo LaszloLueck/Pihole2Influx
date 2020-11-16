@@ -12,6 +12,7 @@ namespace dck_pihole2influx.Configuration
         public const string DefaultPiholeUser = "";
         public const string DefaultPiholePassword = "";
         public const int DefaultConcurrentRequestsToPihole = 1;
+        public const int DefaultRunsEvery = 60;
 
         public readonly string PiholeHostOrIp;
         public readonly int PiholeTelnetPort;
@@ -23,8 +24,9 @@ namespace dck_pihole2influx.Configuration
         public readonly string PiholeUser;
         public readonly string PiholePassword;
         public readonly int ConcurrentRequestsToPihole;
+        public readonly int RunsEvery;
 
-        public Configuration(string piholeHostOrIp, int piholeTelnetPort, string influxDbHostOrIp, int influxDbPort, string influxDbDatabaseName, string influxDbUserName, string influxDbPassword, string piholeUser, string piholePassword, int concurrentRequestsToPihole)
+        public Configuration(string piholeHostOrIp, int piholeTelnetPort, string influxDbHostOrIp, int influxDbPort, string influxDbDatabaseName, string influxDbUserName, string influxDbPassword, string piholeUser, string piholePassword, int concurrentRequestsToPihole, int runsEvery)
         {
             PiholeHostOrIp = piholeHostOrIp;
             PiholeTelnetPort = piholeTelnetPort;
@@ -36,6 +38,7 @@ namespace dck_pihole2influx.Configuration
             PiholeUser = piholeUser;
             PiholePassword = piholePassword;
             ConcurrentRequestsToPihole = concurrentRequestsToPihole;
+            RunsEvery = runsEvery;
         }
     }
 }

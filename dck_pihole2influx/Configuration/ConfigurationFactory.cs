@@ -1,61 +1,45 @@
-﻿using System;
+using System;
+using CheckWebsiteStatus.Configuration;
 using dck_pihole2influx.Logging;
+using Optional;
 
 namespace dck_pihole2influx.Configuration
 {
-    public class ConfigurationFactory
+    public class ConfigurationFactory : IConfigurationFactory
     {
-        public const string PiholeIpOrHostName = "PIHOLEHOST";
-        public const string PiholePort = "PIHOLEPORT";
-        public const string InfluxDbIpOrHostName = "INFLUXDBHOST";
-        public const string InfluxDbPort = "INFLUXDBPORT";
-        public const string InfluxDbDatabaseName = "INFLUXDBNAME";
-        public const string InfluxDbUserName = "INFLUXDBUSERNAME";
-        public const string InfluxDbPassword = "INFLUXDBPASSWORD";
-        public const string PiholeUser = "PIHOLEUSER";
-        public const string PiholePassword = "PIHOLEPASSWORD";
-        public const string ConcurrentRequestsToPihole = "CONCURRENTREQUESTSTOPIHOLE";
-
-        public readonly Configuration Configuration;
-
-        private readonly IConfigurationUtils _configurationUtils;
         private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<ConfigurationFactory>.GetLogger();
 
-        public ConfigurationFactory(IConfigurationUtils configurationUtils)
+        public Option<string> ReadEnvironmentVariableString(string value)
         {
-            _configurationUtils = configurationUtils;
-            Configuration = new Configuration(
-                GetValueOrDefaultFromEnv(PiholeIpOrHostName, Configuration.DefaultPiholeHostOrIp),
-                GetValueOrDefaultFromEnv(PiholePort, Configuration.DefaultPiholePort),
-                GetValueOrDefaultFromEnv(InfluxDbIpOrHostName, Configuration.DefaultInfluxDbHostOrIp),
-                GetValueOrDefaultFromEnv(InfluxDbPort, Configuration.DefaultInfluxDbPort),
-                GetValueOrDefaultFromEnv(InfluxDbDatabaseName, Configuration.DefaultInfluxDbDatabaseName),
-                GetValueOrDefaultFromEnv(InfluxDbUserName, Configuration.DefaultInfluxDbUserName),
-                GetValueOrDefaultFromEnv(InfluxDbPassword, Configuration.DefaultInfluxDbPassword),
-                GetValueOrDefaultFromEnv(PiholeUser, Configuration.DefaultPiholeUser),
-                GetValueOrDefaultFromEnv(PiholePassword, Configuration.DefaultPiholePassword),
-                GetValueOrDefaultFromEnv(ConcurrentRequestsToPihole,
-                    Configuration.DefaultConcurrentRequestsToPihole)
+            //Put some sugar here to tell why the container stops.
+            return Environment.GetEnvironmentVariable(value).SomeNotNull().Match(
+                some: Option.Some,
+                none: () =>
+                {
+                    Log.Info($"No entry found for environment variable {value}");
+                    return Option.None<string>();
+                }
             );
         }
 
-        private T GetValueOrDefaultFromEnv<T>(string envKey, T defaultValue)
+        public Option<int> ReadEnvironmentVariableInt(string value)
         {
-            switch (defaultValue)
-            {
-                case int intValue:
-                    return (T) Convert.ChangeType(
-                        _configurationUtils.TryParseValueFromString(_configurationUtils.ReadEnvironmentVariable(envKey),
-                            intValue), typeof(T));
-                case string stringValue:
-                    return (T) Convert.ChangeType(
-                        _configurationUtils.ReadEnvironmentVariable(envKey).ValueOr(stringValue),
-                        typeof(T));
-                default:
-                    Log.Warning(
-                        $"Unidentified type <{typeof(T).FullName}> found. Return default value instead.");
-                    return (T) Convert.ChangeType(defaultValue, typeof(T));
-            }
+            return Environment.GetEnvironmentVariable(value).SomeNotNull().Match(
+                some: variable => int.TryParse(variable, out var intVariable)
+                    ? Option.Some(intVariable)
+                    : LogAndReturnNone(value, variable),
+                none: () =>
+                {
+                    Log.Warning($"No entry found for environment variable {value}");
+                    return Option.None<int>();
+                }
+            );
+        }
+
+        private Option<int> LogAndReturnNone(string envName, string value)
+        {
+            Log.Warning($"Cannot convert value {value} for env variable {envName}");
+            return Option.None<int>();
         }
     }
 }
