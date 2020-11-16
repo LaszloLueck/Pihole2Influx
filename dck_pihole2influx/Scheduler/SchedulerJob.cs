@@ -14,47 +14,47 @@ namespace dck_pihole2influx.Scheduler
     {
         private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<SchedulerJob>.GetLogger();
 
-        private static readonly Configuration.Configuration ConfigurationFactory =
-            new ConfigurationFactory(new ConfigurationUtils()).Configuration;
-
         public async Task Execute(IJobExecutionContext context)
         {
+            var configuration = (ConfigurationItems) context.JobDetail.JobDataMap["configuration"];
+            
             await Task.Run(async () =>
             {
                 Log.Info("Use the following parameter for connections:");
-                Log.Info($"Pihole host: {ConfigurationFactory.PiholeHostOrIp}");
-                Log.Info($"Pihole telnet port: {ConfigurationFactory.PiholeTelnetPort}");
-                Log.Info($"InfluxDb host: {ConfigurationFactory.InfluxDbHostOrIp}");
-                Log.Info($"InfluxDb port: {ConfigurationFactory.InfluxDbPort}");
-                Log.Info($"InfluxDb database name: {ConfigurationFactory.InfluxDbDatabaseName}");
-                Log.Info($"InfluxDb user name: {ConfigurationFactory.InfluxDbUserName}");
+                Log.Info($"Pihole host: {configuration.PiholeHost}");
+                Log.Info($"Pihole telnet port: {configuration.PiholePort }");
+                Log.Info($"InfluxDb host: {configuration.InfluxDbHost}");
+                Log.Info($"InfluxDb port: {configuration.InfluxDbPort}");
+                Log.Info($"InfluxDb database name: {configuration.InfluxDbName}");
+                Log.Info($"InfluxDb user name: {configuration.InfluxDbUsername}");
                 Log.Info(
-                    $"InfluxDb password is {(ConfigurationFactory.InfluxDbPassword.Length == 0 ? "not set" : "set")}");
+                    $"InfluxDb password is {(configuration.InfluxDbPassword.Length == 0 ? "not set" : "set")}");
+            
                 Log.Info(
-                    $"Connect to Pihole and process data with {ConfigurationFactory.ConcurrentRequestsToPihole} parallel process(es).");
+                    $"Connect to Pihole and process data with {configuration.ConcurrentRequestsToPihole} parallel process(es).");
                 Log.Info("Connect to pihole and get stats");
 
                 //throttle the amount of concurrent telnet-requests to pihole.
                 //if it is not set per env-var, the default is 1 (one request per time). 
-                var mutex = new SemaphoreSlim(ConfigurationFactory.ConcurrentRequestsToPihole);
+                var mutex = new SemaphoreSlim(configuration.ConcurrentRequestsToPihole);
                 var influxConnector =
                     new InfluxDbConnector().GetInfluxDbConnection();
-                influxConnector.Connect(ConfigurationFactory);
+                influxConnector.Connect(configuration);
                 var enumerable = Workers.GetJobsToDo().Select(async worker =>
                 {
                     await mutex.WaitAsync();
                     var t = Task.Run(async () =>
                     {
                         IConnectedTelnetClient telnetClient =
-                            new ConnectedTelnetClient(ConfigurationFactory.PiholeHostOrIp,
-                                ConfigurationFactory.PiholeTelnetPort);
+                            new ConnectedTelnetClient(configuration.PiholeHost,
+                                configuration.PiholePort);
                         if (telnetClient.IsConnected())
                         {
-                            if (ConfigurationFactory.PiholeUser.Length > 0 &&
-                                ConfigurationFactory.PiholePassword.Length > 0)
+                            if (configuration.PiholeUser.Length > 0 &&
+                                configuration.PiholePassword.Length > 0)
                             {
-                                await telnetClient.LoginOnTelnet(ConfigurationFactory.PiholeUser,
-                                    ConfigurationFactory.PiholePassword);
+                                await telnetClient.LoginOnTelnet(configuration.PiholeUser,
+                                    configuration.PiholePassword);
                             }
 
                             await telnetClient.WriteCommand(worker.GetPiholeCommand());

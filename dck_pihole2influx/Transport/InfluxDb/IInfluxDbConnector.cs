@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using dck_pihole2influx.Configuration;
 using dck_pihole2influx.Logging;
 using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using InfluxDB.Client;
@@ -27,11 +28,11 @@ namespace dck_pihole2influx.Transport.InfluxDb
 
         private InfluxDBClient _influxDbClientFactory;
 
-        public void Connect(Configuration.Configuration configuration)
+        public void Connect(ConfigurationItems configuration)
         {
-            var connectionString = $"http://{configuration.InfluxDbHostOrIp}:{configuration.InfluxDbPort}";
-            _influxDbClientFactory = InfluxDBClientFactory.CreateV1(connectionString, configuration.InfluxDbUserName,
-                configuration.InfluxDbPassword.ToCharArray(), configuration.InfluxDbDatabaseName, "autogen");
+            var connectionString = $"http://{configuration.InfluxDbHost}:{configuration.InfluxDbPort}";
+            _influxDbClientFactory = InfluxDBClientFactory.CreateV1(connectionString, configuration.InfluxDbUsername,
+                configuration.InfluxDbPassword.ToCharArray(), configuration.InfluxDbName, "autogen");
             _influxDbClientFactory.GetWriteApi().EventHandler += (sender, eventArgs) =>
             {
                 switch (eventArgs)

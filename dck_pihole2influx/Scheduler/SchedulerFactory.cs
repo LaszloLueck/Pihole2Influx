@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using dck_pihole2influx.Configuration;
 using dck_pihole2influx.Logging;
 using Quartz;
 using Quartz.Impl;
@@ -12,21 +13,21 @@ namespace dck_pihole2influx.Scheduler
         private readonly string _jobName;
         private readonly string _groupName;
         private readonly string _triggerName;
-        private readonly int _repeatIntervalInSeconds;
         private IScheduler _scheduler;
         private readonly StdSchedulerFactory _factory;
+        private readonly ConfigurationItems _configurationItems;
 
-        public CustomSchedulerFactory(string jobName, string groupName, string triggerName, int repeatIntervalInSeconds)
+        public CustomSchedulerFactory(string jobName, string groupName, string triggerName, ConfigurationItems configurationItems)
         {
             Log.Info("Generate Scheduler with Values: ");
             Log.Info($"JobName: {jobName}");
             Log.Info($"GroupName: {groupName}");
             Log.Info($"TriggerName: {triggerName}");
-            Log.Info($"RepeatInterval: {repeatIntervalInSeconds} s");
+            Log.Info($"RepeatInterval: {_configurationItems.RunsEvery} s");
             _jobName = jobName;
             _groupName = groupName;
             _triggerName = triggerName;
-            _repeatIntervalInSeconds = repeatIntervalInSeconds;
+            _configurationItems = configurationItems;
             _factory = new StdSchedulerFactory();
         }
 
@@ -62,7 +63,7 @@ namespace dck_pihole2influx.Scheduler
                 .Create()
                 .WithIdentity(_triggerName, _groupName)
                 .StartAt(dto)
-                .WithSimpleSchedule(x => x.WithIntervalInSeconds(_repeatIntervalInSeconds).RepeatForever())
+                .WithSimpleSchedule(x => x.WithIntervalInSeconds(_configurationItems.RunsEvery).RepeatForever())
                 .Build();
         }
 
@@ -76,6 +77,7 @@ namespace dck_pihole2influx.Scheduler
         {
             var job = GetJob();
             var trigger = GetTrigger();
+            job.JobDataMap.Put("configuration", _configurationItems);
             Log.Info("Schedule Job");
             await _scheduler.ScheduleJob(job, trigger);
         }
