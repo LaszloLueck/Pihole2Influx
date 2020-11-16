@@ -24,12 +24,13 @@ namespace dck_pihole2influx
             IConfigurationFactory configurationFactory = new ConfigurationFactory();
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder(configurationFactory);
 
-            var mainTask = configurationBuilder.GetConfiguration().Map(configuguration => {
+            var mainTask = configurationBuilder.GetConfiguration().Map(configuration => {
                 Task.Run(async () => {
                 Log.Info("successfully loaded configuration");
                 Log.Info("Build up the scheduler");
+                Log.Info($"A: {configuration.RunsEvery}");
                 ISchedulerFactory schedulerFactory =
-                    new CustomSchedulerFactory<SchedulerJob>("job1", "group1", "trigger1", configuguration);
+                    new CustomSchedulerFactory<SchedulerJob>("job1", "group1", "trigger1", configuration);
                 await schedulerFactory.RunScheduler();
                 Log.Info("App is in running state!");
                 });

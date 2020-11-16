@@ -23,7 +23,7 @@ namespace dck_pihole2influx.Scheduler
             Log.Info($"JobName: {jobName}");
             Log.Info($"GroupName: {groupName}");
             Log.Info($"TriggerName: {triggerName}");
-            Log.Info($"RepeatInterval: {_configurationItems.RunsEvery} s");
+            Log.Info($"RepeatInterval: {configurationItems.PiholeHost} s");
             _jobName = jobName;
             _groupName = groupName;
             _triggerName = triggerName;
@@ -33,6 +33,7 @@ namespace dck_pihole2influx.Scheduler
 
         public async Task RunScheduler()
         {
+            Log.Info("Initialize the scheduler.");
             await BuildScheduler();
             await StartScheduler();
             await ScheduleJob();

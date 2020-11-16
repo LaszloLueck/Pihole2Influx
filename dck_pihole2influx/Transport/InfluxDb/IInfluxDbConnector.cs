@@ -49,7 +49,11 @@ namespace dck_pihole2influx.Transport.InfluxDb
 
         public Task WriteMeasurementsAsync<T>(List<T> measurements) where T : IBaseMeasurement
         {
-            return _influxDbClientFactory.GetWriteApiAsync().WriteMeasurementsAsync(WritePrecision.S, measurements);
+            //return _influxDbClientFactory.GetWriteApiAsync().WriteMeasurementsAsync(WritePrecision.S, measurements);
+            return Task.Run(() =>
+            {
+                Log.Info($"SIM: {typeof(T)}");
+            });
         }
 
         public void DisposeConnector()
