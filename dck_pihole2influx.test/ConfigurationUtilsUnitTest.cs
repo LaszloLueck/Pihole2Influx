@@ -11,24 +11,24 @@ namespace dck_pihole2influx.test
     public class ConfigurationUtilsUnitTest
     {
 
-        private readonly IConfigurationFactory configurationFactory;
+        private readonly IConfigurationFactory _configurationFactory;
 
         public ConfigurationUtilsUnitTest()
         {
-            configurationFactory = new ConfigurationFactory();
+            _configurationFactory = new ConfigurationFactory();
         }
         
         
         [TestMethod, Description("try to convert a string from a not existing env var and return none")]
         public void ReturnNoneWhenEnvVarStringNotExists()
         {
-            configurationFactory.ReadEnvironmentVariableString(EnvEntries.INFLUXDBHOST).Should().Be(Option.None<string>());
+            _configurationFactory.ReadEnvironmentVariableString(EnvEntries.INFLUXDBHOST).Should().Be(Option.None<string>());
         }
 
         [TestMethod, Description("try to convert an int from a not existing env var and return none")]
         public void ReturnNoneWhenEnvVarIntNotExists()
         {
-            configurationFactory.ReadEnvironmentVariableInt(EnvEntries.PIHOLEPORT).Should().Be(Option.None<int>());
+            _configurationFactory.ReadEnvironmentVariableInt(EnvEntries.PIHOLEPORT).Should().Be(Option.None<int>());
         }
 
         [TestMethod,
@@ -36,7 +36,7 @@ namespace dck_pihole2influx.test
         public void ReturnNoneWhenTypeConversionNotMatched()
         {
             Environment.SetEnvironmentVariable(EnvEntries.PIHOLEPORT.ToString(), "abc");
-            configurationFactory.ReadEnvironmentVariableInt(EnvEntries.PIHOLEPORT).Should().Be(Option.None<int>());
+            _configurationFactory.ReadEnvironmentVariableInt(EnvEntries.PIHOLEPORT).Should().Be(Option.None<int>());
             Environment.SetEnvironmentVariable(EnvEntries.PIHOLEPORT.ToString(), null);
         }
 
@@ -59,7 +59,7 @@ namespace dck_pihole2influx.test
             var expected = new ConfigurationItems("piholehost", 123, "influxdbhost", 234, "influxdbname",
                 "influxdbusername", "influxdbpassword", "piholeuser", "piholepassword", 10, 1);
 
-            var testeeOpt = new ConfigurationBuilder(configurationFactory).GetConfiguration();
+            var testeeOpt = new ConfigurationBuilder(_configurationFactory).GetConfiguration();
             
             Option.Some<ConfigurationItems>(expected).Should().BeEquivalentTo(testeeOpt);
 
