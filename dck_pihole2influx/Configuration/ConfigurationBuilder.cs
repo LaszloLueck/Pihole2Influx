@@ -1,10 +1,12 @@
 ﻿using Optional;
+#pragma warning disable
 using Optional.Linq;
+#pragma warning restore
 
 namespace dck_pihole2influx.Configuration
 {
    
-    public record ConfigurationItems(string PiholeHost, int PiholePort, string InfluxDbHost, int InfluxDbPort, string InfluxDbName, string InfluxDbUsername, string InfluxDbPassword, string PiholeUser, string PiholePassword, int RunsEvery, int ConcurrentRequestsToPihole);
+    public sealed record ConfigurationItems(string PiholeHost, int PiholePort, string InfluxDbHost, int InfluxDbPort, string InfluxDbName, string InfluxDbUsername, string InfluxDbPassword, string PiholeUser, string PiholePassword, int RunsEvery, int ConcurrentRequestsToPihole);
 
     public enum EnvEntries
     {
@@ -42,10 +44,10 @@ namespace dck_pihole2influx.Configuration
                 from influxDbPassword in _configurationFactory.ReadEnvironmentVariableString(EnvEntries.INFLUXDBPASSWORD)
                 from piholeUser in _configurationFactory.ReadEnvironmentVariableString(EnvEntries.PIHOLEUSER)
                 from piholePassword in _configurationFactory.ReadEnvironmentVariableString(EnvEntries.PIHOLEPASSWORD)
-                from parallelity in _configurationFactory.ReadEnvironmentVariableInt(EnvEntries.CONCURRENTREQUESTSTOPIHOLE)
+                from parallelism in _configurationFactory.ReadEnvironmentVariableInt(EnvEntries.CONCURRENTREQUESTSTOPIHOLE)
 
                 from runsEvery in _configurationFactory.ReadEnvironmentVariableInt(EnvEntries.RUNSEVERY)
-                select new ConfigurationItems(piholeHost, piholePort, influxDbHost, influxDbPort, influxDbName, influxDbUserName, influxDbPassword, piholeUser, piholePassword, runsEvery, parallelity)
+                select new ConfigurationItems(piholeHost, piholePort, influxDbHost, influxDbPort, influxDbName, influxDbUserName, influxDbPassword, piholeUser, piholePassword, runsEvery, parallelism)
             );
         }
         

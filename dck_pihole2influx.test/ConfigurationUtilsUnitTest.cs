@@ -3,6 +3,7 @@ using dck_pihole2influx.Configuration;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Optional;
+using Optional.Unsafe;
 
 namespace dck_pihole2influx.test
 {
@@ -10,67 +11,71 @@ namespace dck_pihole2influx.test
     public class ConfigurationUtilsUnitTest
     {
 
-        private readonly IConfigurationUtils _configurationUtils;
+        private readonly IConfigurationFactory configurationFactory;
 
         public ConfigurationUtilsUnitTest()
         {
-            _configurationUtils = new ConfigurationUtils();
+            configurationFactory = new ConfigurationFactory();
         }
         
         
-        [TestMethod, Description("Try to parse an Option<string> Some to a valid number and returns the real value")]
-        public void ReturnValidWhenSome_TryParseValueFromString()
+        [TestMethod, Description("try to convert a string from a not existing env var and return none")]
+        public void ReturnNoneWhenEnvVarStringNotExists()
         {
-            var result = _configurationUtils.TryParseValueFromString(Option.Some("1"), 100);
-            Assert.AreEqual(1,result);
+            configurationFactory.ReadEnvironmentVariableString(EnvEntries.INFLUXDBHOST).Should().Be(Option.None<string>());
         }
 
-        [TestMethod, Description("Try to parse an Option<string> Some to a valid number and returns the default if it is not parseable")]
-        public void ReturnDefaultWhenSome_TryParseValueFromString()
+        [TestMethod, Description("try to convert an int from a not existing env var and return none")]
+        public void ReturnNoneWhenEnvVarIntNotExists()
         {
-            var result = _configurationUtils.TryParseValueFromString(Option.Some("a"), 100);
-            Assert.AreEqual(100,result);
+            configurationFactory.ReadEnvironmentVariableInt(EnvEntries.PIHOLEPORT).Should().Be(Option.None<int>());
         }
 
-        [TestMethod, Description("Try to parse an Option<string> None to a valid number and returns the default")]
-        public void ReturnDefaultWhenNone_TryParseValueFromString()
+        [TestMethod,
+         Description("try to convert an existing environment variable and return none if the type cannot be converted")]
+        public void ReturnNoneWhenTypeConversionNotMatched()
         {
-            var result = _configurationUtils.TryParseValueFromString(Option.None<string>(), 100);
-            Assert.AreEqual(100,result);
+            Environment.SetEnvironmentVariable(EnvEntries.PIHOLEPORT.ToString(), "abc");
+            configurationFactory.ReadEnvironmentVariableInt(EnvEntries.PIHOLEPORT).Should().Be(Option.None<int>());
+            Environment.SetEnvironmentVariable(EnvEntries.PIHOLEPORT.ToString(), null);
         }
 
-        [TestMethod, Description("Try to read an environment variable and return the value as Option.Some<string> if it is existing")]
-        public void ReturnSome_ReadEnvironmentVariable()
+        [TestMethod, Description("build the complete configuration-object")]
+        public void ReturnSomeConfigurationIfAllParametersAreSet()
         {
-            Environment.SetEnvironmentVariable("test_value1", "a");
-            var result = _configurationUtils.ReadEnvironmentVariable("test_value1");
-            Assert.AreEqual(Option.Some("a"), result);
-            Environment.SetEnvironmentVariable("test_value1",null);
-        }
+            Environment.SetEnvironmentVariable(EnvEntries.RUNSEVERY.ToString(), "10");
+            Environment.SetEnvironmentVariable(EnvEntries.PIHOLEHOST.ToString(), "piholehost");
+            Environment.SetEnvironmentVariable(EnvEntries.PIHOLEPORT.ToString(), "123");
+            Environment.SetEnvironmentVariable(EnvEntries.PIHOLEUSER.ToString(), "piholeuser");
+            Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBHOST.ToString(), "influxdbhost");
+            Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBNAME.ToString(), "influxdbname");
+            Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBPORT.ToString(), "234");
+            Environment.SetEnvironmentVariable(EnvEntries.PIHOLEPASSWORD.ToString(), "piholepassword");
+            Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBPASSWORD.ToString(), "influxdbpassword");
+            Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBUSERNAME.ToString(), "influxdbusername");
+            Environment.SetEnvironmentVariable(EnvEntries.CONCURRENTREQUESTSTOPIHOLE.ToString(), "1");
 
-        [TestMethod, Description("Try to read an environment variable and return the value as Option.None<string> if it is not existing")]
-        public void ReturnNone_ReadEnvironmentVariable()
-        {
-            var result = _configurationUtils.ReadEnvironmentVariable("test_value2");
-            Assert.AreEqual(Option.None<string>(), result);
-        }
 
-        [TestMethod, Description("Try to load a complete ConfigurationFactory (and all the default values)")]
-        public void TryToLoadConfigurationFactoryWithAllDefaults()
-        {
-            var configurationFactory = new ConfigurationFactory(_configurationUtils);
-            var testee = configurationFactory.Configuration;
+            var expected = new ConfigurationItems("piholehost", 123, "influxdbhost", 234, "influxdbname",
+                "influxdbusername", "influxdbpassword", "piholeuser", "piholepassword", 10, 1);
 
-            testee.PiholeHostOrIp.Should().Be("127.0.0.1");
-            testee.PiholeTelnetPort.Should().Be(4711);
-            testee.PiholeUser.Should().Be("");
-            testee.PiholePassword.Should().Be("");
-            testee.InfluxDbHostOrIp.Should().Be("127.0.0.1");
-            testee.InfluxDbPort.Should().Be(8086);
-            testee.InfluxDbDatabaseName.Should().Be("pihole2influx");
-            testee.InfluxDbUserName.Should().Be("");
-            testee.InfluxDbPassword.Should().Be("");
-            testee.ConcurrentRequestsToPihole.Should().Be(1);
+            var testeeOpt = new ConfigurationBuilder(configurationFactory).GetConfiguration();
+            
+            Option.Some<ConfigurationItems>(expected).Should().BeEquivalentTo(testeeOpt);
+
+            var testee = testeeOpt.ValueOrDefault();
+
+            testee.PiholeHost.Should().Be(expected.PiholeHost);
+            testee.PiholePassword.Should().Be(expected.PiholePassword);
+            testee.PiholePort.Should().Be(expected.PiholePort);
+            testee.PiholeUser.Should().Be(expected.PiholeUser);
+            testee.RunsEvery.Should().Be(expected.RunsEvery);
+            testee.InfluxDbHost.Should().Be(expected.InfluxDbHost);
+            testee.InfluxDbName.Should().Be(expected.InfluxDbName);
+            testee.InfluxDbPassword.Should().Be(expected.InfluxDbPassword);
+            testee.InfluxDbPort.Should().Be(expected.InfluxDbPort);
+            testee.InfluxDbUsername.Should().Be(expected.InfluxDbUsername);
+            testee.ConcurrentRequestsToPihole.Should().Be(expected.ConcurrentRequestsToPihole);
 
 
         }

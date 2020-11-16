@@ -120,7 +120,7 @@ namespace dck_pihole2influx.test
         {
             var testee = @"Some text string";
 
-            _telnetResultConverter.Convert(testee);
+            _telnetResultConverter.Convert(testee).Wait();
             "{}".Should().Be(_telnetResultConverter.GetJsonObjectFromDictionaryAsync(false).Result);
         }
 
@@ -128,7 +128,7 @@ namespace dck_pihole2influx.test
         public void CheckEmptyTelnetStringAndReturnNone()
         {
             var testee = "";
-            _telnetResultConverter.Convert(testee);
+            _telnetResultConverter.Convert(testee).Wait();
             "{}".Should().Be(_telnetResultConverter.GetJsonObjectFromDictionaryAsync( false).Result);
         }
     }
