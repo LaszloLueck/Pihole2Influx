@@ -25,7 +25,9 @@ The following image demonstrates the dataflow and the "position" of the applicat
 
 ## Insights
 The app is originally written in C# 8 with Dontnet Core 3.1
+
 On 2020/11/16 the code moves to C# 9 (thank god with immutable records) and dotnet 5.0
+
 As a friend of functional programming with scala, i use a library called <a href="https://github.com/nlkl/Optional" target="_blank">Optional.Option</a>, so we become some syntactic sugar in the code and no more nullable poop.
 
 ## Installation
