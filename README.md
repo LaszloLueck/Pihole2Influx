@@ -5,9 +5,6 @@ This tool, inside of the docker-container, gets data from a Pihole-DNS-Resolver,
 The data will catched via the telnet-interface of pihole. 
 With this interface, it collects much more data as of using the web-Restful-API.
 
-## Current issues with Github CodeQL
-Currently the github codeql doesn't work. I have not found the place where i can found the dotnet version (bump from 3.1 to 5.0.100).
-
 ## Prerequisites
 If you try this tool, please notice that you enable the telnet interface, on the pihole device, for all devices if you plan to run the container outside of the pihole server.
 Please follow the link for a description how you enable telnet for any network device.
