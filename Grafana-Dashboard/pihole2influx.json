@@ -16,10 +16,11 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 3,
+  "iteration": 1605604852961,
   "links": [],
   "panels": [
     {
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -118,7 +119,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -170,7 +171,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 128
+                "value": 74
               },
               {
                 "id": "custom.displayMode",
@@ -320,7 +321,7 @@
       "type": "table"
     },
     {
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -375,7 +376,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 242
+                "value": 292
               }
             ]
           },
@@ -391,7 +392,7 @@
               },
               {
                 "id": "custom.width",
-                "value": 409
+                "value": 231
               }
             ]
           }
@@ -461,7 +462,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Top Ads",
+      "title": "Top Blocked Domains",
       "transformations": [
         {
           "id": "organize",
@@ -483,7 +484,7 @@
       "type": "table"
     },
     {
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -635,7 +636,7 @@
       "type": "table"
     },
     {
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -706,7 +707,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -775,7 +776,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -839,7 +840,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Queries served from cache (last 24h)",
+      "title": "Queries served from cache",
       "type": "stat"
     },
     {
@@ -850,7 +851,7 @@
         "label": "Others",
         "threshold": 0
       },
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -932,7 +933,7 @@
       "valueName": "current"
     },
     {
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1000,7 +1001,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1068,7 +1069,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1132,7 +1133,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Queries forwarded to external dns (last 24h)",
+      "title": "Queries forwarded to external dns",
       "type": "stat"
     },
     {
@@ -1140,7 +1141,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1344,7 +1345,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1479,7 +1480,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1507,6 +1508,18 @@
               {
                 "id": "displayName",
                 "value": "Blocked"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "overtime.sumOfBoth"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Sum of Both"
               }
             ]
           }
@@ -1553,6 +1566,15 @@
           "$$hashKey": "object:1976",
           "alias": "Permitted",
           "color": "#37872D"
+        },
+        {
+          "$$hashKey": "object:1525",
+          "alias": "Sum of Both",
+          "color": "rgb(149, 149, 149)",
+          "fill": 0,
+          "fillGradient": 0,
+          "lines": true,
+          "linewidth": 1
         }
       ],
       "spaceLength": 10,
@@ -1596,6 +1618,56 @@
               {
                 "params": [],
                 "type": "median"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "groupBy": [
+            {
+              "params": [
+                "10m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "overtime",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT median(\"blockValue\") + median(\"permitValue\") as \"sumOfBoth\" FROM \"overtime\" WHERE $timeFilter GROUP BY time(10m)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "blockValue"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "permitValue"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
               }
             ]
           ],
@@ -1664,7 +1736,7 @@
         "label": "Others",
         "threshold": 0
       },
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -1746,7 +1818,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -1878,7 +1950,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -2013,7 +2085,7 @@
         "label": "Others",
         "threshold": 0
       },
-      "datasource": "Pihole2Influx",
+      "datasource": "$Datasource",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -2086,7 +2158,28 @@
     "influx"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": "Pihole2Influx",
+          "value": "Pihole2Influx"
+        },
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "Datasource",
+        "options": [],
+        "query": "influxdb",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      }
+    ]
   },
   "time": {
     "from": "now-6h",
@@ -2096,5 +2189,5 @@
   "timezone": "",
   "title": "Pihole2Influx",
   "uid": "BEKAkl2Gk",
-  "version": 73
+  "version": 81
 }
