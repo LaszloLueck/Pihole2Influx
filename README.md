@@ -15,6 +15,15 @@ It would be very helpful if you have knowledge with the following technologies. 
 - <a href="https://www.influxdata.com/" target="_blank">InfluxDb</a> - installation and runnable system. Create and manage time series databases
 - <a href="https://grafana.com/" target="_blank">Grafana</a> - installation and runnable system. Create and manage dashboards.
 
+So that everything works as described and can fulfill its purpose, the following services must be available, set up and accessible for use in the network. In my environment i also use the following versions of the tools:
+
+- Docker - Docker CE version 19.03.13, build 4484c46d9d
+- Dodkcer Compose - docker-compose version 1.25.0, build unknown
+- InfluxDb - InfluxDB shell version: 1.8.3
+- Grafana - Grafana v 7.3.1
+- PiHole - PiHole v 5.1.2
+- FTL - FTL v 5.2
+
 Docker is no need. You can build and run the complete system, please follow the instructions as described in the <a href="install.md">installation documentation</a>.
 
 ## Specs
@@ -67,5 +76,5 @@ What is missing:
 </ul>
 
 ## How it looks?
-If all is up and running, you should checkoud the sample grafana dashboard and it shoulld looking like the following screenshot.
+If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
