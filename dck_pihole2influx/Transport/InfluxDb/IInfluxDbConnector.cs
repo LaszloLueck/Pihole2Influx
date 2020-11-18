@@ -27,34 +27,24 @@ namespace dck_pihole2influx.Transport.InfluxDb
         private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<InfluxConnectionFactory>.GetLogger();
 
         private InfluxDBClient _influxDbClientFactory;
+        private WriteApiAsync _writeApiAsync;
 
         public void Connect(ConfigurationItems configuration)
         {
             var connectionString = $"http://{configuration.InfluxDbHost}:{configuration.InfluxDbPort}";
             _influxDbClientFactory = InfluxDBClientFactory.CreateV1(connectionString, configuration.InfluxDbUsername,
                 configuration.InfluxDbPassword.ToCharArray(), configuration.InfluxDbName, "autogen");
-            _influxDbClientFactory.GetWriteApi().EventHandler += (sender, eventArgs) =>
-            {
-                switch (eventArgs)
-                {
-                    case WriteSuccessEvent @event:
-                        Log.Info(@event.LineProtocol);
-                        break;
-                    case WriteErrorEvent @eventError:
-                        Log.Error(@eventError.Exception, "Error while writing to influxDb");
-                        break;
-                }
-            };
+
+            _writeApiAsync = _influxDbClientFactory.GetWriteApiAsync();
         }
 
         public Task WriteMeasurementsAsync<T>(List<T> measurements) where T : IBaseMeasurement
         {
-            return _influxDbClientFactory.GetWriteApiAsync().WriteMeasurementsAsync(WritePrecision.S, measurements);
+            return _writeApiAsync.WriteMeasurementsAsync(WritePrecision.S, measurements);
         }
 
         public void DisposeConnector()
         {
-            _influxDbClientFactory.GetWriteApi().Flush();
             _influxDbClientFactory.Dispose();
         }
     }
