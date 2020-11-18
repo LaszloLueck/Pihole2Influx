@@ -5,7 +5,6 @@ using dck_pihole2influx.Logging;
 using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
-using InfluxDB.Client.Writes;
 
 namespace dck_pihole2influx.Transport.InfluxDb
 {
