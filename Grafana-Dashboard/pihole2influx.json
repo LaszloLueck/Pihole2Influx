@@ -15,8 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 3,
-  "iteration": 1605604852961,
+  "id": 1,
+  "iteration": 1605682613280,
   "links": [],
   "panels": [
     {
@@ -75,7 +75,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.3",
       "targets": [
         {
           "groupBy": [],
@@ -249,7 +249,7 @@
           }
         ]
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.3",
       "repeat": null,
       "targets": [
         {
@@ -391,8 +391,7 @@
                 "value": "basic"
               },
               {
-                "id": "custom.width",
-                "value": 231
+                "id": "custom.width"
               }
             ]
           }
@@ -414,7 +413,7 @@
           }
         ]
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.3",
       "targets": [
         {
           "groupBy": [
@@ -566,7 +565,7 @@
           }
         ]
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.3",
       "targets": [
         {
           "groupBy": [
@@ -679,7 +678,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.3",
       "targets": [
         {
           "groupBy": [],
@@ -748,7 +747,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.3",
       "targets": [
         {
           "groupBy": [],
@@ -816,7 +815,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.3",
       "targets": [
         {
           "groupBy": [],
@@ -973,7 +972,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.3",
       "targets": [
         {
           "groupBy": [],
@@ -1041,7 +1040,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.3",
       "targets": [
         {
           "groupBy": [],
@@ -1109,7 +1108,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.3",
       "targets": [
         {
           "groupBy": [],
@@ -1175,7 +1174,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1395,7 +1394,7 @@
         "alertThreshold": true
       },
       "percentage": true,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1552,7 +1551,7 @@
         "alertThreshold": true
       },
       "percentage": true,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1852,7 +1851,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1984,7 +1983,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.1",
+      "pluginVersion": "7.3.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2161,7 +2160,7 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "Pihole2Influx",
           "value": "Pihole2Influx"
         },
@@ -2189,5 +2188,5 @@
   "timezone": "",
   "title": "Pihole2Influx",
   "uid": "BEKAkl2Gk",
-  "version": 81
+  "version": 3
 }
