@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -44,7 +45,7 @@ namespace dck_pihole2influx.StatObjects
                     {
                         var confValue = (StringDecimalOutput) kv.Value;
                         return (IBaseMeasurement) new MeasurementQueryType()
-                            {DnsType = confValue.Key, Value = confValue.Value};
+                            {DnsType = confValue.Key, Value = confValue.Value, Time = DateTime.Now};
                     });
                 }).ValueOr(new List<IBaseMeasurement>()).ToList();
             });

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,12 +40,31 @@ namespace dck_pihole2influx.StatObjects
             {"date", new PatternValue(Date, ValueTypes.String, "")}
         };
 
+        
         public override Task<List<IBaseMeasurement>> CalculateMeasurementData()
         {
             return Task.Run(() =>
             {
-                Log.Warning("No implementation for CalculateMeasurementData found!");
-                return new List<IBaseMeasurement>();
+                return DictionaryOpt.Map(dic =>
+                {
+                    var version = ((PrimitiveResultString) dic[Version]).Value;
+                    var tag = ((PrimitiveResultString) dic[Tag]).Value;
+                    var branch = ((PrimitiveResultString) dic[Branch]).Value;
+                    var hash = ((PrimitiveResultString) dic[Hash]).Value;
+                    var date = ((PrimitiveResultString) dic[Date]).Value;
+
+                    var returnValue = new MeasurementVersionInfo()
+                    {
+                        Branch = branch,
+                        Date = date,
+                        Hash = hash,
+                        Tag = tag,
+                        Time = DateTime.Now,
+                        Version = version
+                    };
+                    return new List<IBaseMeasurement>() {returnValue};
+
+                }).ValueOr(new List<IBaseMeasurement>());
             });
         }
 

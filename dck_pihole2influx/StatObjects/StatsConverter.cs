@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -76,7 +77,8 @@ namespace dck_pihole2influx.StatObjects
                         QueriesCached = queriesCached,
                         ClientsEverSeen = clientsEverSeen,
                         UniqueClients = uniqueClients,
-                        Status = status
+                        Status = status,
+                        Time = DateTime.Now
                     };
 
                     return new List<IBaseMeasurement>() {returnValue};
