@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "iteration": 1605704064603,
+  "iteration": 1605727022698,
   "links": [],
   "panels": [
     {
@@ -55,8 +55,8 @@
         ]
       },
       "gridPos": {
-        "h": 3,
-        "w": 24,
+        "h": 4,
+        "w": 13,
         "x": 0,
         "y": 0
       },
@@ -116,6 +116,426 @@
           }
         }
       ],
+      "type": "stat"
+    },
+    {
+      "datasource": "$Datasource",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 3,
+        "x": 14,
+        "y": 0
+      },
+      "id": 44,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "/^versioninfo\\.branch$/",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "7.3.3",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "versioninfo",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "branch"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Pi Hole Branch",
+      "type": "stat"
+    },
+    {
+      "datasource": "$Datasource",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 3,
+        "x": 18,
+        "y": 0
+      },
+      "id": 46,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^versioninfo\\.version$/",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "7.3.3",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "versioninfo",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "version"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Pi Hole Version",
+      "type": "stat"
+    },
+    {
+      "datasource": "$Datasource",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 22,
+        "y": 0
+      },
+      "id": 48,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^versioninfo\\.hash$/",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "7.3.3",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "versioninfo",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "hash"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Pi Hole Branch Hash",
+      "type": "stat"
+    },
+    {
+      "datasource": "$Datasource",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 3,
+        "x": 14,
+        "y": 2
+      },
+      "id": 43,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "/^dbstats\\.databaseVersion$/",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "7.3.3",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "dbstats",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "databaseVersion"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "SQLite Database version",
+      "type": "stat"
+    },
+    {
+      "datasource": "$Datasource",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 3,
+        "x": 18,
+        "y": 2
+      },
+      "id": 45,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^versioninfo\\.date$/",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "7.3.3",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "versioninfo",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "date"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Pi Hole Version from",
+      "type": "stat"
+    },
+    {
+      "datasource": "$Datasource",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 2,
+        "x": 22,
+        "y": 2
+      },
+      "id": 47,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^versioninfo\\.tag$/",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "7.3.3",
+      "targets": [
+        {
+          "groupBy": [],
+          "measurement": "versioninfo",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "tag"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Pi Hole Tag",
       "type": "stat"
     },
     {
@@ -237,7 +657,7 @@
         "h": 12,
         "w": 8,
         "x": 0,
-        "y": 3
+        "y": 4
       },
       "id": 2,
       "options": {
@@ -401,7 +821,7 @@
         "h": 12,
         "w": 8,
         "x": 8,
-        "y": 3
+        "y": 4
       },
       "id": 36,
       "options": {
@@ -553,7 +973,7 @@
         "h": 12,
         "w": 8,
         "x": 16,
-        "y": 3
+        "y": 4
       },
       "id": 38,
       "options": {
@@ -661,7 +1081,7 @@
         "h": 5,
         "w": 4,
         "x": 0,
-        "y": 15
+        "y": 16
       },
       "id": 32,
       "options": {
@@ -671,7 +1091,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "last"
+            "lastNotNull"
           ],
           "fields": "/^stats\\.domainsBeingBlocked$/",
           "values": false
@@ -730,7 +1150,7 @@
         "h": 5,
         "w": 4,
         "x": 4,
-        "y": 15
+        "y": 16
       },
       "id": 4,
       "options": {
@@ -740,7 +1160,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "last"
+            "lastNotNull"
           ],
           "fields": "/^dbstats\\.databaseFileSize$/",
           "values": false
@@ -798,7 +1218,7 @@
         "h": 5,
         "w": 4,
         "x": 8,
-        "y": 15
+        "y": 16
       },
       "id": 21,
       "options": {
@@ -808,7 +1228,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "last"
+            "lastNotNull"
           ],
           "fields": "/^stats\\.queriesCached$/",
           "values": false
@@ -820,7 +1240,7 @@
         {
           "groupBy": [],
           "measurement": "stats",
-          "orderByTime": "DESC",
+          "orderByTime": "ASC",
           "policy": "autogen",
           "refId": "A",
           "resultFormat": "time_series",
@@ -863,13 +1283,29 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "stats.dnsQueriesToday"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
-        "h": 9,
+        "h": 5,
         "w": 4,
         "x": 12,
-        "y": 15
+        "y": 16
       },
       "id": 40,
       "options": {
@@ -879,9 +1315,9 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "last"
+            "lastNotNull"
           ],
-          "fields": "",
+          "fields": "/^stats\\.dnsQueriesToday$/",
           "values": false
         },
         "textMode": "auto"
@@ -949,10 +1385,10 @@
       "fontSize": "80%",
       "format": "percent",
       "gridPos": {
-        "h": 9,
+        "h": 10,
         "w": 8,
         "x": 16,
-        "y": 15
+        "y": 16
       },
       "id": 10,
       "interval": null,
@@ -1026,7 +1462,7 @@
         "h": 5,
         "w": 4,
         "x": 0,
-        "y": 20
+        "y": 21
       },
       "id": 34,
       "options": {
@@ -1036,7 +1472,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "last"
+            "lastNotNull"
           ],
           "fields": "/^cacheinfo\\.cacheInserted$/",
           "values": false
@@ -1094,7 +1530,7 @@
         "h": 5,
         "w": 4,
         "x": 4,
-        "y": 20
+        "y": 21
       },
       "id": 6,
       "options": {
@@ -1104,7 +1540,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "last"
+            "lastNotNull"
           ],
           "fields": "/^dbstats\\.databaseEntries$/",
           "values": false
@@ -1162,7 +1598,7 @@
         "h": 5,
         "w": 4,
         "x": 8,
-        "y": 20
+        "y": 21
       },
       "id": 33,
       "options": {
@@ -1172,7 +1608,7 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "last"
+            "lastNotNull"
           ],
           "fields": "/^stats\\.queriesForwarded$/",
           "values": false
@@ -1184,7 +1620,7 @@
         {
           "groupBy": [],
           "measurement": "stats",
-          "orderByTime": "DESC",
+          "orderByTime": "ASC",
           "policy": "autogen",
           "refId": "A",
           "resultFormat": "time_series",
@@ -1207,17 +1643,11 @@
       "type": "stat"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": "$Datasource",
+      "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null,
-            "filterable": false
-          },
+          "custom": {},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -1235,51 +1665,32 @@
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 5,
+        "w": 4,
         "x": 12,
-        "y": 24
+        "y": 21
       },
-      "hiddenSeries": false,
-      "id": 19,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
+      "id": 41,
       "options": {
-        "alertThreshold": true
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^stats\\.adsBlockedToday$/",
+          "values": false
+        },
+        "textMode": "auto"
       },
-      "percentage": true,
       "pluginVersion": "7.3.3",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": true,
-      "steppedLine": false,
       "targets": [
         {
-          "groupBy": [
-            {
-              "params": [
-                "dnsType"
-              ],
-              "type": "tag"
-            }
-          ],
-          "measurement": "querytype",
+          "groupBy": [],
+          "measurement": "stats",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -1288,7 +1699,7 @@
             [
               {
                 "params": [
-                  "value"
+                  "adsBlockedToday"
                 ],
                 "type": "field"
               }
@@ -1297,49 +1708,10 @@
           "tags": []
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
-      "title": "Query Types",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "transformations": [],
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:3471",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:3472",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "title": "Queries blocked",
+      "type": "stat"
     },
     {
       "aliasColors": {},
@@ -1360,7 +1732,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 25
+        "y": 26
       },
       "hiddenSeries": false,
       "id": 12,
@@ -1547,101 +1919,30 @@
     },
     {
       "aliasColors": {},
-      "breakPoint": "50%",
-      "cacheTimeout": null,
-      "combine": {
-        "label": "Others",
-        "threshold": 0
-      },
-      "datasource": "$Datasource",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fontSize": "80%",
-      "format": "short",
-      "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 12,
-        "y": 32
-      },
-      "id": 24,
-      "interval": null,
-      "legend": {
-        "percentage": true,
-        "show": true,
-        "values": false
-      },
-      "legendType": "Right side",
-      "links": [],
-      "nullPointMode": "connected",
-      "pieType": "donut",
-      "pluginVersion": "7.3.1",
-      "strokeWidth": "5",
-      "targets": [
-        {
-          "alias": "Queries cached",
-          "groupBy": [],
-          "measurement": "stats",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "query": "SELECT \"queriesCached\" FROM \"stats\" WHERE $timeFilter",
-          "rawQuery": false,
-          "refId": "A",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "queriesCached"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": []
-        },
-        {
-          "alias": "Queries forwarded",
-          "groupBy": [],
-          "measurement": "stats",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "queriesForwarded"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": []
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Querydistribution cached vs. forwarded",
-      "transformations": [],
-      "type": "grafana-piechart-panel",
-      "valueName": "current"
-    },
-    {
-      "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "$Datasource",
-      "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
         },
         "overrides": []
       },
@@ -1649,12 +1950,12 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
-        "w": 6,
-        "x": 18,
-        "y": 32
+        "w": 12,
+        "x": 12,
+        "y": 26
       },
       "hiddenSeries": false,
-      "id": 26,
+      "id": 19,
       "legend": {
         "avg": false,
         "current": false,
@@ -1670,20 +1971,26 @@
       "options": {
         "alertThreshold": true
       },
-      "percentage": false,
+      "percentage": true,
       "pluginVersion": "7.3.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Ads blocked in between 24h",
-          "groupBy": [],
-          "measurement": "stats",
+          "groupBy": [
+            {
+              "params": [
+                "dnsType"
+              ],
+              "type": "tag"
+            }
+          ],
+          "measurement": "querytype",
           "orderByTime": "ASC",
           "policy": "default",
           "refId": "A",
@@ -1692,27 +1999,7 @@
             [
               {
                 "params": [
-                  "adsBlockedToday"
-                ],
-                "type": "field"
-              }
-            ]
-          ],
-          "tags": []
-        },
-        {
-          "alias": "DNS queries in between 24h",
-          "groupBy": [],
-          "measurement": "stats",
-          "orderByTime": "ASC",
-          "policy": "default",
-          "refId": "B",
-          "resultFormat": "time_series",
-          "select": [
-            [
-              {
-                "params": [
-                  "dnsQueriesToday"
+                  "value"
                 ],
                 "type": "field"
               }
@@ -1725,12 +2012,13 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Queries and ads in between 24h",
+      "title": "Query Types",
       "tooltip": {
         "shared": true,
         "sort": 0,
         "value_type": "individual"
       },
+      "transformations": [],
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -1741,7 +2029,7 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:582",
+          "$$hashKey": "object:3471",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -1750,7 +2038,7 @@
           "show": true
         },
         {
-          "$$hashKey": "object:583",
+          "$$hashKey": "object:3472",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -1820,7 +2108,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 33
+        "y": 34
       },
       "hiddenSeries": false,
       "hideTimeOverride": false,
@@ -2036,9 +2324,9 @@
       "format": "percent",
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 8,
         "x": 12,
-        "y": 40
+        "y": 34
       },
       "id": 30,
       "interval": null,
@@ -2091,6 +2379,114 @@
     },
     {
       "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "$Datasource",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 20,
+        "y": 34
+      },
+      "id": 24,
+      "interval": null,
+      "legend": {
+        "percentage": true,
+        "show": true,
+        "values": false
+      },
+      "legendType": "Under graph",
+      "links": [],
+      "nullPointMode": "connected",
+      "pieType": "donut",
+      "pluginVersion": "7.3.1",
+      "strokeWidth": "5",
+      "targets": [
+        {
+          "alias": "Queries cached",
+          "groupBy": [],
+          "measurement": "stats",
+          "orderByTime": "ASC",
+          "policy": "autogen",
+          "query": "SELECT \"queriesCached\" FROM \"stats\" WHERE $timeFilter",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "queriesCached"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Queries forwarded",
+          "groupBy": [],
+          "measurement": "stats",
+          "orderByTime": "ASC",
+          "policy": "autogen",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "queriesForwarded"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "Ads blocked",
+          "groupBy": [],
+          "measurement": "stats",
+          "orderByTime": "ASC",
+          "policy": "autogen",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "adsBlockedToday"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Querydistribution cached vs. forwarded vs. blocked",
+      "transformations": [],
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
@@ -2108,7 +2504,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 41
+        "y": 42
       },
       "hiddenSeries": false,
       "id": 28,
@@ -2254,12 +2650,12 @@
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Pihole2Influx",
   "uid": "BEKAkl2Gk",
-  "version": 4
+  "version": 8
 }
