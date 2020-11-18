@@ -46,10 +46,10 @@ version: "3"
        - INFLUXDBNAME=pihole2influx
        - CONCURRENTREQUESTSTOPIHOLE=4
        - RUNSEVERY=30
-       - INFLUXDBUSERNAME=""
-       - INFLUXDBPASSWORD=""
-       - PIHOLEUSER=""
-       - PIHOLEPASSWORD=""
+       - INFLUXDBUSERNAME=
+       - INFLUXDBPASSWORD=
+       - PIHOLEUSER=
+       - PIHOLEPASSWORD=
 
  ...
 ```
