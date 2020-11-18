@@ -62,10 +62,10 @@ Here is a short description of the parameters:
 - INFLUXDBNAME - The database name where influx db will store the data
 - CONCURRENTREQUESTSTOPIHOLE - It depends from your docker host and the pihole hardware with how much parallelism you will work. For an example, on my 24 core docker host it runs with parallelism of 12 to the docker-pihole host on the same machine. If you increase the amount, the faster is the app, but could leave the system unstable.
 - RUNSEVERY - time in seconds where the scheduler is triggered
-- INFLUXDBUSERNAME - If you secure the Influx-installation, here is the place for the user
-- INFLUXDBPASSWORD - If you secure the Influx-installation, here is the place for the password
-- PIHOLEUSER - If you secure the pihole-installation, here is the place for the user
-- PIHOLEPASSWORD - If you secure the pihole-installation, here is the place for the password
+- INFLUXDBUSERNAME - If you secure the Influx-installation, here is the place for the user or leave blank if no influxdb username is required
+- INFLUXDBPASSWORD - If you secure the Influx-installation, here is the place for the password or leave blank if no influxdb password is required
+- PIHOLEUSER - If you secure the pihole-installation, here is the place for the user or leave blank if no pihole username is required
+- PIHOLEPASSWORD - If you secure the pihole-installation, here is the place for the password or leave blank if no pihole password is required
 
 Thats it, not less and not more to configure.
 If you create and configure the file you can start the container now.
