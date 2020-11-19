@@ -21,9 +21,7 @@ namespace dck_pihole2influx
             await Log.InfoAsync("Load and build the configuration");
 
             IConfigurationFactory configurationFactory = new ConfigurationFactory();
-            var configurationBuilder = new ConfigurationBuilder(configurationFactory);
-
-            var mainTask = configurationBuilder.GetConfiguration().Map(configuration => {
+            var mainTask = new ConfigurationBuilder(configurationFactory).GetConfiguration().Map(configuration => {
                 Task.Run(async () => {
                 await Log.InfoAsync("successfully loaded configuration");
                 await Log.InfoAsync("Build up the scheduler");

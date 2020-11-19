@@ -6,44 +6,48 @@ namespace dck_pihole2influx.Optional.Json
     {
         public static JToken RemoveEmptyChildren(JToken token)
         {
-            if (token.Type == JTokenType.Object)
+            switch (token.Type)
             {
-                JObject copy = new JObject();
-                foreach (JProperty prop in token.Children<JProperty>())
+                case JTokenType.Object:
                 {
-                    JToken child = prop.Value;
-                    if (child.HasValues)
+                    var copy = new JObject();
+                    foreach (var prop in token.Children<JProperty>())
                     {
-                        child = RemoveEmptyChildren(child);
+                        var child = prop.Value;
+                        if (child.HasValues)
+                        {
+                            child = RemoveEmptyChildren(child);
+                        }
+                        if (!IsEmpty(child))
+                        {
+                            copy.Add(prop.Name, child);
+                        }
                     }
-                    if (!IsEmpty(child))
-                    {
-                        copy.Add(prop.Name, child);
-                    }
+                    return copy;
                 }
-                return copy;
-            }
-            else if (token.Type == JTokenType.Array)
-            {
-                JArray copy = new JArray();
-                foreach (JToken item in token.Children())
+                case JTokenType.Array:
                 {
-                    JToken child = item;
-                    if (child.HasValues)
+                    var copy = new JArray();
+                    foreach (var item in token.Children())
                     {
-                        child = RemoveEmptyChildren(child);
+                        var child = item;
+                        if (child.HasValues)
+                        {
+                            child = RemoveEmptyChildren(child);
+                        }
+                        if (!IsEmpty(child))
+                        {
+                            copy.Add(child);
+                        }
                     }
-                    if (!IsEmpty(child))
-                    {
-                        copy.Add(child);
-                    }
+                    return copy;
                 }
-                return copy;
+                default:
+                    return token;
             }
-            return token;
         }
 
-        public static bool IsEmpty(JToken token)
+        private static bool IsEmpty(JToken token)
         {
             return (token.Type == JTokenType.Null);
         }

@@ -193,7 +193,7 @@ namespace dck_pihole2influx.StatObjects
                 ? Option.Some(iPosition)
                 : Option.None<int>();
 
-            var result = countOpt.FlatMap<(string, IBaseResult)>(count =>
+            var result = countOpt.FlatMap(count =>
             {
                 return positionOpt.Map<(string, IBaseResult)>(position =>
                 {
@@ -212,7 +212,10 @@ namespace dck_pihole2influx.StatObjects
         {
             return inputOpt.ValueOr(() =>
             {
-                Log.Warning("Cannot convert dictionary to json, dictionary is none!");
+                Task.Run(async () =>
+                {
+                    await Log.WarningAsync("Cannot convert dictionary to json, dictionary is none!");
+                });
                 return new ConcurrentDictionary<string, IBaseResult>();
             });
         }
@@ -232,7 +235,7 @@ namespace dck_pihole2influx.StatObjects
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "An error occured while processing a data structure to json string");
+                await Log.ErrorAsync(ex, "An error occured while processing a data structure to json string");
                 return await Task.Run(() => string.Empty);
             }
         }
@@ -265,7 +268,10 @@ namespace dck_pihole2influx.StatObjects
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "An error occured while splitting the input line");
+                Task.Run(async () =>
+                {
+                    await Log.ErrorAsync(ex, "An error occured while splitting the input line");
+                });
                 return Option.None<ParallelQuery<string>>();
             }
         }

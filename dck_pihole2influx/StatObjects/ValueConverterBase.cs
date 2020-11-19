@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using Optional;
 
@@ -55,7 +56,10 @@ namespace dck_pihole2influx.StatObjects
                     catch (Exception ex)
                     {
                         IBaseValue retString = new BaseValue<string>(s);
-                        Log.Error(ex, "An error occured while converting a text value!");
+                        Task.Run(async () =>
+                        {
+                            await Log.ErrorAsync(ex, "An error occured while converting a text value!");
+                        });
                         return Option.Some(retString);
                     }
                 case float f:
@@ -68,7 +72,10 @@ namespace dck_pihole2influx.StatObjects
                         ? Option.Some((IBaseValue) new BaseValue<long>(longValue))
                         : Option.Some((IBaseValue) new BaseValue<long>(l));
                 default:
-                    Log.Warning($"An inconvertible type found and get back an None. Type is {typeof(T).FullName}");
+                    Task.Run(async () =>
+                    {
+                        await Log.WarningAsync($"An inconvertible type found and get back an None. Type is {typeof(T).FullName}");
+                    });
                     return Option.None<IBaseValue>();
             }
         }

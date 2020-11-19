@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using dck_pihole2influx.Configuration;
-using dck_pihole2influx.Logging;
 using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
@@ -23,8 +22,6 @@ namespace dck_pihole2influx.Transport.InfluxDb
 
     public class InfluxConnectionFactory
     {
-        private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<InfluxConnectionFactory>.GetLogger();
-
         private InfluxDBClient _influxDbClientFactory;
         private WriteApiAsync _writeApiAsync;
 

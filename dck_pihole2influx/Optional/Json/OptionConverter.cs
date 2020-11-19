@@ -28,14 +28,14 @@ namespace dck_pihole2influx.Optional.Json
 
             if (reader.TokenType == JsonToken.Null)
             {
-                return noneMethod.Invoke(null, new object[] { });
+                return noneMethod.Invoke(null, Array.Empty<object>());
             }
 
             var innerValue = serializer.Deserialize(reader, innerType);
 
             if (innerValue == null)
             {
-                return noneMethod.Invoke(null, new object[] { });
+                return noneMethod.Invoke(null, Array.Empty<object>());
             }
 
             return someMethod.Invoke(noneMethod, new[] {innerValue});
@@ -81,7 +81,9 @@ namespace dck_pihole2influx.Optional.Json
 #nullable enable
         private MethodInfo? GetMethodInfo(string name, params Type[] typeArguments)
         {
-            BindingFlags bindingAttr = BindingFlags.NonPublic | BindingFlags.Static;
+            #pragma warning disable
+            var bindingAttr = BindingFlags.NonPublic | BindingFlags.Static;
+            #pragma warning restore
             return GetType().GetMethod(name, bindingAttr)?.MakeGenericMethod(typeArguments);
         }
 #nullable disable

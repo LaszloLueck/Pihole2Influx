@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using Optional;
 
@@ -17,8 +18,10 @@ namespace dck_pihole2influx.Configuration
                 {
                     if (returnEmptyStringIfNoValue)
                         return Option.Some(string.Empty);
-                    
-                    Log.Info($"No entry found for environment variable {value}");
+                    Task.Run(async () =>
+                    {
+                        await Log.InfoAsync($"No entry found for environment variable {value}");
+                    });
                     return Option.None<string>();
                 }
             );
@@ -32,15 +35,21 @@ namespace dck_pihole2influx.Configuration
                     : LogAndReturnNone(value.ToString(), variable),
                 none: () =>
                 {
-                    Log.Warning($"No entry found for environment variable {value}");
+                    Task.Run(async () =>
+                    {
+                        await Log.WarningAsync($"No entry found for environment variable {value}");
+                    });
                     return Option.None<int>();
                 }
             );
         }
 
-        private Option<int> LogAndReturnNone(string envName, string value)
+        private static Option<int> LogAndReturnNone(string envName, string value)
         {
-            Log.Warning($"Cannot convert value {value} for env variable {envName}");
+            Task.Run(async () =>
+            {
+                await Log.WarningAsync($"Cannot convert value {value} for env variable {envName}");
+            });
             return Option.None<int>();
         }
     }

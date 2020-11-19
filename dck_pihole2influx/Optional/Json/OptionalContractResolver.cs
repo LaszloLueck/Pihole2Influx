@@ -8,7 +8,7 @@ namespace dck_pihole2influx.Optional.Json
     {
         protected override JsonContract CreateContract(Type objectType)
         {
-            JsonContract contract = base.CreateContract(objectType);
+            var contract = base.CreateContract(objectType);
 
             // this will only be called once and then cached
             if (objectType.Assembly == typeof(Option).Assembly)

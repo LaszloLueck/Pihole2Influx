@@ -41,7 +41,7 @@ namespace dck_pihole2influx.StatObjects
         {
             if (_input.Length == 0)
             {
-                Log.Warning("the input string (telnet result) contains no data, please check your configuration.");
+                await Log.WarningAsync("the input string (telnet result) contains no data, please check your configuration.");
                 return Option.None<ConcurrentDictionary<string, IBaseResult>>();
             }
 
@@ -63,12 +63,12 @@ namespace dck_pihole2influx.StatObjects
 
                 await Task.WhenAll(tasks);
 
-                return ret.Count > 0 ? Option.Some(ret) : Option.None<ConcurrentDictionary<string, IBaseResult>>();
+                return !ret.IsEmpty ? Option.Some(ret) : Option.None<ConcurrentDictionary<string, IBaseResult>>();
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error while create an object from return string");
-                Log.Warning(_input);
+                await Log.ErrorAsync(ex, "Error while create an object from return string");
+                await Log.WarningAsync(_input);
                 return Option.None<ConcurrentDictionary<string, IBaseResult>>();
             }
         }

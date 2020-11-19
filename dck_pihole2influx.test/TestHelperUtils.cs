@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using dck_pihole2influx.Logging;
 using Newtonsoft.Json.Linq;
 using Optional;
@@ -25,7 +26,10 @@ namespace dck_pihole2influx.test
             }
             catch (Exception exception)
             {
-                Logger.Error(exception, "An error occured!");
+                Task.Run(async () =>
+                {
+                    await Logger.ErrorAsync(exception, "An error occured!");
+                });
                 return Option.None<string>();
             }
         }
@@ -39,7 +43,10 @@ namespace dck_pihole2influx.test
             }
             catch (Exception exception)
             {
-                Logger.Error(exception, "An error occured!");
+                Task.Run(async () =>
+                {
+                    await Logger.ErrorAsync(exception, "An error occured!");
+                });
                 return Option.None<string>();
             }            
         }

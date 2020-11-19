@@ -12,7 +12,6 @@ namespace dck_pihole2influx.Transport.Telnet
 
         public ConnectedTelnetClient(string telnetHost, int telnetPort)
         {
-            Log.Info($"Connect to Telnet-Host at {telnetHost}:{telnetPort}");
             _client = new Client(telnetHost, telnetPort, new CancellationToken());
         }
 

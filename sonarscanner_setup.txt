@@ -14,3 +14,7 @@ dotnet sonarscanner end /d:sonar.login="f6106b1c3a4f1925d7c0a42a8f240745db0af1fb
 
 To check quality while coding install nuget package
 - SonarAnalyzer.CSharp
+
+
+
+5af31caaa07db518480a38b9758b72fd35be2025
