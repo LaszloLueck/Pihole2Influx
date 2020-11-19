@@ -1,6 +1,6 @@
 language: csharp
 mono: none
-dist: groovy
+dist: focal
 dotnet: 5.0.100
 install:
   - dotnet restore
