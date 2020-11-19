@@ -1,6 +1,6 @@
 language: csharp
 mono: none
-dist: bionic
+dist: xenial
 dotnet: 5.0.100
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT=1
