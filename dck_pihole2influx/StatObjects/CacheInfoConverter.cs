@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,7 +42,8 @@ namespace dck_pihole2influx.StatObjects
                     {
                         CacheInserted = cacheInserted,
                         CacheSize = cacheSize,
-                        CacheLiveFreed = cacheLiveFreed
+                        CacheLiveFreed = cacheLiveFreed,
+                        Time = DateTime.Now
                     };
                     return new List<IBaseMeasurement> {returnValue};
                 }).ValueOr(new List<IBaseMeasurement>()).ToList();

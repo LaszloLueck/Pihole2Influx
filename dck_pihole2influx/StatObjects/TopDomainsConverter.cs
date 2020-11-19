@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,7 +38,8 @@ namespace dck_pihole2influx.StatObjects
                         {
                             Count = confValue.Count,
                             IpOrHost = confValue.IpOrHost,
-                            Position = confValue.Position + 1
+                            Position = confValue.Position + 1,
+                            Time = DateTime.Now
                         };
                     });
                 }).ValueOr(new List<IBaseMeasurement>()).ToList();

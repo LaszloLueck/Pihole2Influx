@@ -28,7 +28,6 @@ namespace dck_pihole2influx
                 Task.Run(async () => {
                 Log.Info("successfully loaded configuration");
                 Log.Info("Build up the scheduler");
-                Log.Info($"A: {configuration.RunsEvery}");
                 ISchedulerFactory schedulerFactory =
                     new CustomSchedulerFactory<SchedulerJob>("job1", "group1", "trigger1", configuration);
                 await schedulerFactory.RunScheduler();
