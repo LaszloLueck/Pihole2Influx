@@ -9,4 +9,4 @@ install:
   - dotnet restore
 script:
   - dotnet build
-  - dotnet test dck_pihole2influx.test/dck_pihole2influx.test.csproj
+  - dotnet test dck_pihole2influx.test/dck_pihole2influx.test.csproj  /p:CollectCoverage=true
