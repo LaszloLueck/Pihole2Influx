@@ -17,21 +17,20 @@ namespace dck_pihole2influx
 
         static async Task Main(string[] args)
         {
-            Log.Info("starting app!");
-
-            Log.Info("Load and build the configuration");
+            await Log.InfoAsync("starting app");
+            await Log.InfoAsync("Load and build the configuration");
 
             IConfigurationFactory configurationFactory = new ConfigurationFactory();
-            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder(configurationFactory);
+            var configurationBuilder = new ConfigurationBuilder(configurationFactory);
 
             var mainTask = configurationBuilder.GetConfiguration().Map(configuration => {
                 Task.Run(async () => {
-                Log.Info("successfully loaded configuration");
-                Log.Info("Build up the scheduler");
+                await Log.InfoAsync("successfully loaded configuration");
+                await Log.InfoAsync("Build up the scheduler");
                 ISchedulerFactory schedulerFactory =
                     new CustomSchedulerFactory<SchedulerJob>("job1", "group1", "trigger1", configuration);
                 await schedulerFactory.RunScheduler();
-                Log.Info("App is in running state!");
+                await Log.InfoAsync("App is in running state!");
                 });
                 return Task.Delay(-1);
             }).ValueOr(() => Task.CompletedTask);
