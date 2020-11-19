@@ -1,0 +1,9 @@
+language: csharp
+mono: none
+dist: xenial
+dotnet: 5.0.100
+install:
+  - dotnet restore
+script:
+  - dotnet build
+  - dotnet test dck_pihole2influx.test/dck_pihole2influx.test.csproj
