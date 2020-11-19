@@ -1,2 +1,7 @@
 ﻿bin/
 obj/
+.git
+.cache
+*.md
+*.png
+
