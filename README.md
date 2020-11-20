@@ -6,6 +6,7 @@
 [![Quality Gate Status](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=alert_status)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
 [![Security Rating](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=security_rating)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
 [![Reliability Rating](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=reliability_rating)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
+[![Coverage](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=coverage)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
 
 # Pihole2Influx
 This tool, inside of the docker-container, gets data from a Pihole-DNS-Resolver, especially the FTLDNS (Faster than light dns), convert and put them into a influxdb timeseries database.
@@ -81,7 +82,7 @@ Currently they are:
 
 What is missing:
 <ul>
-<li>better test coverage (currently only 70%)</li>
+<li>better test coverage (currently not enough as you can see in the badge above)</li>
 </ul>
 
 ## How it looks?
