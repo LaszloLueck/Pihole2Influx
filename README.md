@@ -1,4 +1,12 @@
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Build Status](https://travis-ci.com/LaszloLueck/Pihole2Influx.svg?branch=master)](https://travis-ci.com/LaszloLueck/Pihole2Influx) ![GitHub top language](https://img.shields.io/github/languages/top/LaszloLueck/Pihole2Influx) ![Lines of code](https://img.shields.io/tokei/lines/github/LaszloLueck/Pihole2Influx) [![Quality Gate Status](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=alert_status)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) 
+[![Build Status](https://travis-ci.com/LaszloLueck/Pihole2Influx.svg?branch=master)](https://travis-ci.com/LaszloLueck/Pihole2Influx) 
+![GitHub top language](https://img.shields.io/github/languages/top/LaszloLueck/Pihole2Influx) 
+
+[![Lines of Code](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=ncloc)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396) 
+[![Quality Gate Status](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=alert_status)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
+[![Security Rating](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=security_rating)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
+[![Reliability Rating](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=reliability_rating)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
+[![Coverage](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=coverage)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
 
 # Pihole2Influx
 This tool, inside of the docker-container, gets data from a Pihole-DNS-Resolver, especially the FTLDNS (Faster than light dns), convert and put them into a influxdb timeseries database.
@@ -20,7 +28,7 @@ It would be very helpful if you have knowledge with the following technologies. 
 So that everything works as described and can fulfill its purpose, the following services must be available, set up and accessible for use in the network. In my environment i also use the following versions of the tools:
 
 - Docker - Docker CE version 19.03.13, build 4484c46d9d
-- Dodkcer Compose - docker-compose version 1.25.0, build unknown
+- Docker Compose - docker-compose version 1.25.0, build unknown
 - InfluxDb - InfluxDB shell version: 1.8.3
 - Grafana - Grafana v 7.3.1
 - PiHole - PiHole v 5.1.2
@@ -74,7 +82,7 @@ Currently they are:
 
 What is missing:
 <ul>
-<li>better test coverage (currently only 70%)</li>
+<li>better test coverage (currently not enough as you can see in the badge above)</li>
 </ul>
 
 ## How it looks?
