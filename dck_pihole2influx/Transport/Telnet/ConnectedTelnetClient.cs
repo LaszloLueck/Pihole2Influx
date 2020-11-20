@@ -1,13 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using dck_pihole2influx.Logging;
 using PrimS.Telnet;
 
 namespace dck_pihole2influx.Transport.Telnet
 {
     public class ConnectedTelnetClient : IConnectedTelnetClient
     {
-        private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<ConnectedTelnetClient>.GetLogger();
         private readonly Client _client;
 
         public ConnectedTelnetClient(string telnetHost, int telnetPort)
