@@ -35,7 +35,7 @@ namespace dck_pihole2influx.Scheduler
                 await Log.InfoAsync("Connect to pihole and get stats");
 
                 //throttle the amount of concurrent telnet-requests to pihole.
-                //if it is not set per env-var, the default is 1 (one request per time). 
+                //if it is not set per env-var, the default is 1 (one request per time).
                 var mutex = new SemaphoreSlim(configuration.ConcurrentRequestsToPihole);
                 var influxConnector =
                     new InfluxDbConnector().GetInfluxDbConnection();
