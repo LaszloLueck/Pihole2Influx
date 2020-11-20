@@ -40,6 +40,24 @@ namespace dck_pihole2influx.test
             Environment.SetEnvironmentVariable(EnvEntries.PIHOLEPORT.ToString(), null);
         }
 
+        [TestMethod, Description("Check if ConfigurationItems is complete")]
+        public void CheckIfConfigurationItemsIsWellformed(){
+            var testee = new ConfigurationItems("piholehost", 123, "influxdbhost", 234, "influxdbname", "influxdbusername", "influxdbpassword", "piholeuser", "piholepassword", 10, 4);
+
+            testee.PiholeHost.Should().Be("piholehost");
+            testee.PiholePassword.Should().Be("piholepassword");
+            testee.PiholePort.Should().Be(123);
+            testee.PiholeUser.Should().Be("piholeuser");
+            testee.RunsEvery.Should().Be(10);
+            testee.ConcurrentRequestsToPihole.Should().Be(4);
+            testee.InfluxDbHost.Should().Be("influxdbhost");
+            testee.InfluxDbName.Should().Be("influxdbname");
+            testee.InfluxDbPassword.Should().Be("influxdbpassword");
+            testee.InfluxDbPort.Should().Be(234);
+            testee.InfluxDbUsername.Should().Be("influxdbusername");
+
+        }
+
         [TestMethod, Description("build the complete configuration-object")]
         public void ReturnSomeConfigurationIfAllParametersAreSet()
         {
