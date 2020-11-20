@@ -1,4 +1,4 @@
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Build Status](https://travis-ci.com/LaszloLueck/Pihole2Influx.svg?branch=master)](https://travis-ci.com/LaszloLueck/Pihole2Influx)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Build Status](https://travis-ci.com/LaszloLueck/Pihole2Influx.svg?branch=master)](https://travis-ci.com/LaszloLueck/Pihole2Influx) ![GitHub top language](https://img.shields.io/github/languages/top/LaszloLueck/Pihole2Influx) ![Lines of code](https://img.shields.io/tokei/lines/github/LaszloLueck/Pihole2Influx) [![Quality Gate Status](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=alert_status)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
 
 # Pihole2Influx
 This tool, inside of the docker-container, gets data from a Pihole-DNS-Resolver, especially the FTLDNS (Faster than light dns), convert and put them into a influxdb timeseries database.
