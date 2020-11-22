@@ -2,11 +2,11 @@
 [![Build Status](https://travis-ci.com/LaszloLueck/Pihole2Influx.svg?branch=master)](https://travis-ci.com/LaszloLueck/Pihole2Influx) 
 ![GitHub top language](https://img.shields.io/github/languages/top/LaszloLueck/Pihole2Influx) 
 
-[![Lines of Code](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=ncloc)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396) 
-[![Quality Gate Status](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=alert_status)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
-[![Security Rating](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=security_rating)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
-[![Reliability Rating](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=reliability_rating)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
-[![Coverage](http://gretzki.ddns.net:9000/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=coverage)](http://gretzki.ddns.net:9000/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
+[![Lines of Code](https://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=ncloc)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396) 
+[![Quality Gate Status](https://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=alert_status)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
+[![Security Rating](https://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=security_rating)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
+[![Reliability Rating](https://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=reliability_rating)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
+[![Coverage](https://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=coverage)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
 
 # Pihole2Influx
 This tool, inside of the docker-container, gets data from a Pihole-DNS-Resolver, especially the FTLDNS (Faster than light dns), convert and put them into a influxdb timeseries database.
