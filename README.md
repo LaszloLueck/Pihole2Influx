@@ -8,6 +8,7 @@
 [![Reliability Rating](https://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=reliability_rating)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
 [![Coverage](https://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=coverage)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
 
+
 # Pihole2Influx
 This tool, inside of the docker-container, gets data from a Pihole-DNS-Resolver, especially the FTLDNS (Faster than light dns), convert and put them into a influxdb timeseries database.
 
