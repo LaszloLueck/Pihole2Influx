@@ -23,7 +23,7 @@ jobs:
         run: dotnet restore
       - name: do the checks and provide them to sonar
         run: |
-          dotnet sonarscanner begin /name:"Pihole2Influx" /d:sonar.host.url="https://sonar.gretzki.ddns.net" /k:"3d075ac072aaf2b2b721e086939347b29728c396" /d:sonar.cs.opencover.reportsPaths="TestResults/coverage.opencover.xml"
+          dotnet sonarscanner begin /name:"Pihole2Influx" /d:sonar.host.url="http://sonar.gretzki.ddns.net" /k:"3d075ac072aaf2b2b721e086939347b29728c396" /d:sonar.cs.opencover.reportsPaths="TestResults/coverage.opencover.xml"
           dotnet clean
           dotnet build /t:rebuild
           dotnet test dck_pihole2influx.test  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="../TestResults/" 
