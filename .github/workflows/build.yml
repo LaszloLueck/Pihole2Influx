@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
@@ -17,32 +17,14 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.100
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v1
-        with:
-          path: ~\sonar\cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache SonarCloud scanner
-        id: cache-sonar-scanner
-        uses: actions/cache@v1
-        with:
-          path: .\.sonar\scanner
-          key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner
-      - name: Install SonarCloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-        shell: powershell
+      - name: Install dotnet sonarscanner
+        run:  dotnet tool install --global dotnet-sonarscanner
+      - name: Install dependencies
+        run: dotnet restore
+      - name: do the checks and provide them to sonar
         run: |
-          New-Item -Path .\.sonar\scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        shell: powershell
-        run: |
-          dotnet .\.sonar\scanner\sonarscanner begin /k:"LaszloLueck_Pihole2Influx" /o:"laszlolueck" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          dotnet sonarscanner begin /name:"Pihole2Influx" /d:sonar.host.url="https:sonar.gretzki.ddns.net" /k:"3d075ac072aaf2b2b721e086939347b29728c396" /d:sonar.cs.opencover.reportsPaths="TestResults/coverage.opencover.xml"
           dotnet clean
           dotnet build /t:rebuild
-          dotnet .\.sonar\scanner\sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+          dotnet test dck_pihole2influx.test  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput="../TestResults/" 
+          dotnet sonarscanner end
