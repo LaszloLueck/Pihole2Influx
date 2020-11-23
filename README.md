@@ -2,11 +2,11 @@
 [![Build Status](https://travis-ci.com/LaszloLueck/Pihole2Influx.svg?branch=master)](https://travis-ci.com/LaszloLueck/Pihole2Influx) 
 ![GitHub top language](https://img.shields.io/github/languages/top/LaszloLueck/Pihole2Influx) 
 
-[![Lines of Code](http://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=ncloc&token=5d13af388e388172d842b172affc4f8e0694f52b)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396) 
-[![Quality Gate Status](http://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=alert_status&token=5d13af388e388172d842b172affc4f8e0694f52b)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
-[![Security Rating](http://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=security_rating&token=5d13af388e388172d842b172affc4f8e0694f52b)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
-[![Reliability Rating](http://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=reliability_rating&token=5d13af388e388172d842b172affc4f8e0694f52b)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
-[![Coverage](http://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=coverage&token=5d13af388e388172d842b172affc4f8e0694f52b)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
+[![Lines of Code](http://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=ncloc)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396) 
+[![Quality Gate Status](http://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=alert_status)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
+[![Security Rating](http://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=security_rating)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
+[![Reliability Rating](http://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=reliability_rating)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
+[![Coverage](http://sonar.gretzki.ddns.net/api/project_badges/measure?project=3d075ac072aaf2b2b721e086939347b29728c396&metric=coverage)](https://sonar.gretzki.ddns.net/dashboard?id=3d075ac072aaf2b2b721e086939347b29728c396)
 
 
 # Pihole2Influx
