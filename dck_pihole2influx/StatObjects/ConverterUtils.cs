@@ -117,6 +117,7 @@ namespace dck_pihole2influx.StatObjects
                     ? dblValue
                     : 0;
 
+            
             IBaseResult retValue = new StringDecimalOutput(splitLine[0], dblValue);
             return Option.Some<(string, IBaseResult)>((splitLine[0], retValue));
         }
