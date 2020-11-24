@@ -50,7 +50,9 @@ namespace dck_pihole2influx.StatObjects
                 var ret = new ConcurrentDictionary<string, IBaseResult>();
                 var tasks = new ConcurrentBag<Task>();
 
-                SplitInputString(_input, GetTerminator()).MatchSome(splitted =>
+                var splitResult = await SplitInputString(_input, GetTerminator());
+                
+                splitResult.MatchSome(splitted =>
                 {
                     foreach (var s in splitted)
                     {

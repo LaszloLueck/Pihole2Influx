@@ -14,7 +14,7 @@ namespace dck_pihole2influx.StatObjects
 
     public sealed record PrimitiveResultFloat(float Value):IBaseResult;
 
-    public sealed record StringDecimalValue(string Key, decimal Value):IBaseResult;
+    public sealed record StringDecimalOutput(string Key, decimal Value):IBaseResult;
 
     public sealed record IntOutputNumberedElement(int Count, int Position, string IpOrHost):IBaseResult;
 
