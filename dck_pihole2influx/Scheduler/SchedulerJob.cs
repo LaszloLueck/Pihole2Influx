@@ -17,8 +17,9 @@ namespace dck_pihole2influx.Scheduler
         public async Task Execute(IJobExecutionContext context)
         {
             var configuration = (ConfigurationItems) context.JobDetail.JobDataMap["configuration"];
-            
-            await Task.Run(async () =>
+            var influxConnector = (InfluxConnectionFactory) context.JobDetail.JobDataMap["influxConnectionFactory"];
+
+        await Task.Run(async () =>
             {
                 await Log.InfoAsync("Use the following parameter for connections:");
                 await Log.InfoAsync($"Pihole host: {configuration.PiholeHost}");
@@ -37,8 +38,6 @@ namespace dck_pihole2influx.Scheduler
                 //throttle the amount of concurrent telnet-requests to pihole.
                 //if it is not set per env-var, the default is 1 (one request per time).
                 var mutex = new SemaphoreSlim(configuration.ConcurrentRequestsToPihole);
-                var influxConnector =
-                    new InfluxDbConnector().GetInfluxDbConnection();
                 influxConnector.Connect(configuration);
                 var enumerable = Workers.GetJobsToDo().Select(async worker =>
                 {

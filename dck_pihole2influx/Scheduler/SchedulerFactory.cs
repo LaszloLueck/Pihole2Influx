@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using dck_pihole2influx.Configuration;
 using dck_pihole2influx.Logging;
+using dck_pihole2influx.Transport.InfluxDb;
 using Quartz;
 using Quartz.Impl;
 
@@ -16,8 +17,9 @@ namespace dck_pihole2influx.Scheduler
         private IScheduler _scheduler;
         private readonly StdSchedulerFactory _factory;
         private readonly ConfigurationItems _configurationItems;
+        private readonly InfluxConnectionFactory _influxConnectionFactory;
 
-        public CustomSchedulerFactory(string jobName, string groupName, string triggerName, ConfigurationItems configurationItems)
+        public CustomSchedulerFactory(string jobName, string groupName, string triggerName, ConfigurationItems configurationItems, InfluxConnectionFactory influxConnectionFactory)
         {
             Task.Run(async() =>
             {
@@ -31,6 +33,7 @@ namespace dck_pihole2influx.Scheduler
             _groupName = groupName;
             _triggerName = triggerName;
             _configurationItems = configurationItems;
+            _influxConnectionFactory = influxConnectionFactory;
             _factory = new StdSchedulerFactory();
         }
 
@@ -78,6 +81,7 @@ namespace dck_pihole2influx.Scheduler
             var job = GetJob();
             var trigger = GetTrigger();
             job.JobDataMap.Put("configuration", _configurationItems);
+            job.JobDataMap.Put("influxConnectionFactory", _influxConnectionFactory);
             await Log.InfoAsync("Schedule Job");
             await _scheduler.ScheduleJob(job, trigger);
         }
