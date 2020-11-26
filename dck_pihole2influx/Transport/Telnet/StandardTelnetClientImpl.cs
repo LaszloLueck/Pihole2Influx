@@ -3,11 +3,16 @@ using System.Text;
 
 namespace dck_pihole2influx.Transport.Telnet
 {
-    public class StandardTelnetClientFactory
+    public interface IStandardTelnetClientFactory
+    {
+        StandardTcpClientImpl Build();
+    }
+    
+    public sealed class StandardTelnetClientFactory : IStandardTelnetClientFactory
     {
         public StandardTcpClientImpl Build()
         {
-            return new StandardTcpClientImpl();
+            return new();
         }
     }
     

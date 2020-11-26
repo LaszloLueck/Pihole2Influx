@@ -18,7 +18,7 @@ namespace dck_pihole2influx.Scheduler
         {
             var configuration = (ConfigurationItems) context.JobDetail.JobDataMap["configuration"];
             var influxConnector = (InfluxConnectionFactory) context.JobDetail.JobDataMap["influxConnectionFactory"];
-            var telnetClientFactory = (StandardTelnetClientFactory) context.JobDetail.JobDataMap["telnetClientFactory"];
+            var telnetClientFactory = (IStandardTelnetClientFactory) context.JobDetail.JobDataMap["telnetClientFactory"];
 
             await Task.Run(async () =>
             {

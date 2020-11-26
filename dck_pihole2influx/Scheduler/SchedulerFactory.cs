@@ -19,9 +19,9 @@ namespace dck_pihole2influx.Scheduler
         private readonly StdSchedulerFactory _factory;
         private readonly ConfigurationItems _configurationItems;
         private readonly InfluxConnectionFactory _influxConnectionFactory;
-        private readonly StandardTelnetClientFactory _telnetClientFactory;
+        private readonly IStandardTelnetClientFactory _telnetClientFactory;
 
-        public CustomSchedulerFactory(string jobName, string groupName, string triggerName, ConfigurationItems configurationItems, InfluxConnectionFactory influxConnectionFactory, StandardTelnetClientFactory telnetClientFactory)
+        public CustomSchedulerFactory(string jobName, string groupName, string triggerName, ConfigurationItems configurationItems, InfluxConnectionFactory influxConnectionFactory, IStandardTelnetClientFactory telnetClientFactory)
         {
             Task.Run(async() =>
             {
