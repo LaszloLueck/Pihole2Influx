@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,6 +52,7 @@ namespace dck_pihole2influx.Scheduler
 
                         await Task.Run(async () =>
                         {
+                            Stopwatch sw = Stopwatch.StartNew();
                             var standardTcpClientImpl = telnetClientFactory.Build();
                             standardTcpClientImpl.Connect(configuration.PiholeHost, configuration.PiholePort);
                             standardTcpClientImpl.WriteCommand(worker.GetPiholeCommand());
@@ -61,9 +63,10 @@ namespace dck_pihole2influx.Scheduler
                             await worker.Convert(result);
                             var measurements = await worker.CalculateMeasurementData();
                             await influxConnector.WriteMeasurementsAsync(measurements);
+                            sw.Stop();
+                            await Log.InfoAsync($"Finished Task <{inner}> for Worker <{worker.GetType().Name}> in {sw.ElapsedMilliseconds} ms");
 
                         });
-                        await Log.InfoAsync($"Finished Task <{inner}> for Worker <{worker.GetType().Name}>");
                     mutex.Release();
                 });
                 await Task.WhenAll(enumerable);
