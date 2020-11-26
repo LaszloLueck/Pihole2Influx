@@ -70,39 +70,47 @@ When it will be used (in the parallel processing of getting data), i create the 
 The prior used telnet dependency wrote a mess of logging information to stdout (each result). I've never found a switch to avoid this.
 The new code wrote nothing, so the log information looks like this:
 ```
-11/26/2020 21:03:17 INFO :: SchedulerJob : Use the following parameter for connections:
-11/26/2020 21:03:17 INFO :: SchedulerJob : Pihole host: 192.168.1.4
-11/26/2020 21:03:17 INFO :: SchedulerJob : Pihole telnet port: 4711
-11/26/2020 21:03:17 INFO :: SchedulerJob : InfluxDb host: 192.168.1.4
-11/26/2020 21:03:17 INFO :: SchedulerJob : InfluxDb port: 8086
-11/26/2020 21:03:17 INFO :: SchedulerJob : InfluxDb database name: pihole2influx
-11/26/2020 21:03:17 INFO :: SchedulerJob : InfluxDb user name: 
-11/26/2020 21:03:17 INFO :: SchedulerJob : InfluxDb password is not set
-11/26/2020 21:03:17 INFO :: SchedulerJob : Connect to Pihole and process data with 4 parallel process(es).
-11/26/2020 21:03:17 INFO :: SchedulerJob : Connect to pihole and get stats
-11/26/2020 21:03:17 INFO :: SchedulerJob : Connect Task <1> to Telnet-Host for worker DbStatsConverter
-11/26/2020 21:03:17 INFO :: SchedulerJob : Connect Task <2> to Telnet-Host for worker VersionInfoConverter
-11/26/2020 21:03:17 INFO :: SchedulerJob : Connect Task <3> to Telnet-Host for worker OvertimeConverter
-11/26/2020 21:03:17 INFO :: SchedulerJob : Connect Task <4> to Telnet-Host for worker TopClientsConverter
-11/26/2020 21:03:17 INFO :: SchedulerJob : Finished Task <2> for Worker <VersionInfoConverter>
-11/26/2020 21:03:17 INFO :: SchedulerJob : Connect Task <5> to Telnet-Host for worker ForwardDestinationsConverter
-11/26/2020 21:03:17 INFO :: SchedulerJob : Finished Task <4> for Worker <TopClientsConverter>
-11/26/2020 21:03:17 INFO :: SchedulerJob : Connect Task <6> to Telnet-Host for worker QueryTypesConverter
-11/26/2020 21:03:17 INFO :: SchedulerJob : Finished Task <5> for Worker <ForwardDestinationsConverter>
-11/26/2020 21:03:17 INFO :: SchedulerJob : Connect Task <7> to Telnet-Host for worker TopAdsConverter
-11/26/2020 21:03:17 INFO :: SchedulerJob : Finished Task <6> for Worker <QueryTypesConverter>
-11/26/2020 21:03:17 INFO :: SchedulerJob : Connect Task <8> to Telnet-Host for worker TopDomainsConverter
-11/26/2020 21:03:17 INFO :: SchedulerJob : Finished Task <7> for Worker <TopAdsConverter>
-11/26/2020 21:03:17 INFO :: SchedulerJob : Connect Task <9> to Telnet-Host for worker StatsConverter
-11/26/2020 21:03:17 INFO :: SchedulerJob : Finished Task <3> for Worker <OvertimeConverter>
-11/26/2020 21:03:17 INFO :: SchedulerJob : Connect Task <10> to Telnet-Host for worker CacheInfoConverter
-11/26/2020 21:03:17 INFO :: SchedulerJob : Finished Task <8> for Worker <TopDomainsConverter>
-11/26/2020 21:03:17 INFO :: SchedulerJob : Finished Task <9> for Worker <StatsConverter>
-11/26/2020 21:03:17 INFO :: SchedulerJob : Finished Task <10> for Worker <CacheInfoConverter>
-11/26/2020 21:03:17 INFO :: SchedulerJob : Finished Task <1> for Worker <DbStatsConverter>
+11/26/2020 21:39:39 INFO :: SchedulerJob : Pihole host: 192.168.1.4
+11/26/2020 21:39:39 INFO :: SchedulerJob : Pihole telnet port: 4711
+11/26/2020 21:39:39 INFO :: SchedulerJob : InfluxDb host: 192.168.1.4
+11/26/2020 21:39:39 INFO :: SchedulerJob : InfluxDb port: 8086
+11/26/2020 21:39:39 INFO :: SchedulerJob : InfluxDb database name: pihole2influx
+11/26/2020 21:39:39 INFO :: SchedulerJob : InfluxDb user name: 
+11/26/2020 21:39:39 INFO :: SchedulerJob : InfluxDb password is not set
+11/26/2020 21:39:39 INFO :: SchedulerJob : Connect to Pihole and process data with 4 parallel process(es).
+11/26/2020 21:39:39 INFO :: SchedulerJob : Connect to pihole and get stats
+11/26/2020 21:39:39 INFO :: SchedulerJob : Connect Task <1> to Telnet-Host for worker DbStatsConverter
+11/26/2020 21:39:39 INFO :: SchedulerJob : Connect Task <2> to Telnet-Host for worker VersionInfoConverter
+11/26/2020 21:39:39 INFO :: SchedulerJob : Connect Task <3> to Telnet-Host for worker OvertimeConverter
+11/26/2020 21:39:39 INFO :: SchedulerJob : Connect Task <4> to Telnet-Host for worker TopClientsConverter
+11/26/2020 21:39:39 INFO :: SchedulerJob : Finished Task <2> for Worker <VersionInfoConverter> in 6 ms
+11/26/2020 21:39:39 INFO :: SchedulerJob : Connect Task <5> to Telnet-Host for worker ForwardDestinationsConverter
+11/26/2020 21:39:39 INFO :: SchedulerJob : Finished Task <4> for Worker <TopClientsConverter> in 6 ms
+11/26/2020 21:39:39 INFO :: SchedulerJob : Connect Task <6> to Telnet-Host for worker QueryTypesConverter
+11/26/2020 21:39:39 INFO :: SchedulerJob : Finished Task <5> for Worker <ForwardDestinationsConverter> in 4 ms
+11/26/2020 21:39:39 INFO :: SchedulerJob : Connect Task <7> to Telnet-Host for worker TopAdsConverter
+11/26/2020 21:39:39 INFO :: SchedulerJob : Finished Task <3> for Worker <OvertimeConverter> in 10 ms
+11/26/2020 21:39:39 INFO :: SchedulerJob : Finished Task <6> for Worker <QueryTypesConverter> in 4 ms
+11/26/2020 21:39:39 INFO :: SchedulerJob : Connect Task <8> to Telnet-Host for worker TopDomainsConverter
+11/26/2020 21:39:39 INFO :: SchedulerJob : Connect Task <9> to Telnet-Host for worker StatsConverter
+11/26/2020 21:39:39 INFO :: SchedulerJob : Finished Task <9> for Worker <StatsConverter> in 4 ms
+11/26/2020 21:39:39 INFO :: SchedulerJob : Connect Task <10> to Telnet-Host for worker CacheInfoConverter
+11/26/2020 21:39:39 INFO :: SchedulerJob : Finished Task <7> for Worker <TopAdsConverter> in 4 ms
+11/26/2020 21:39:39 INFO :: SchedulerJob : Finished Task <8> for Worker <TopDomainsConverter> in 5 ms
+11/26/2020 21:39:39 INFO :: SchedulerJob : Finished Task <10> for Worker <CacheInfoConverter> in 3 ms
+11/26/2020 21:39:39 INFO :: SchedulerJob : Finished Task <1> for Worker <DbStatsConverter> in 122 ms
+
 ```
 
-As you can see, with a parallelism of 4 there are 4 tasks on the beginning and if one is done, the next starts. Works like a charm.
+As you can see, with a parallelism of 4 there are 4 tasks on the beginning and if one is done, the next starts. Works like a charm. Also i put an extra information to the log output, how many time the processing of a worker need. The processing steps are:
+
+- build the telnet object
+- read the data from pihole with telnet
+- parse the string and convert this into appropriate to
+- convert the to to the appropriate influx measurement
+- write the data to influx db
+- close and dispose connection to telnet
+- close and dispose connection to influxdb
 
 ### State
 Currently, the tool ist a stable beta stadium. That means, the container runs on my system since 3 days without any problem.
