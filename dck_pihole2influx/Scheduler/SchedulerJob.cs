@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using dck_pihole2influx.Configuration;
@@ -7,6 +8,7 @@ using dck_pihole2influx.Logging;
 using dck_pihole2influx.StatObjects;
 using dck_pihole2influx.Transport.InfluxDb;
 using dck_pihole2influx.Transport.Telnet;
+using InfluxDB.Client.Api.Domain;
 using Quartz;
 
 namespace dck_pihole2influx.Scheduler
@@ -41,41 +43,33 @@ namespace dck_pihole2influx.Scheduler
                 //if it is not set per env-var, the default is 1 (one request per time).
                 var mutex = new SemaphoreSlim(configuration.ConcurrentRequestsToPihole);
                 influxConnector.Connect(configuration);
-                var telnetClient = telnetClientFactory.GetClient();
+                var cnt = 0;
                 var enumerable = Workers.GetJobsToDo().Select(async worker =>
                 {
                     await mutex.WaitAsync();
+                    cnt++;
+                    var inner = cnt;
                     await Log.InfoAsync(
-                        $"Connect to Telnet-Host at {configuration.PiholeHost}:{configuration.PiholePort}");
+                        $"Connect Task <{inner}> to Telnet-Host for worker {worker.GetType().Name}");
 
-                    telnetClient.Connect(configuration.PiholeHost, configuration.PiholePort);
-
-                    if (telnetClient.IsConnected())
-                    {
-                        if (configuration.PiholeUser.Length > 0 &&
-                            configuration.PiholePassword.Length > 0)
+                        await Task.Run(async () =>
                         {
-                            await telnetClient.LoginOnTelnet(configuration.PiholeUser,
-                                configuration.PiholePassword);
-                        }
+                            var tst = new StandardTcpClientImpl();
+                            tst.Connect(configuration.PiholeHost, configuration.PiholePort);
+                            var result = tst.ReceiveDataSync(worker.GetPiholeCommand());
+                            tst.CloseAndDisposeStream();
+                            tst.DisconnectTcpClient();
+                            tst.DisposeTcpClient();
+                            await worker.Convert(result);
+                            var measurements = await worker.CalculateMeasurementData();
+                            await influxConnector.WriteMeasurementsAsync(measurements);
 
-                        await telnetClient.WriteCommand(worker.GetPiholeCommand());
-                        var result = await telnetClient.ReadResult(worker.GetTerminator());
-                        await telnetClient.WriteCommand(PiholeCommands.Quit);
-                        telnetClient.ClientDispose();
-
-                        await worker.Convert(result);
-
-                        var measurements = await worker.CalculateMeasurementData();
-                        await influxConnector.WriteMeasurementsAsync(measurements);
-
-                        await Log.InfoAsync($"Finished Worker <{worker.GetType().Name}>");
-                    }
-
+                        });
+                        await Log.InfoAsync($"Finished Task <{inner}> for Worker <{worker.GetType().Name}>");
                     mutex.Release();
                 });
                 await Task.WhenAll(enumerable);
-                telnetClient.ClientDispose();
+
                 influxConnector.DisposeConnector();
             });
         }

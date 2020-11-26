@@ -1,12 +1,13 @@
 #nullable enable
 using System;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
 namespace dck_pihole2influx.Logging
 {
     public interface IMySimpleLogger
     {
-        Task InfoAsync(string? message);
+        Task InfoAsync(string? message, string type = "INFO");
 
         Task ErrorAsync(Exception? ex, string? message);
 
@@ -18,9 +19,9 @@ namespace dck_pihole2influx.Logging
     public class MySimpleConsoleLogger<T> : IMySimpleLogger
     {
 
-        public async Task InfoAsync(string? message)
+        public async Task InfoAsync(string? message, string type ="INFO")
         {
-            await Console.Out.WriteLineAsync($"{DateTime.Now} :: {typeof(T).Name} : {message}");
+            await Console.Out.WriteLineAsync($"{DateTime.Now} {type} :: {typeof(T).Name} : {message}");
         }
 
         public Task ErrorAsync(Exception? ex, string? message)
@@ -29,7 +30,7 @@ namespace dck_pihole2influx.Logging
             {
                 var defaultConsoleColor = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
-                await InfoAsync(message);
+                await InfoAsync(message, "ERROR");
                 await Console.Out.WriteLineAsync($"{DateTime.Now} :: {typeof(T).Name} : {ex?.Message}");
                 await Console.Out.WriteLineAsync($"{DateTime.Now} :: {typeof(T).Name} : {ex?.StackTrace}");
                 Console.ForegroundColor = defaultConsoleColor;
@@ -40,7 +41,7 @@ namespace dck_pihole2influx.Logging
         {
             return Task.Run(async () =>
             {
-                await InfoAsync(message);
+                await InfoAsync(message, "WARN");
             });
         }
     }

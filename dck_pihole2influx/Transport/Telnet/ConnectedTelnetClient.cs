@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using PrimS.Telnet;
 
@@ -15,35 +16,40 @@ namespace dck_pihole2influx.Transport.Telnet
     
     public class ConnectedTelnetClient : IConnectedTelnetClient
     {
-        private Client _client;
+        private Lazy<Client> _client;
 
         public void Connect(string telnetHost, int telnetPort)
         {
-            _client = new Client(telnetHost, telnetPort, new CancellationToken());
+            _client = new Lazy<Client>(() => new Client(telnetHost, telnetPort, new CancellationToken()));
+        }
+
+        public bool ValueIsCreated()
+        {
+            return _client.IsValueCreated;
         }
 
         public bool IsConnected()
         {
-            return _client.IsConnected;
+            return _client.Value.IsConnected;
         }
 
         public Task WriteCommand(PiholeCommands command)
         {
-            return _client.WriteLine(TelnetCommands.GetCommandByName(command));
+            return _client.Value.WriteLine(TelnetCommands.GetCommandByName(command));
         }
 
-        public async Task<string> ReadResult(string terminator)
+        public Task<string> ReadResult(string terminator)
         {
-            return await _client.TerminatedReadAsync(terminator);
+            return _client.Value.TerminatedReadAsync(terminator);
         }
 
         public async Task<bool> LoginOnTelnet(string userName, string password)
         {
-            return await _client.TryLoginAsync(userName, password,100).ConfigureAwait(false);
+            return await _client.Value.TryLoginAsync(userName, password,100).ConfigureAwait(false);
         }
         public void ClientDispose()
         {
-            _client.Dispose();
+            _client.Value.Dispose();
         }
     }
 }

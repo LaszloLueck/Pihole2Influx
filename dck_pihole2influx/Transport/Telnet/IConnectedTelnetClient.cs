@@ -6,6 +6,9 @@ namespace dck_pihole2influx.Transport.Telnet
     {
 
         void Connect(string telnetHost, int telnetPort);
+
+        bool ValueIsCreated();
+        
         bool IsConnected();
 
         Task<bool> LoginOnTelnet(string userName, string password);
