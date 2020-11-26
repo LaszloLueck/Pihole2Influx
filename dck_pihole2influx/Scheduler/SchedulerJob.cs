@@ -45,8 +45,7 @@ namespace dck_pihole2influx.Scheduler
                 var enumerable = Workers.GetJobsToDo().Select(async worker =>
                 {
                     await mutex.WaitAsync();
-                    cnt++;
-                    var inner = cnt;
+                    var inner = cnt++;
                     await Log.InfoAsync(
                         $"Connect Task <{inner}> to Telnet-Host for worker {worker.GetType().Name}");
 
