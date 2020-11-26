@@ -1,6 +1,5 @@
 #nullable enable
 using System;
-using System.Reflection.Metadata;
 using System.Threading.Tasks;
 
 namespace dck_pihole2influx.Logging

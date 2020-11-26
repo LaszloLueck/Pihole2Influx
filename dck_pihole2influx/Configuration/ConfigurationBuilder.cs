@@ -6,7 +6,7 @@ using Optional.Linq;
 namespace dck_pihole2influx.Configuration
 {
    
-    public sealed record ConfigurationItems(string PiholeHost, int PiholePort, string InfluxDbHost, int InfluxDbPort, string InfluxDbName, string InfluxDbUsername, string InfluxDbPassword, string PiholeUser, string PiholePassword, int RunsEvery, int ConcurrentRequestsToPihole);
+    public sealed record ConfigurationItems(string PiholeHost, int PiholePort, string InfluxDbHost, int InfluxDbPort, string InfluxDbName, string InfluxDbUsername, string InfluxDbPassword, int RunsEvery, int ConcurrentRequestsToPihole);
 
     public enum EnvEntries
     {
@@ -17,8 +17,6 @@ namespace dck_pihole2influx.Configuration
         INFLUXDBNAME,
         INFLUXDBUSERNAME,
         INFLUXDBPASSWORD,
-        PIHOLEUSER,
-        PIHOLEPASSWORD,
         CONCURRENTREQUESTSTOPIHOLE,
         RUNSEVERY
     }
@@ -42,12 +40,10 @@ namespace dck_pihole2influx.Configuration
                 from influxDbName in _configurationFactory.ReadEnvironmentVariableString(EnvEntries.INFLUXDBNAME)
                 from influxDbUserName in _configurationFactory.ReadEnvironmentVariableString(EnvEntries.INFLUXDBUSERNAME, true)
                 from influxDbPassword in _configurationFactory.ReadEnvironmentVariableString(EnvEntries.INFLUXDBPASSWORD, true)
-                from piholeUser in _configurationFactory.ReadEnvironmentVariableString(EnvEntries.PIHOLEUSER, true)
-                from piholePassword in _configurationFactory.ReadEnvironmentVariableString(EnvEntries.PIHOLEPASSWORD, true)
                 from parallelism in _configurationFactory.ReadEnvironmentVariableInt(EnvEntries.CONCURRENTREQUESTSTOPIHOLE)
 
                 from runsEvery in _configurationFactory.ReadEnvironmentVariableInt(EnvEntries.RUNSEVERY)
-                select new ConfigurationItems(piholeHost, piholePort, influxDbHost, influxDbPort, influxDbName, influxDbUserName, influxDbPassword, piholeUser, piholePassword, runsEvery, parallelism)
+                select new ConfigurationItems(piholeHost, piholePort, influxDbHost, influxDbPort, influxDbName, influxDbUserName, influxDbPassword, runsEvery, parallelism)
             );
         }
         

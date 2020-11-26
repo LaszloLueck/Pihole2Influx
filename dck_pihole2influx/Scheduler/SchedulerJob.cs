@@ -1,6 +1,4 @@
-using System;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using dck_pihole2influx.Configuration;
@@ -8,7 +6,6 @@ using dck_pihole2influx.Logging;
 using dck_pihole2influx.StatObjects;
 using dck_pihole2influx.Transport.InfluxDb;
 using dck_pihole2influx.Transport.Telnet;
-using InfluxDB.Client.Api.Domain;
 using Quartz;
 
 namespace dck_pihole2influx.Scheduler
@@ -21,7 +18,7 @@ namespace dck_pihole2influx.Scheduler
         {
             var configuration = (ConfigurationItems) context.JobDetail.JobDataMap["configuration"];
             var influxConnector = (InfluxConnectionFactory) context.JobDetail.JobDataMap["influxConnectionFactory"];
-            var telnetClientFactory = (TelnetClientFactory) context.JobDetail.JobDataMap["telnetClientFactory"];
+            var telnetClientFactory = (StandardTelnetClientFactory) context.JobDetail.JobDataMap["telnetClientFactory"];
 
             await Task.Run(async () =>
             {
@@ -54,12 +51,13 @@ namespace dck_pihole2influx.Scheduler
 
                         await Task.Run(async () =>
                         {
-                            var tst = new StandardTcpClientImpl();
-                            tst.Connect(configuration.PiholeHost, configuration.PiholePort);
-                            var result = tst.ReceiveDataSync(worker.GetPiholeCommand());
-                            tst.CloseAndDisposeStream();
-                            tst.DisconnectTcpClient();
-                            tst.DisposeTcpClient();
+                            var standardTcpClientImpl = telnetClientFactory.Build();
+                            standardTcpClientImpl.Connect(configuration.PiholeHost, configuration.PiholePort);
+                            standardTcpClientImpl.WriteCommand(worker.GetPiholeCommand());
+                            var result = standardTcpClientImpl.ReceiveDataSync(worker.GetPiholeCommand(), worker.GetTerminator());
+                            standardTcpClientImpl.WriteCommand(PiholeCommands.Quit);
+                            standardTcpClientImpl.CloseAndDisposeStream();
+                            standardTcpClientImpl.CloseAndDisposeTcpClient();
                             await worker.Convert(result);
                             var measurements = await worker.CalculateMeasurementData();
                             await influxConnector.WriteMeasurementsAsync(measurements);

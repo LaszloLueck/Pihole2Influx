@@ -1,31 +1,33 @@
-﻿using System;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Text;
 
 namespace dck_pihole2influx.Transport.Telnet
 {
-    public class StandardTcpClientImpl
+    public class StandardTelnetClientFactory
     {
-        private readonly TcpClient _tcpClient;
-        private NetworkStream _stream;
-
-
-        public StandardTcpClientImpl()
+        public StandardTcpClientImpl Build()
         {
-            _tcpClient = new TcpClient();
+            return new StandardTcpClientImpl();
         }
+    }
+    
+    
+    public sealed class StandardTcpClientImpl
+    {
+        private TcpClient _tcpClient;
+        private NetworkStream _stream;
 
         private bool IsTcpClientConnected()
         {
             return _tcpClient.Connected;
         }
 
-        public void DisconnectTcpClient()
+        private void DisconnectTcpClient()
         {
             _tcpClient.Close();
         }
 
-        public void DisposeTcpClient()
+        public void CloseAndDisposeTcpClient()
         {
             if (IsTcpClientConnected())
                 DisconnectTcpClient();
@@ -35,6 +37,7 @@ namespace dck_pihole2influx.Transport.Telnet
 
         public void Connect(string hostOrIp, int port)
         {
+            _tcpClient = new TcpClient();
             _tcpClient.Connect(hostOrIp, port);
             _stream = _tcpClient.GetStream();
         }
@@ -45,30 +48,24 @@ namespace dck_pihole2influx.Transport.Telnet
             _stream.Dispose();
         }
 
-        public string ReceiveDataSync(PiholeCommands message)
+        public void WriteCommand(PiholeCommands command)
         {
-            byte[] data = Encoding.UTF8.GetBytes(TelnetCommands.GetCommandByName(message) + "\n");
-            
+            var data = Encoding.UTF8.GetBytes(TelnetCommands.GetCommandByName(command) + "\n");
             _stream.Write(data, 0, data.Length);
+        }
+        
+        public string ReceiveDataSync(PiholeCommands message, string terminator)
+        {
+            
             var retValue = new StringBuilder();
-            bool i = true;
-            while(i)
+            var received = new byte[256];
+            while (_stream.Read(received, 0, received.Length) > 0)
             {
-                if (!_stream.DataAvailable) continue;
-                byte[] rcvd = new byte[256];
-                while (_stream.Read(rcvd, 0, rcvd.Length) > 0)
-                {
-                    var tmp = Encoding.UTF8.GetString(rcvd);
-                    Array.Clear(rcvd, 0 ,rcvd.Length);
-                    retValue.Append(tmp.Replace("\0",""));
-
-                    if (!tmp.Contains("---EOM---")) continue;
-                    i = false;
-                    break;
-                }
+                var tmp = Encoding.UTF8.GetString(received);
+                received = new byte[256];
+                retValue.Append(tmp.Replace("\0",""));
+                if (tmp.Contains(terminator)) break;
             }
-            byte[] quit = Encoding.UTF8.GetBytes(TelnetCommands.GetCommandByName(PiholeCommands.Quit) + "\n");
-            _stream.Write(quit, 0, quit.Length);
             return retValue.ToString();
         }
     }

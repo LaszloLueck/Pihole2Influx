@@ -28,7 +28,7 @@ namespace dck_pihole2influx
                     await Log.InfoAsync("successfully loaded configuration");
                     await Log.InfoAsync("Build up the scheduler");
                     var influxConnector = new InfluxDbConnector().GetInfluxDbConnection();
-                    var telnetClientFactory = new TelnetClientFactory();
+                    var telnetClientFactory = new StandardTelnetClientFactory();
                     ISchedulerFactory schedulerFactory =
                         new CustomSchedulerFactory<SchedulerJob>("job1", "group1", "trigger1", configuration, influxConnector, telnetClientFactory);
                     await schedulerFactory.RunScheduler();

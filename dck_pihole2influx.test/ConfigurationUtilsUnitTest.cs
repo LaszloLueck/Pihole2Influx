@@ -42,12 +42,10 @@ namespace dck_pihole2influx.test
 
         [TestMethod, Description("Check if ConfigurationItems is complete")]
         public void CheckIfConfigurationItemsIsWellformed(){
-            var testee = new ConfigurationItems("piholehost", 123, "influxdbhost", 234, "influxdbname", "influxdbusername", "influxdbpassword", "piholeuser", "piholepassword", 10, 4);
+            var testee = new ConfigurationItems("piholehost", 123, "influxdbhost", 234, "influxdbname", "influxdbusername", "influxdbpassword", 10, 4);
 
             testee.PiholeHost.Should().Be("piholehost");
-            testee.PiholePassword.Should().Be("piholepassword");
             testee.PiholePort.Should().Be(123);
-            testee.PiholeUser.Should().Be("piholeuser");
             testee.RunsEvery.Should().Be(10);
             testee.ConcurrentRequestsToPihole.Should().Be(4);
             testee.InfluxDbHost.Should().Be("influxdbhost");
@@ -64,29 +62,25 @@ namespace dck_pihole2influx.test
             Environment.SetEnvironmentVariable(EnvEntries.RUNSEVERY.ToString(), "10");
             Environment.SetEnvironmentVariable(EnvEntries.PIHOLEHOST.ToString(), "piholehost");
             Environment.SetEnvironmentVariable(EnvEntries.PIHOLEPORT.ToString(), "123");
-            Environment.SetEnvironmentVariable(EnvEntries.PIHOLEUSER.ToString(), "piholeuser");
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBHOST.ToString(), "influxdbhost");
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBNAME.ToString(), "influxdbname");
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBPORT.ToString(), "234");
-            Environment.SetEnvironmentVariable(EnvEntries.PIHOLEPASSWORD.ToString(), "piholepassword");
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBPASSWORD.ToString(), "influxdbpassword");
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBUSERNAME.ToString(), "influxdbusername");
             Environment.SetEnvironmentVariable(EnvEntries.CONCURRENTREQUESTSTOPIHOLE.ToString(), "1");
 
 
             var expected = new ConfigurationItems("piholehost", 123, "influxdbhost", 234, "influxdbname",
-                "influxdbusername", "influxdbpassword", "piholeuser", "piholepassword", 10, 1);
+                "influxdbusername", "influxdbpassword",  10, 1);
 
             var testeeOpt = new ConfigurationBuilder(_configurationFactory).GetConfiguration();
             
-            Option.Some<ConfigurationItems>(expected).Should().BeEquivalentTo(testeeOpt);
+            Option.Some(expected).Should().BeEquivalentTo(testeeOpt);
 
             var testee = testeeOpt.ValueOrDefault();
 
             testee.PiholeHost.Should().Be(expected.PiholeHost);
-            testee.PiholePassword.Should().Be(expected.PiholePassword);
             testee.PiholePort.Should().Be(expected.PiholePort);
-            testee.PiholeUser.Should().Be(expected.PiholeUser);
             testee.RunsEvery.Should().Be(expected.RunsEvery);
             testee.InfluxDbHost.Should().Be(expected.InfluxDbHost);
             testee.InfluxDbName.Should().Be(expected.InfluxDbName);
@@ -98,11 +92,9 @@ namespace dck_pihole2influx.test
             Environment.SetEnvironmentVariable(EnvEntries.RUNSEVERY.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.PIHOLEHOST.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.PIHOLEPORT.ToString(), null);
-            Environment.SetEnvironmentVariable(EnvEntries.PIHOLEUSER.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBHOST.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBNAME.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBPORT.ToString(), null);
-            Environment.SetEnvironmentVariable(EnvEntries.PIHOLEPASSWORD.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBPASSWORD.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBUSERNAME.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.CONCURRENTREQUESTSTOPIHOLE.ToString(), null);
@@ -115,28 +107,24 @@ namespace dck_pihole2influx.test
             Environment.SetEnvironmentVariable(EnvEntries.RUNSEVERY.ToString(), "10");
             Environment.SetEnvironmentVariable(EnvEntries.PIHOLEHOST.ToString(), "piholehost");
             Environment.SetEnvironmentVariable(EnvEntries.PIHOLEPORT.ToString(), "123");
-            Environment.SetEnvironmentVariable(EnvEntries.PIHOLEUSER.ToString(), string.Empty);
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBHOST.ToString(), "influxdbhost");
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBNAME.ToString(), "influxdbname");
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBPORT.ToString(), "234");
-            Environment.SetEnvironmentVariable(EnvEntries.PIHOLEPASSWORD.ToString(), string.Empty);
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBPASSWORD.ToString(), string.Empty);
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBUSERNAME.ToString(), string.Empty);
             Environment.SetEnvironmentVariable(EnvEntries.CONCURRENTREQUESTSTOPIHOLE.ToString(), "1");
             
             var expected = new ConfigurationItems("piholehost", 123, "influxdbhost", 234, "influxdbname",
-                string.Empty,string.Empty, string.Empty, string.Empty, 10, 1);
+                string.Empty, string.Empty, 10, 1);
 
             var testeeOpt = new ConfigurationBuilder(_configurationFactory).GetConfiguration();
             
-            Option.Some<ConfigurationItems>(expected).Should().BeEquivalentTo(testeeOpt);
+            Option.Some(expected).Should().BeEquivalentTo(testeeOpt);
 
             var testee = testeeOpt.ValueOrDefault();
 
             testee.PiholeHost.Should().Be(expected.PiholeHost);
-            testee.PiholePassword.Should().Be(expected.PiholePassword);
             testee.PiholePort.Should().Be(expected.PiholePort);
-            testee.PiholeUser.Should().Be(expected.PiholeUser);
             testee.RunsEvery.Should().Be(expected.RunsEvery);
             testee.InfluxDbHost.Should().Be(expected.InfluxDbHost);
             testee.InfluxDbName.Should().Be(expected.InfluxDbName);
@@ -148,11 +136,9 @@ namespace dck_pihole2influx.test
             Environment.SetEnvironmentVariable(EnvEntries.RUNSEVERY.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.PIHOLEHOST.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.PIHOLEPORT.ToString(), null);
-            Environment.SetEnvironmentVariable(EnvEntries.PIHOLEUSER.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBHOST.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBNAME.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBPORT.ToString(), null);
-            Environment.SetEnvironmentVariable(EnvEntries.PIHOLEPASSWORD.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBPASSWORD.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.INFLUXDBUSERNAME.ToString(), null);
             Environment.SetEnvironmentVariable(EnvEntries.CONCURRENTREQUESTSTOPIHOLE.ToString(), null);
