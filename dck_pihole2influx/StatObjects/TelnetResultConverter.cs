@@ -12,15 +12,12 @@ namespace dck_pihole2influx.StatObjects
     public abstract class TelnetResultConverter : ConverterUtils
     {
         private static readonly IMySimpleLogger Log = MySimpleLoggerImpl<TelnetResultConverter>.GetLogger();
-        private string _input;
-
 
         public Option<ConcurrentDictionary<string, IBaseResult>> DictionaryOpt { get; private set; }
 
         public async Task Convert(string input)
         {
-            _input = input;
-            DictionaryOpt = await GetDtoFromResult();
+            DictionaryOpt = await GetDtoFromResult(input);
         }
 
         public abstract PiholeCommands GetPiholeCommand();
@@ -37,9 +34,9 @@ namespace dck_pihole2influx.StatObjects
         }
 
 
-        private async Task<Option<ConcurrentDictionary<string, IBaseResult>>> GetDtoFromResult()
+        private async Task<Option<ConcurrentDictionary<string, IBaseResult>>> GetDtoFromResult(string input)
         {
-            if (_input.Length == 0)
+            if (input.Length == 0)
             {
                 await Log.WarningAsync("the input string (telnet result) contains no data, please check your configuration.");
                 return Option.None<ConcurrentDictionary<string, IBaseResult>>();
@@ -50,7 +47,7 @@ namespace dck_pihole2influx.StatObjects
                 var ret = new ConcurrentDictionary<string, IBaseResult>();
                 var tasks = new ConcurrentBag<Task>();
 
-                var splitResult = await SplitInputString(_input, GetTerminator());
+                var splitResult = await SplitInputString(input, GetTerminator());
                 
                 splitResult.MatchSome(splitted =>
                 {
@@ -70,7 +67,7 @@ namespace dck_pihole2influx.StatObjects
             catch (Exception ex)
             {
                 await Log.ErrorAsync(ex, "Error while create an object from return string");
-                await Log.WarningAsync(_input);
+                await Log.WarningAsync(input);
                 return Option.None<ConcurrentDictionary<string, IBaseResult>>();
             }
         }

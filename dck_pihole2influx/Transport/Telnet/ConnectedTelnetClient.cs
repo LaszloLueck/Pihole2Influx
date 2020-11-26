@@ -4,11 +4,20 @@ using PrimS.Telnet;
 
 namespace dck_pihole2influx.Transport.Telnet
 {
+
+    public class TelnetClientFactory
+    {
+        public IConnectedTelnetClient GetClient()
+        {
+            return new ConnectedTelnetClient();
+        }
+    }
+    
     public class ConnectedTelnetClient : IConnectedTelnetClient
     {
-        private readonly Client _client;
+        private Client _client;
 
-        public ConnectedTelnetClient(string telnetHost, int telnetPort)
+        public void Connect(string telnetHost, int telnetPort)
         {
             _client = new Client(telnetHost, telnetPort, new CancellationToken());
         }
@@ -18,14 +27,9 @@ namespace dck_pihole2influx.Transport.Telnet
             return _client.IsConnected;
         }
 
-        public async Task WriteCommand(string command)
+        public Task WriteCommand(PiholeCommands command)
         {
-            await _client.WriteLine(command);
-        }
-
-        public async Task WriteCommand(PiholeCommands command)
-        {
-            await _client.WriteLine(TelnetCommands.GetCommandByName(command));
+            return _client.WriteLine(TelnetCommands.GetCommandByName(command));
         }
 
         public async Task<string> ReadResult(string terminator)
@@ -37,15 +41,9 @@ namespace dck_pihole2influx.Transport.Telnet
         {
             return await _client.TryLoginAsync(userName, password,100).ConfigureAwait(false);
         }
-
-        public void DisposeClient()
-        {
-            _client.Dispose();
-        }
-
         public void ClientDispose()
         {
-            DisposeClient();
+            _client.Dispose();
         }
     }
 }

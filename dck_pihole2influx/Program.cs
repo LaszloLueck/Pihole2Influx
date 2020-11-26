@@ -4,6 +4,7 @@ using dck_pihole2influx.Configuration;
 using dck_pihole2influx.Logging;
 using dck_pihole2influx.Scheduler;
 using dck_pihole2influx.Transport.InfluxDb;
+using dck_pihole2influx.Transport.Telnet;
 
 namespace dck_pihole2influx
 {
@@ -27,8 +28,9 @@ namespace dck_pihole2influx
                     await Log.InfoAsync("successfully loaded configuration");
                     await Log.InfoAsync("Build up the scheduler");
                     var influxConnector = new InfluxDbConnector().GetInfluxDbConnection();
+                    var telnetClientFactory = new TelnetClientFactory();
                     ISchedulerFactory schedulerFactory =
-                        new CustomSchedulerFactory<SchedulerJob>("job1", "group1", "trigger1", configuration, influxConnector);
+                        new CustomSchedulerFactory<SchedulerJob>("job1", "group1", "trigger1", configuration, influxConnector, telnetClientFactory);
                     await schedulerFactory.RunScheduler();
                     await Log.InfoAsync("App is in running state!");
                 });
