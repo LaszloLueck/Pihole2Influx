@@ -61,11 +61,14 @@ Today night i see in the docker log that the app hung. I guess that a hickup in 
 - write https://docs.microsoft.com/de-de/dotnet/api/system.net.sockets.tcpclient.sendtimeout?view=net-5.0
 
 says, that there is no default timeout, so the app waits for ever to write or read data.
-The other part is, if you give a wrong ip/port for pihole, the connection wait also too long to connect to.
+The other part is, if you give a wrong ip/port for pihole, the connection wait also too long to connect too.
+
 There is no default connection-timeout property that i can set.
 In this case i call the connection async with a wait of 500ms.
 After that time, an exception was thrown so we could see the problem in the logs.
+
 Then, the handling of the results changes significant (there is not a result or void or else, there is for every stage a Option<>, with Some<> in good case or None<> in bad case.
+
 In scala we have for this case the Either-function in that we can easily put the bad case to the left and the good case to the right.
 https://www.scala-lang.org/api/2.9.3/scala/Either.html
 
