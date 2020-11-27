@@ -12,6 +12,10 @@ namespace dck_pihole2influx.Logging
 
         Task WarningAsync(string? message);
 
+        void Info(string? message, string type = "INFO");
+
+        void Error(Exception? ex, string? message);
+
     }
 
 
@@ -23,6 +27,21 @@ namespace dck_pihole2influx.Logging
             await Console.Out.WriteLineAsync($"{DateTime.Now} {type} :: {typeof(T).Name} : {message}");
         }
 
+        public void Info(string? message, string type = "INFO")
+        {
+            Console.WriteLine($"{DateTime.Now} {type} :: {typeof(T).Name} : {message}");
+        }
+
+        public void Error(Exception? ex, string? message)
+        {
+            var defaultConsoleColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Info(message, "ERROR");
+            Console.WriteLine($"{DateTime.Now} ERROR :: {typeof(T).Name} : {ex?.Message}");
+            Console.WriteLine($"{DateTime.Now} ERROR :: {typeof(T).Name} : {ex?.StackTrace}");
+            Console.ForegroundColor = defaultConsoleColor;
+        }
+
         public Task ErrorAsync(Exception? ex, string? message)
         {
             return Task.Run(async () =>
@@ -30,8 +49,8 @@ namespace dck_pihole2influx.Logging
                 var defaultConsoleColor = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
                 await InfoAsync(message, "ERROR");
-                await Console.Out.WriteLineAsync($"{DateTime.Now} :: {typeof(T).Name} : {ex?.Message}");
-                await Console.Out.WriteLineAsync($"{DateTime.Now} :: {typeof(T).Name} : {ex?.StackTrace}");
+                await Console.Out.WriteLineAsync($"{DateTime.Now} ERROR :: {typeof(T).Name} : {ex?.Message}");
+                await Console.Out.WriteLineAsync($"{DateTime.Now} ERROR :: {typeof(T).Name} : {ex?.StackTrace}");
                 Console.ForegroundColor = defaultConsoleColor;
             });
         }
