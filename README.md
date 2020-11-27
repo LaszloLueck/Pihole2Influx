@@ -59,6 +59,7 @@ Please look in the <a href="install.md">installation document</a> and check what
 Today night i see in the docker log that the app hung. I guess that a hickup in the network avoid that the app can connect to the pihole via telnet. The documentation of the appropriate methods
 - read https://docs.microsoft.com/de-de/dotnet/api/system.net.sockets.tcpclient.receivetimeout?view=net-5.0
 - write https://docs.microsoft.com/de-de/dotnet/api/system.net.sockets.tcpclient.sendtimeout?view=net-5.0
+
 says, that there is no default timeout, so the app waits for ever to write or read data.
 The other part is, if you give a wrong ip/port for pihole, the connection wait also too long to connect to.
 There is no default connection-timeout property that i can set.
