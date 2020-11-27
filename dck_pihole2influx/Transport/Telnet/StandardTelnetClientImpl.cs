@@ -44,6 +44,8 @@ namespace dck_pihole2influx.Transport.Telnet
         {
             _tcpClient = new TcpClient();
             _tcpClient.Connect(hostOrIp, port);
+            _tcpClient.ReceiveTimeout = 5000;
+            _tcpClient.SendTimeout = 1000;
             _stream = _tcpClient.GetStream();
         }
 
