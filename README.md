@@ -54,6 +54,27 @@ As a friend of functional programming with scala, i use a library called <a href
 Please look in the <a href="install.md">installation document</a> and check what you need to run the container.
 
 ## Current Release
+### 2020-11-27
+
+Today night i see in the docker log that the app hung. I guess that a hickup in the network avoid that the app can connect to the pihole via telnet. The documentation of the appropriate methods
+- read https://docs.microsoft.com/de-de/dotnet/api/system.net.sockets.tcpclient.receivetimeout?view=net-5.0
+- write https://docs.microsoft.com/de-de/dotnet/api/system.net.sockets.tcpclient.sendtimeout?view=net-5.0
+
+says, that there is no default timeout, so the app waits for ever to write or read data.
+
+The other part is, if you give a wrong ip/port for pihole, the connection wait also too long to connect too.
+But there is no default connection-timeout property that i can set.
+
+In this case i call the connection async with a wait of 500ms.
+After that time, an exception was thrown so we could see the problem in the logs.
+
+Then, the handling of the results changes significant (there is not a result or void or else, there is for every stage a Option<>, with Some<> in good case or None<> in bad case, as you can see in <a href="https://github.com/LaszloLueck/Pihole2Influx/blob/master/dck_pihole2influx/Scheduler/SchedulerJob.cs">SchedulerJob.cs</a>.
+
+In scala we have for this case the Either-function in that we can easily put the bad case to the left and the good case to the right.
+https://www.scala-lang.org/api/2.9.3/scala/Either.html
+
+Anyway, hopefully no app stops anymore.
+
 ### 2020-11-26
 
 I've fixed an issue with the (until today) used telnet-client. The main problem was, that occasionally a warning appears like:
