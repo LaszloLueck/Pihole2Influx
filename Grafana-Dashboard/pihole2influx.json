@@ -14,9 +14,9 @@
   },
   "editable": true,
   "gnetId": null,
-  "graphTooltip": 0,
+  "graphTooltip": 1,
   "id": 1,
-  "iteration": 1605769165599,
+  "iteration": 1606768557193,
   "links": [],
   "panels": [
     {
@@ -75,7 +75,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -161,7 +161,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -231,7 +231,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -255,7 +255,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Pi Hole Version",
+      "title": "FTL Version",
       "type": "stat"
     },
     {
@@ -301,7 +301,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -371,7 +371,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -441,7 +441,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -511,7 +511,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -535,7 +535,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Pi Hole Tag",
+      "title": "FTL Tag",
       "type": "stat"
     },
     {
@@ -669,7 +669,7 @@
           }
         ]
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "repeat": null,
       "targets": [
         {
@@ -833,7 +833,7 @@
           }
         ]
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [
@@ -985,7 +985,7 @@
           }
         ]
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [
@@ -1098,7 +1098,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1167,7 +1167,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1235,7 +1235,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1322,7 +1322,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1479,7 +1479,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1547,7 +1547,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1615,7 +1615,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1686,7 +1686,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1752,7 +1752,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1972,7 +1972,7 @@
         "alertThreshold": true
       },
       "percentage": true,
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2129,7 +2129,7 @@
         "alertThreshold": true
       },
       "percentage": true,
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2524,7 +2524,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2616,6 +2616,211 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "datasource": "$Datasource",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 12,
+        "y": 42
+      },
+      "id": 50,
+      "options": {
+        "frameIndex": 0,
+        "showHeader": true
+      },
+      "pluginVersion": "7.3.4",
+      "targets": [
+        {
+          "groupBy": [],
+          "limit": 10,
+          "measurement": "telnetError",
+          "orderByTime": "DESC",
+          "policy": "default",
+          "query": "SELECT sum(\"value\") FROM \"telnetError\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "table",
+          "select": [
+            [
+              {
+                "params": [
+                  "errorType"
+                ],
+                "type": "field"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "onMethod"
+                ],
+                "type": "field"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Telnet Errors",
+      "type": "table"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "$Datasource",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 5,
+      "fillGradient": 9,
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 18,
+        "y": 42
+      },
+      "hiddenSeries": false,
+      "id": 52,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null as zero",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.4",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:637",
+          "alias": "telnetError.sum"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": true,
+      "targets": [
+        {
+          "alias": "Telnet errors over 1 min",
+          "groupBy": [
+            {
+              "params": [
+                "1m"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "0"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "telnetError",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "sum"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Telnet Errors over time",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": "30s",
@@ -2657,5 +2862,5 @@
   "timezone": "",
   "title": "Pihole2Influx",
   "uid": "BEKAkl2Gk",
-  "version": 11
+  "version": 15
 }
