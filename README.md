@@ -61,17 +61,17 @@ If i call a `docker logs -f pihole2influx` after some days, it took some minutes
 version: "3.7"  
   
 services:  
-pihole2influx:  
-container_name: pihole2influx  
-networks:  
-default:  
-ipv4_address: 192.168.19.8  
-image: pihole2influx:latest  
-logging:  
-driver: "json-file"  
-options:  
-max-size: "10k"  
-max-file: "20"  
+  pihole2influx:  
+    container_name: pihole2influx  
+    networks:  
+      default:  
+        ipv4_address: 192.168.19.8  
+  image: pihole2influx:latest  
+  logging:  
+    driver: "json-file"  
+    options:  
+      max-size: "10k"  
+      max-file: "20"  
 environment:  
 - PIHOLEHOST=192.168.1.4  
 - PIHOLEPORT=4711  
@@ -235,5 +235,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTYxMjM5Mjk5MiwtNTQ3MjE0OTI3XX0=
+eyJoaXN0b3J5IjpbMjEzODcyNDE2LC02MTIzOTI5OTIsLTU0Nz
+IxNDkyN119
 -->
