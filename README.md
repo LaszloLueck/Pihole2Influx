@@ -55,8 +55,11 @@ Please look in the <a href="install.md">installation document</a> and check what
 
 ## Current Release
 ### 2020-11-30
+#### Updated docker-compose file
+If i call a`docker logs -f pihole2influx` after some days
+
 #### Updated Grafana Dashboard
-To make the telnet 
+To make the telnet exceptions visible i released an extended Grafana dashboard.
 
 #### Bump to pihole FTL 5.3.1
 Today i updated my pi hole docker-container to the latest release of pihole (for docker).
@@ -199,5 +202,5 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTkzNTM4ODg0MiwtNTQ3MjE0OTI3XX0=
+eyJoaXN0b3J5IjpbMTI0NzY5NjEwMywtNTQ3MjE0OTI3XX0=
 -->
