@@ -55,7 +55,7 @@ Please look in the <a href="install.md">installation document</a> and check what
 
 ## Current Release
 ### 2020-11-30
-As i can 
+As i inspect on my docker logs, i can observe various exceptions on different time slices from different called methods. The exception looks like
 
 ### 2020-11-27
 
@@ -173,5 +173,5 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTU0NzIxNDkyN119
+eyJoaXN0b3J5IjpbLTk0NzM2OTI0MiwtNTQ3MjE0OTI3XX0=
 -->
