@@ -64,7 +64,9 @@ at dck_pihole2influx.Transport.Telnet.StandardTcpClientImpl.ReceiveDataSync(Piho
 11/30/2020 19:52:48 INFO :: SchedulerJob : Finished Task <4> for Worker <TopClientsConverter> in 5003 ms
 ```
 OK, in my oppinion, sometimes pi hole cannot deliver an answer in the appropriate amount of (configured) time (currently 5 seconds). This problem i cannot reproduce with a parallelity of 1 (env-variable CONCURRENTREQUESTSTOPIHOLE). So if you really need every measurepoint, you shout set this variable to 1.
-I've extend the 
+I've extend the measurepoints for an additional parameter (telnetError). If such an exception occurs, all needed informations goes to influxdb.
+In grafana the result looks like:
+
 
 ### 2020-11-27
 
@@ -182,5 +184,5 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTYzMjM0NTI4MiwtNTQ3MjE0OTI3XX0=
+eyJoaXN0b3J5IjpbLTIxMDk3NDY1OSwtNTQ3MjE0OTI3XX0=
 -->
