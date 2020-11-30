@@ -54,6 +54,71 @@ As a friend of functional programming with scala, i use a library called <a href
 Please look in the <a href="install.md">installation document</a> and check what you need to run the container.
 
 ## Current Release
+### 2020-11-30
+#### Updated docker-compose file
+If i call a `docker logs -f pihole2influx` after some days, it took some minutes to come to an end of the current logfile. I'm more interested in newer logs instead of showing all the old stuff, so i extend the docker-compose file for some parameters as described here (my current configuration):
+```
+version: "3.7"  
+  
+services:  
+  pihole2influx:  
+    container_name: pihole2influx  
+    networks:  
+      default:  
+        ipv4_address: 192.168.19.8  
+    image: pihole2influx:latest  
+    logging:  
+      driver: "json-file"  
+      options:  
+        max-size: "10k"  
+        max-file: "20"  
+    environment:  
+      - PIHOLEHOST=192.168.1.4  
+      - PIHOLEPORT=4711  
+      - INFLUXDBHOST=192.168.1.4  
+      - INFLUXDBPORT=8086  
+      - INFLUXDBNAME=pihole2influx  
+      - INFLUXDBUSERNAME=  
+      - INFLUXDBPASSWORD=  
+      - RUNSEVERY=30  
+      - CONCURRENTREQUESTSTOPIHOLE=4  
+networks:  
+  default:  
+    external:  
+      name: static-net  
+...
+```
+As you can see, i've implemented a logrotation every 10KB filesize for 20 files. At least, it holds data for approximally 20 minutes. If you need more, increase the values.
+
+
+#### Updated Grafana Dashboard
+To make the telnet exceptions visible i released an extended Grafana dashboard.
+
+#### Bump to pihole FTL 5.3.1
+Today i updated my pi hole docker-container to the latest release of pihole (for docker).
+All the things (pihole2influx, influxdb, grafana) running fine with that new version.
+Currently my setup shows the following parameters:
+- Pi Hole 5.2
+- Pi Hole Web 5.2
+- FTL 5.3.1
+- Grafana 7.3.4
+- InfluxDb 1.8.3
+- Pihole2Influx from master branch
+
+#### Current monitored read exceptions from telnet
+As i inspect on my docker logs, i can observe various exceptions on different time slices from different called methods. The exception looks like:
+```
+11/30/2020 19:52:48 ERROR :: StandardTcpClientImpl : Read timeout while reading a network stream  
+11/30/2020 19:52:48 ERROR :: StandardTcpClientImpl : Unable to read data from the transport connection: Connection timed out.  
+11/30/2020 19:52:48 ERROR :: StandardTcpClientImpl : at System.Net.Sockets.NetworkStream.Read(Byte[] buffer, Int32 offset, Int32 size)  
+at dck_pihole2influx.Transport.Telnet.StandardTcpClientImpl.ReceiveDataSync(PiholeCommands message, String terminator) in /app/Transport/Telnet/StandardTelnetClientImpl.cs:line 95  
+11/30/2020 19:52:48 INFO :: SchedulerJob : Finished Task <4> for Worker <TopClientsConverter> in 5003 ms
+```
+OK, in my oppinion it looks like that sometimes pi hole cannot deliver an answer in the appropriate amount of (configured) time (currently 5 seconds). This problem i cannot reproduce with a parallelity of 1 (env-variable CONCURRENTREQUESTSTOPIHOLE). So if you really need every measurepoint, you shout set this variable to 1.
+I've extend the measurepoints for an additional parameter (telnetError). If such an exception occurs, all needed informations goes to influxdb.
+In grafana the result looks like:
+![enter image description here](https://github.com/LaszloLueck/Pihole2Influx/blob/master/images/telnet_errors.png)
+
 ### 2020-11-27
 
 Today night i see in the docker log that the app hung. I guess that a hickup in the network avoid that the app can connect to the pihole via telnet. The documentation of the appropriate methods
@@ -169,3 +234,7 @@ What is missing:
 ## How it looks?
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbMTgyNDM2MjY1NiwtNjEyMzkyOTkyLC01ND
+cyMTQ5MjddfQ==
+-->
