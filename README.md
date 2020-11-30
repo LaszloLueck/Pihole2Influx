@@ -54,6 +54,9 @@ As a friend of functional programming with scala, i use a library called <a href
 Please look in the <a href="install.md">installation document</a> and check what you need to run the container.
 
 ## Current Release
+### 2020-11-30
+As i can 
+
 ### 2020-11-27
 
 Today night i see in the docker log that the app hung. I guess that a hickup in the network avoid that the app can connect to the pihole via telnet. The documentation of the appropriate methods
@@ -169,3 +172,6 @@ What is missing:
 ## How it looks?
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbLTU0NzIxNDkyN119
+-->
