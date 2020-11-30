@@ -31,9 +31,9 @@ So that everything works as described and can fulfill its purpose, the following
 - Docker - Docker CE version 19.03.13, build 4484c46d9d
 - Docker Compose - docker-compose version 1.25.0, build unknown
 - InfluxDb - InfluxDB shell version: 1.8.3
-- Grafana - Grafana v 7.3.1
-- PiHole - PiHole v 5.1.2
-- FTL - FTL v 5.2
+- Grafana - Grafana v 7.3.4
+- PiHole - PiHole v 5.2
+- FTL - FTL v 5.3.1
 
 Docker is no need. You can build and run the complete system, please follow the instructions as described in the <a href="install.md">installation documentation</a>.
 
@@ -235,6 +235,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTgyNDM2MjY1NiwtNjEyMzkyOTkyLC01ND
-cyMTQ5MjddfQ==
+eyJoaXN0b3J5IjpbMTI1MzQ3NzY0MiwxODI0MzYyNjU2LC02MT
+IzOTI5OTIsLTU0NzIxNDkyN119
 -->
