@@ -56,10 +56,40 @@ Please look in the <a href="install.md">installation document</a> and check what
 ## Current Release
 ### 2020-11-30
 #### Updated docker-compose file
-If i call a `docker logs -f pihole2influx` after some days, it took some minutes to come to an end of the current logfile. I'm more interested in newer logs instead of showing all the old stuff, so i extend the docker-compose file for some parameters as described here:
+If i call a `docker logs -f pihole2influx` after some days, it took some minutes to come to an end of the current logfile. I'm more interested in newer logs instead of showing all the old stuff, so i extend the docker-compose file for some parameters as described here (my current configuration):
 ```
+version: "3.7"  
+  
+services:  
+pihole2influx:  
+container_name: pihole2influx  
+networks:  
+default:  
+ipv4_address: 192.168.19.8  
+image: pihole2influx:latest  
+logging:  
+driver: "json-file"  
+options:  
+max-size: "10k"  
+max-file: "20"  
+environment:  
+- PIHOLEHOST=192.168.1.4  
+- PIHOLEPORT=4711  
+- INFLUXDBHOST=192.168.1.4  
+- INFLUXDBPORT=8086  
+- INFLUXDBNAME=pihole2influx  
+- INFLUXDBUSERNAME=  
+- INFLUXDBPASSWORD=  
+- RUNSEVERY=30  
+- CONCURRENTREQUESTSTOPIHOLE=4  
+networks:  
+default:  
+external:  
+name: static-net  
+...
+```
+As you can see, i've implemented a logrotation every 10KB filesize for 20 files. At least, it holds data for approximally 20 minutes. If you need more, increase the values.
 
-```
 
 #### Updated Grafana Dashboard
 To make the telnet exceptions visible i released an extended Grafana dashboard.
@@ -205,5 +235,5 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI0MDU3ODQzMSwtNTQ3MjE0OTI3XX0=
+eyJoaXN0b3J5IjpbLTYxMjM5Mjk5MiwtNTQ3MjE0OTI3XX0=
 -->
