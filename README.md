@@ -55,7 +55,15 @@ Please look in the <a href="install.md">installation document</a> and check what
 
 ## Current Release
 ### 2020-11-30
-As i inspect on my docker logs, i can observe various exceptions on different time slices from different called methods. The exception looks like
+As i inspect on my docker logs, i can observe various exceptions on different time slices from different called methods. The exception looks like:
+```
+11/30/2020 19:52:48 ERROR :: StandardTcpClientImpl : Read timeout while reading a network stream  
+11/30/2020 19:52:48 ERROR :: StandardTcpClientImpl : Unable to read data from the transport connection: Connection timed out.  
+11/30/2020 19:52:48 ERROR :: StandardTcpClientImpl : at System.Net.Sockets.NetworkStream.Read(Byte[] buffer, Int32 offset, Int32 size)  
+at dck_pihole2influx.Transport.Telnet.StandardTcpClientImpl.ReceiveDataSync(PiholeCommands message, String terminator) in /app/Transport/Telnet/StandardTelnetClientImpl.cs:line 95  
+11/30/2020 19:52:48 INFO :: SchedulerJob : Finished Task <4> for Worker <TopClientsConverter> in 5003 ms
+```
+OK, in my oppinion, sometimes pi hole cannot deliver an answer in the appropriate amount of (configured) time (currently 5 seconds). 
 
 ### 2020-11-27
 
@@ -173,5 +181,5 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTk0NzM2OTI0MiwtNTQ3MjE0OTI3XX0=
+eyJoaXN0b3J5IjpbMjEzMDU4MzU4OCwtNTQ3MjE0OTI3XX0=
 -->
