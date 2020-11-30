@@ -55,6 +55,9 @@ Please look in the <a href="install.md">installation document</a> and check what
 
 ## Current Release
 ### 2020-11-30
+#### Bump to pihole
+
+#### Current monitored read exceptions from telnet
 As i inspect on my docker logs, i can observe various exceptions on different time slices from different called methods. The exception looks like:
 ```
 11/30/2020 19:52:48 ERROR :: StandardTcpClientImpl : Read timeout while reading a network stream  
@@ -63,10 +66,10 @@ As i inspect on my docker logs, i can observe various exceptions on different ti
 at dck_pihole2influx.Transport.Telnet.StandardTcpClientImpl.ReceiveDataSync(PiholeCommands message, String terminator) in /app/Transport/Telnet/StandardTelnetClientImpl.cs:line 95  
 11/30/2020 19:52:48 INFO :: SchedulerJob : Finished Task <4> for Worker <TopClientsConverter> in 5003 ms
 ```
-OK, in my oppinion, sometimes pi hole cannot deliver an answer in the appropriate amount of (configured) time (currently 5 seconds). This problem i cannot reproduce with a parallelity of 1 (env-variable CONCURRENTREQUESTSTOPIHOLE). So if you really need every measurepoint, you shout set this variable to 1.
+OK, in my oppinion it looks like that sometimes pi hole cannot deliver an answer in the appropriate amount of (configured) time (currently 5 seconds). This problem i cannot reproduce with a parallelity of 1 (env-variable CONCURRENTREQUESTSTOPIHOLE). So if you really need every measurepoint, you shout set this variable to 1.
 I've extend the measurepoints for an additional parameter (telnetError). If such an exception occurs, all needed informations goes to influxdb.
 In grafana the result looks like:
-
+![enter image description here](https://github.com/LaszloLueck/Pihole2Influx/blob/master/images/telnet_errors.png)
 
 ### 2020-11-27
 
@@ -184,5 +187,5 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTIxMDk3NDY1OSwtNTQ3MjE0OTI3XX0=
+eyJoaXN0b3J5IjpbMTcwNDMxMjk4LC01NDcyMTQ5MjddfQ==
 -->
