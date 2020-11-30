@@ -78,7 +78,8 @@ namespace dck_pihole2influx.Scheduler
                                                                 {
                                                                     Time = DateTime.Now,
                                                                     ErrorType = "WriteQuit",
-                                                                    OnMethod = worker.GetPiholeCommand().ToString()
+                                                                    OnMethod = worker.GetPiholeCommand().ToString(),
+                                                                    Value = 1
                                                                 };
                                                             await influxConnector.WriteMeasurementsAsync(
                                                                 new List<IBaseMeasurement>
@@ -93,11 +94,13 @@ namespace dck_pihole2influx.Scheduler
                                                 none: async () =>
                                                 {
                                                     //Write away the ReadError
-                                                    var readCommandErrorMeasurement = new MeasurementTelnetError();
-                                                    readCommandErrorMeasurement.Time = DateTime.Now;
-                                                    readCommandErrorMeasurement.ErrorType = "Read";
-                                                    readCommandErrorMeasurement.OnMethod =
-                                                        worker.GetPiholeCommand().ToString();
+                                                    var readCommandErrorMeasurement = new MeasurementTelnetError
+                                                    {
+                                                        Time = DateTime.Now,
+                                                        ErrorType = "Read",
+                                                        OnMethod = worker.GetPiholeCommand().ToString(),
+                                                        Value = 1
+                                                    };
                                                     await influxConnector.WriteMeasurementsAsync(
                                                         new List<IBaseMeasurement> {readCommandErrorMeasurement});
                                                 });
@@ -105,11 +108,13 @@ namespace dck_pihole2influx.Scheduler
                                     none: async () =>
                                     {
                                         //Write away the WriteError
-                                        var writeCommandErrorMeasurement = new MeasurementTelnetError();
-                                        writeCommandErrorMeasurement.Time = DateTime.Now;
-                                        writeCommandErrorMeasurement.ErrorType =
-                                            $"WriteCommand";
-                                        writeCommandErrorMeasurement.OnMethod = worker.GetPiholeCommand().ToString();
+                                        var writeCommandErrorMeasurement = new MeasurementTelnetError
+                                        {
+                                            Time = DateTime.Now,
+                                            ErrorType = $"WriteCommand",
+                                            OnMethod = worker.GetPiholeCommand().ToString(),
+                                            Value = 1
+                                        };
                                         await influxConnector.WriteMeasurementsAsync(new List<IBaseMeasurement>
                                             {writeCommandErrorMeasurement});
                                     });
@@ -117,8 +122,13 @@ namespace dck_pihole2influx.Scheduler
                             none: async () =>
                             {
                                 //Write away  the connectError
-                                var connectErrorMeasurement = new MeasurementTelnetError();
-                                connectErrorMeasurement.Time = DateTime.Now;
+                                var connectErrorMeasurement = new MeasurementTelnetError
+                                {
+                                    Time = DateTime.Now,
+                                    ErrorType = "Connect",
+                                    OnMethod = worker.GetPiholeCommand().ToString(),
+                                    Value = 1
+                                };
                                 await influxConnector.WriteMeasurementsAsync(new List<IBaseMeasurement>{connectErrorMeasurement});
                             });
                         sw.Stop();
