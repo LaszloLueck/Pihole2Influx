@@ -57,8 +57,12 @@ Please look in the <a href="install.md">installation document</a> and check what
 ### 2020-11-30
 #### Bump to pihole FTL 5.3.1
 Today i updated my pi hole docker-container to the latest release of pihole (for docker).
-All the things (piho) running fine
-Currently 
+All the things (pihole2influx, influxdb, grafana) running fine with that new version.
+Currently my setup shows the following parameters:
+- Pi Hole 5.2
+- Pi Hole Web 5.2
+- FTL 5.3.1
+- 
 
 #### Current monitored read exceptions from telnet
 As i inspect on my docker logs, i can observe various exceptions on different time slices from different called methods. The exception looks like:
@@ -190,5 +194,5 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5ODUwNzQ3MTQsLTU0NzIxNDkyN119
+eyJoaXN0b3J5IjpbNDY0NDUyNjkyLC01NDcyMTQ5MjddfQ==
 -->
