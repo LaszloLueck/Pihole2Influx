@@ -66,26 +66,26 @@ services:
     networks:  
       default:  
         ipv4_address: 192.168.19.8  
-  image: pihole2influx:latest  
-  logging:  
-    driver: "json-file"  
-    options:  
-      max-size: "10k"  
-      max-file: "20"  
-environment:  
-- PIHOLEHOST=192.168.1.4  
-- PIHOLEPORT=4711  
-- INFLUXDBHOST=192.168.1.4  
-- INFLUXDBPORT=8086  
-- INFLUXDBNAME=pihole2influx  
-- INFLUXDBUSERNAME=  
-- INFLUXDBPASSWORD=  
-- RUNSEVERY=30  
-- CONCURRENTREQUESTSTOPIHOLE=4  
+    image: pihole2influx:latest  
+    logging:  
+      driver: "json-file"  
+      options:  
+        max-size: "10k"  
+        max-file: "20"  
+    environment:  
+      - PIHOLEHOST=192.168.1.4  
+      - PIHOLEPORT=4711  
+      - INFLUXDBHOST=192.168.1.4  
+      - INFLUXDBPORT=8086  
+      - INFLUXDBNAME=pihole2influx  
+      - INFLUXDBUSERNAME=  
+      - INFLUXDBPASSWORD=  
+      - RUNSEVERY=30  
+      - CONCURRENTREQUESTSTOPIHOLE=4  
 networks:  
-default:  
-external:  
-name: static-net  
+  default:  
+    external:  
+      name: static-net  
 ...
 ```
 As you can see, i've implemented a logrotation every 10KB filesize for 20 files. At least, it holds data for approximally 20 minutes. If you need more, increase the values.
@@ -235,6 +235,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMjEzODcyNDE2LC02MTIzOTI5OTIsLTU0Nz
-IxNDkyN119
+eyJoaXN0b3J5IjpbMTgyNDM2MjY1NiwtNjEyMzkyOTkyLC01ND
+cyMTQ5MjddfQ==
 -->
