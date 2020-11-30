@@ -9,9 +9,9 @@ namespace dck_pihole2influx.Transport.InfluxDb.Measurements
 #pragma warning disable
         [Column(IsTimestamp = true)] public DateTime Time;
 #pragma warning restore
-        [Column("errorType")] public string ErrorType { get; set; }
+        [Column("errorType", IsTag = true)] public string ErrorType { get; set; }
         
-        [Column("onMethod")] public string OnMethod { get; set; }
+        [Column("onMethod", IsTag = true)] public string OnMethod { get; set; }
         
         
     }
