@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -6,6 +8,7 @@ using dck_pihole2influx.Configuration;
 using dck_pihole2influx.Logging;
 using dck_pihole2influx.StatObjects;
 using dck_pihole2influx.Transport.InfluxDb;
+using dck_pihole2influx.Transport.InfluxDb.Measurements;
 using dck_pihole2influx.Transport.Telnet;
 using Quartz;
 
@@ -54,23 +57,79 @@ namespace dck_pihole2influx.Scheduler
                     {
                         Stopwatch sw = Stopwatch.StartNew();
                         var standardTcpClientImpl = telnetClientFactory.Build();
-                        standardTcpClientImpl.Connect(configuration.PiholeHost, configuration.PiholePort).MatchSome(_ =>
-                        {
-                            standardTcpClientImpl.WriteCommand(worker.GetPiholeCommand()).MatchSome(_ =>
+                        standardTcpClientImpl.Connect(configuration.PiholeHost, configuration.PiholePort).Match(
+                            some: _ =>
                             {
-                                standardTcpClientImpl.ReceiveDataSync(worker.GetPiholeCommand(), worker.GetTerminator())
-                                    .Map(
-                                        async result =>
+                                standardTcpClientImpl.WriteCommand(worker.GetPiholeCommand()).Match(
+                                    some: _ =>
+                                    {
+                                        standardTcpClientImpl
+                                            .ReceiveDataSync(worker.GetPiholeCommand(), worker.GetTerminator())
+                                            .Match(
+                                                some: async result =>
+                                                {
+                                                    standardTcpClientImpl.WriteCommand(PiholeCommands.Quit).MatchNone(
+                                                        async () =>
+                                                        {
+                                                            //Write away the quit WriteError
+                                                            var writeCommandQuitErrorMeasurement =
+                                                                new MeasurementTelnetError
+                                                                {
+                                                                    Time = DateTime.Now,
+                                                                    ErrorType = "WriteQuit",
+                                                                    OnMethod = worker.GetPiholeCommand().ToString(),
+                                                                    Value = 1
+                                                                };
+                                                            await influxConnector.WriteMeasurementsAsync(
+                                                                new List<IBaseMeasurement>
+                                                                    {writeCommandQuitErrorMeasurement});
+                                                        });
+                                                    standardTcpClientImpl.CloseAndDisposeStream();
+                                                    standardTcpClientImpl.CloseAndDisposeTcpClient();
+                                                    await worker.Convert(result);
+                                                    var measurements = await worker.CalculateMeasurementData();
+                                                    await influxConnector.WriteMeasurementsAsync(measurements);
+                                                },
+                                                none: async () =>
+                                                {
+                                                    //Write away the ReadError
+                                                    var readCommandErrorMeasurement = new MeasurementTelnetError
+                                                    {
+                                                        Time = DateTime.Now,
+                                                        ErrorType = "Read",
+                                                        OnMethod = worker.GetPiholeCommand().ToString(),
+                                                        Value = 1
+                                                    };
+                                                    await influxConnector.WriteMeasurementsAsync(
+                                                        new List<IBaseMeasurement> {readCommandErrorMeasurement});
+                                                });
+                                    },
+                                    none: async () =>
+                                    {
+                                        //Write away the WriteError
+                                        var writeCommandErrorMeasurement = new MeasurementTelnetError
                                         {
-                                            standardTcpClientImpl.WriteCommand(PiholeCommands.Quit);
-                                            standardTcpClientImpl.CloseAndDisposeStream();
-                                            standardTcpClientImpl.CloseAndDisposeTcpClient();
-                                            await worker.Convert(result);
-                                            var measurements = await worker.CalculateMeasurementData();
-                                            await influxConnector.WriteMeasurementsAsync(measurements);
-                                        });
+                                            Time = DateTime.Now,
+                                            ErrorType = $"WriteCommand",
+                                            OnMethod = worker.GetPiholeCommand().ToString(),
+                                            Value = 1
+                                        };
+                                        await influxConnector.WriteMeasurementsAsync(new List<IBaseMeasurement>
+                                            {writeCommandErrorMeasurement});
+                                    });
+                            },
+                            none: async () =>
+                            {
+                                //Write away  the connectError
+                                var connectErrorMeasurement = new MeasurementTelnetError
+                                {
+                                    Time = DateTime.Now,
+                                    ErrorType = "Connect",
+                                    OnMethod = worker.GetPiholeCommand().ToString(),
+                                    Value = 1
+                                };
+                                await influxConnector.WriteMeasurementsAsync(new List<IBaseMeasurement>{connectErrorMeasurement});
                             });
-                        });
                         sw.Stop();
                         await Log.InfoAsync(
                             $"Finished Task <{inner}> for Worker <{worker.GetType().Name}> in {sw.ElapsedMilliseconds} ms");
