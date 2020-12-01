@@ -69,7 +69,7 @@ In easy steps the code do the following steps
 5. Disconnect
 
 We will look at step 3. Here is the (old) code:
-```
+```c#
 public Option<string> ReceiveDataSync(PiholeCommands message, string terminator)  
 {  
   try  
@@ -116,7 +116,7 @@ No problem, the world breaks into 2 different parts and we would all die!
 
 No, here is what i have changed:
 
-```
+```c#
 public Option<string> ReceiveDataSync(string terminator)  
 {  
   var received = new byte[256];  
@@ -321,6 +321,7 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE5MTg1MzkwOTgsMTI1MzQ3NzY0MiwxOD
-I0MzYyNjU2LC02MTIzOTI5OTIsLTU0NzIxNDkyN119
+eyJoaXN0b3J5IjpbNzYwNDEwNTM0LC0xOTE4NTM5MDk4LDEyNT
+M0Nzc2NDIsMTgyNDM2MjY1NiwtNjEyMzkyOTkyLC01NDcyMTQ5
+MjddfQ==
 -->
