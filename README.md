@@ -107,7 +107,29 @@ The content of the last array:
 
 And oops! The comparison of ---EOM--- would be failed, because ---E is not ---EOM--- and OM--- is also not ---EOM---
 And now?
-
+No problem, the world breaks into 2 different parts and we would all die!
+No, here is what i have changed:
+```
+public Option<string> ReceiveDataSync(string terminator)  
+{  
+  var received = new byte[256];  
+  try  
+  {  
+	  var sb = new StringBuilder();  
+	  while (_stream.Read(received, 0, received.Length) > 0)  
+	 {  
+		 var toString = Encoding.UTF8.GetString(received);  
+	  sb.Append(toString.Replace("\0", ""));  
+  received = new byte[256];  
+  
+  if(sb.ToString().Contains(terminator)) break;  
+ }  
+  return Option.Some(sb.ToString());  
+ }  catch (IOException exception)  
+ {  Log.Error(exception, "Read timeout while reading a network stream");  
+  return Option.None<string>();  
+ }}
+```
 
 ### 2020-11-30
 #### Updated docker-compose file
@@ -290,6 +312,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTI4MTA4NzU1LDEyNTM0Nzc2NDIsMTgyND
-M2MjY1NiwtNjEyMzkyOTkyLC01NDcyMTQ5MjddfQ==
+eyJoaXN0b3J5IjpbLTk2ODg4MDcyMiwxMjUzNDc3NjQyLDE4Mj
+QzNjI2NTYsLTYxMjM5Mjk5MiwtNTQ3MjE0OTI3XX0=
 -->
