@@ -101,8 +101,11 @@ On many times this worked fine.
 Except, if the Terminator-string (---EOM---) does no fit completely in one bytearray.
 Example:
 The content of the forelast array (for better read as string):
+
 `[reply_CNAME 2988\nreply_IP 6759\nprivacy_level 0\nstatus enabled\n---E]`
+
 The content of the last array:
+
 `[OM---\0\0\0\0\0....]`
 
 And oops! The comparison of ---EOM--- would be failed, because ---E is not ---EOM--- and OM--- is also not ---EOM---
@@ -314,6 +317,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTA3Njc5NjI0LDEyNTM0Nzc2NDIsMTgyND
-M2MjY1NiwtNjEyMzkyOTkyLC01NDcyMTQ5MjddfQ==
+eyJoaXN0b3J5IjpbMTQyODQyODYwNiwxMjUzNDc3NjQyLDE4Mj
+QzNjI2NTYsLTYxMjM5Mjk5MiwtNTQ3MjE0OTI3XX0=
 -->
