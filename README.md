@@ -58,7 +58,11 @@ Please look in the <a href="install.md">installation document</a> and check what
 #### Find and fix the issue with probably "read-exceptions" from telnet
 As described yesterday, i was able to monitor some read timeouts on some different calls to pihole via telnet. I asked in the pihole forum if this could be a problem with the parallelity of the calls.
 There answer was: No, because, every call comes to a queue and will be evaluated in order. There is no difference if there was one or ten calls.
-If i parallel call the telnet interface of pihole via bash, i c
+If i parallel call the telnet interface of pihole via bash, i can't inspect this behavior, so a have a suspicion that the problem could be on my side.
+And BANG! There was.
+Whats the probl
+
+
 
 ### 2020-11-30
 #### Updated docker-compose file
@@ -241,6 +245,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQ4MzAxNzk4MywxMjUzNDc3NjQyLDE4Mj
+eyJoaXN0b3J5IjpbMTMyNzY2NjExMywxMjUzNDc3NjQyLDE4Mj
 QzNjI2NTYsLTYxMjM5Mjk5MiwtNTQ3MjE0OTI3XX0=
 -->
