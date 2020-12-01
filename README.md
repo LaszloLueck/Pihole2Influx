@@ -56,7 +56,8 @@ Please look in the <a href="install.md">installation document</a> and check what
 ## Current Release
 ### 2020-12-01
 #### Find and fix the issue with probably "read-exceptions" from telnet
-As described yesterday
+As described yesterday, i was able to monitor some read timeouts on some different calls to pihole via telnet. I asked in the pihole forum if this could be a problem with the parallelity of the calls.
+There answer was: No, because, it is
 
 ### 2020-11-30
 #### Updated docker-compose file
@@ -239,6 +240,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTAwNjMyNDUzLDEyNTM0Nzc2NDIsMTgyND
+eyJoaXN0b3J5IjpbODI3OTQ5MTE5LDEyNTM0Nzc2NDIsMTgyND
 M2MjY1NiwtNjEyMzkyOTkyLC01NDcyMTQ5MjddfQ==
 -->
