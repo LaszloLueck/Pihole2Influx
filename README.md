@@ -100,7 +100,12 @@ While the stream (Networkstream) could be read (bytes in buffer > 0) do the foll
 On many times this worked fine.
 Except, if the Terminator-string (---EOM---) does no fit completely in one bytearray.
 Example:
-The content of the forelast 
+The content of the forelast array (for better read as string):
+`[reply_CNAME 2988\nreply_IP 6759\nprivacy_level 0\nstatus enabled\n---E]`
+The content of the last array:
+`[OM---\0\0\0\0\0....]`
+
+And oops! The comparison of ---EOM--- would be 
 
 ### 2020-11-30
 #### Updated docker-compose file
@@ -283,6 +288,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTEzNzM1OTkwNzEsMTI1MzQ3NzY0MiwxOD
-I0MzYyNjU2LC02MTIzOTI5OTIsLTU0NzIxNDkyN119
+eyJoaXN0b3J5IjpbOTI5Njc2NzY5LDEyNTM0Nzc2NDIsMTgyND
+M2MjY1NiwtNjEyMzkyOTkyLC01NDcyMTQ5MjddfQ==
 -->
