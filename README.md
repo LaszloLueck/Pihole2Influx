@@ -105,7 +105,9 @@ The content of the forelast array (for better read as string):
 The content of the last array:
 `[OM---\0\0\0\0\0....]`
 
-And oops! The comparison of ---EOM--- would be 
+And oops! The comparison of ---EOM--- would be failed, because ---E is not ---EOM--- and OM--- is also not ---EOM---
+And now?
+
 
 ### 2020-11-30
 #### Updated docker-compose file
@@ -288,6 +290,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbOTI5Njc2NzY5LDEyNTM0Nzc2NDIsMTgyND
+eyJoaXN0b3J5IjpbOTI4MTA4NzU1LDEyNTM0Nzc2NDIsMTgyND
 M2MjY1NiwtNjEyMzkyOTkyLC01NDcyMTQ5MjddfQ==
 -->
