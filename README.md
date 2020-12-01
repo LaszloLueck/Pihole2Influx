@@ -54,6 +54,10 @@ As a friend of functional programming with scala, i use a library called <a href
 Please look in the <a href="install.md">installation document</a> and check what you need to run the container.
 
 ## Current Release
+### 2020-12-01
+#### Find and fix the issue with probably "read-exceptions" from telnet
+As described yesterday
+
 ### 2020-11-30
 #### Updated docker-compose file
 If i call a `docker logs -f pihole2influx` after some days, it took some minutes to come to an end of the current logfile. I'm more interested in newer logs instead of showing all the old stuff, so i extend the docker-compose file for some parameters as described here (my current configuration):
@@ -235,6 +239,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI1MzQ3NzY0MiwxODI0MzYyNjU2LC02MT
-IzOTI5OTIsLTU0NzIxNDkyN119
+eyJoaXN0b3J5IjpbMTAwNjMyNDUzLDEyNTM0Nzc2NDIsMTgyND
+M2MjY1NiwtNjEyMzkyOTkyLC01NDcyMTQ5MjddfQ==
 -->
