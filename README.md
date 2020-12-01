@@ -62,7 +62,32 @@ If i parallel call the telnet interface of pihole via bash, i can't inspect this
 And BANG! There was.
 Whats the problem?
 In easy steps the code do the following steps
-1. Connect 
+1. Connect via telnet
+2. Send the command
+3. Wait until the result is complete loaded
+4. Send the quit command
+5. Disconnect
+
+We will look at step 3. Here is the (old) code:
+```
+public Option<string> ReceiveDataSync(PiholeCommands message, string terminator)  
+{  
+  try  
+  {  
+  var retValue = new StringBuilder();  
+  var received = new byte[256];  
+  while (_stream.Read(received, 0, received.Length) > 0)  
+ {  var tmp = Encoding.UTF8.GetString(received);  
+  received = new byte[256];  
+  retValue.Append(tmp.Replace("\0", ""));  
+  if (tmp.Contains(terminator)) break;  
+ }  
+  return Option.Some(retValue.ToString());  
+ }  catch (IOException exception)  
+ {  Log.Error(exception, "Read timeout while reading a network stream");  
+  return Option.None<string>();  
+ }}
+```
 
 
 
@@ -247,6 +272,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQ0NjI5MzI3NSwxMjUzNDc3NjQyLDE4Mj
-QzNjI2NTYsLTYxMjM5Mjk5MiwtNTQ3MjE0OTI3XX0=
+eyJoaXN0b3J5IjpbODI5OTY0NTI5LDEyNTM0Nzc2NDIsMTgyND
+M2MjY1NiwtNjEyMzkyOTkyLC01NDcyMTQ5MjddfQ==
 -->
