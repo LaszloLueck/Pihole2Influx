@@ -130,7 +130,8 @@ public Option<string> ReceiveDataSync(string terminator)
 	 return Option.None<string>();  
  }}
 ```
-As you can see, i compare the complete result-string from  with the terminator-string
+As you can see, i compare the complete result-string from strinbuilder with the terminator-string. And voila, everything works fine now.
+I will inspect the behavior until tomorrow. I update my project on 17:30 and since then, i could not see any error  then i will remove the influxdb code for the exceptions
 
 ### 2020-11-30
 #### Updated docker-compose file
@@ -313,6 +314,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTQ5OTQzNzM1OSwxMjUzNDc3NjQyLDE4Mj
-QzNjI2NTYsLTYxMjM5Mjk5MiwtNTQ3MjE0OTI3XX0=
+eyJoaXN0b3J5IjpbLTIwMTEwMzcyNDMsMTI1MzQ3NzY0MiwxOD
+I0MzYyNjU2LC02MTIzOTI5OTIsLTU0NzIxNDkyN119
 -->
