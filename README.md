@@ -93,7 +93,9 @@ public Option<string> ReceiveDataSync(PiholeCommands message, string terminator)
 What does this mean?
 While the stream (Networkstream) could be read (bytes in buffer > 0) do the following things.
 - read the bytearray and encode this thing to an UTF8 string
-- clear the 
+- clear the array (for the next bunch of bytes from network)
+- put the string to an stringBuilder (best way to concatenate strings together)
+- 
 
 ### 2020-11-30
 #### Updated docker-compose file
@@ -276,6 +278,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTI5NDQyNjY3LDEyNTM0Nzc2NDIsMTgyND
+eyJoaXN0b3J5IjpbODg3NDU4MzI1LDEyNTM0Nzc2NDIsMTgyND
 M2MjY1NiwtNjEyMzkyOTkyLC01NDcyMTQ5MjddfQ==
 -->
