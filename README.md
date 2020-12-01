@@ -143,7 +143,7 @@ I will inspect the behavior until tomorrow. I update my project on 17:30 and sin
 ### 2020-11-30
 #### Updated docker-compose file
 If i call a `docker logs -f pihole2influx` after some days, it took some minutes to come to an end of the current logfile. I'm more interested in newer logs instead of showing all the old stuff, so i extend the docker-compose file for some parameters as described here (my current configuration):
-```
+```yaml
 version: "3.7"  
   
 services:  
@@ -321,7 +321,7 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbNzYwNDEwNTM0LC0xOTE4NTM5MDk4LDEyNT
+eyJoaXN0b3J5IjpbMzU4MDQ1NDcxLC0xOTE4NTM5MDk4LDEyNT
 M0Nzc2NDIsMTgyNDM2MjY1NiwtNjEyMzkyOTkyLC01NDcyMTQ5
 MjddfQ==
 -->
