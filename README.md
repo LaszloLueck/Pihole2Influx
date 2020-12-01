@@ -108,10 +108,14 @@ The content of the last array:
 
 `[OM---\0\0\0\0\0....]`
 
-And oops! The comparison of ---EOM--- would be failed, because ---E is not ---EOM--- and OM--- is also not ---EOM---
+And oops! The comparison of ---EOM--- would be failed, because ---E is not ---EOM--- and OM--- is also not ---EOM---.
+
 And now?
+
 No problem, the world breaks into 2 different parts and we would all die!
+
 No, here is what i have changed:
+
 ```
 public Option<string> ReceiveDataSync(string terminator)  
 {  
@@ -317,6 +321,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTQyODQyODYwNiwxMjUzNDc3NjQyLDE4Mj
-QzNjI2NTYsLTYxMjM5Mjk5MiwtNTQ3MjE0OTI3XX0=
+eyJoaXN0b3J5IjpbLTE5MTg1MzkwOTgsMTI1MzQ3NzY0MiwxOD
+I0MzYyNjU2LC02MTIzOTI5OTIsLTU0NzIxNDkyN119
 -->
