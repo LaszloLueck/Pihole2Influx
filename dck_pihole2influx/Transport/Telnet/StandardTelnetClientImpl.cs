@@ -86,24 +86,26 @@ namespace dck_pihole2influx.Transport.Telnet
             }
         }
 
-        public Option<string> ReceiveDataSync(PiholeCommands message, string terminator)
+        public Option<string> ReceiveDataSync(string terminator)
         {
+            var received = new byte[256];
+            var retValue = new StringBuilder();
             try
             {
-                var retValue = new StringBuilder();
-                var received = new byte[256];
                 while (_stream.Read(received, 0, received.Length) > 0)
                 {
-                    var tmp = Encoding.UTF8.GetString(received);
+                    var toString = Encoding.UTF8.GetString(received);
+                    retValue.Append(toString);
                     received = new byte[256];
-                    retValue.Append(tmp.Replace("\0", ""));
-                    if (tmp.Contains(terminator)) break;
+
+                    if(retValue.ToString().Contains(terminator)) break;
                 }
 
                 return Option.Some(retValue.ToString());
             }
             catch (IOException exception)
             {
+                Log.Info($"KK: {retValue.ToString()}");
                 Log.Error(exception, "Read timeout while reading a network stream");
                 return Option.None<string>();
             }

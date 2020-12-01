@@ -64,7 +64,7 @@ namespace dck_pihole2influx.Scheduler
                                     some: _ =>
                                     {
                                         standardTcpClientImpl
-                                            .ReceiveDataSync(worker.GetPiholeCommand(), worker.GetTerminator())
+                                            .ReceiveDataSync(worker.GetTerminator())
                                             .Match(
                                                 some: async result =>
                                                 {
