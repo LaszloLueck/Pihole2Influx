@@ -74,21 +74,23 @@ public Option<string> ReceiveDataSync(PiholeCommands message, string terminator)
 {  
   try  
   {  
-  var retValue = new StringBuilder();  
-  var received = new byte[256];  
-  while (_stream.Read(received, 0, received.Length) > 0)  
- {  var tmp = Encoding.UTF8.GetString(received);  
-  received = new byte[256];  
-  retValue.Append(tmp.Replace("\0", ""));  
-  if (tmp.Contains(terminator)) break;  
- }  
-  return Option.Some(retValue.ToString());  
+	  var retValue = new StringBuilder();  
+	  var received = new byte[256];  
+	  while (_stream.Read(received, 0, received.Length) > 0)  
+	  {  
+		  var tmp = Encoding.UTF8.GetString(received);  
+		  received = new byte[256];  
+		  retValue.Append(tmp.Replace("\0", ""));  
+		  if (tmp.Contains(terminator)) break;  
+	 }  
+	  return Option.Some(retValue.ToString());  
  }  catch (IOException exception)  
- {  Log.Error(exception, "Read timeout while reading a network stream");  
-  return Option.None<string>();  
+ {  
+	 Log.Error(exception, "Read timeout while reading a network stream");  
+	 return Option.None<string>();  
  }}
 ```
-
+What does this mean?
 
 
 ### 2020-11-30
@@ -272,6 +274,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbODI5OTY0NTI5LDEyNTM0Nzc2NDIsMTgyND
+eyJoaXN0b3J5IjpbNDExNTYxMzQwLDEyNTM0Nzc2NDIsMTgyND
 M2MjY1NiwtNjEyMzkyOTkyLC01NDcyMTQ5MjddfQ==
 -->
