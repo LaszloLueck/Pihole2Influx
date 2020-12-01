@@ -98,7 +98,9 @@ While the stream (Networkstream) could be read (bytes in buffer > 0) do the foll
 - and if the string from the bytearray contains ---EOM--- then break, so the end of the result from telnet is reached.
 
 On many times this worked fine.
-Except, if the Terminator-string (
+Except, if the Terminator-string (---EOM---) does no fit completely in one bytearray.
+Example:
+The content of the forelast 
 
 ### 2020-11-30
 #### Updated docker-compose file
@@ -281,6 +283,6 @@ What is missing:
 If all is up and running, you should checkoud the sample grafana dashboard from <a href="/Grafana-Dashboard/pihole2influx.json">here</a> and it shoulld looking like the following screenshot.
 <img src="./images/grafana_screenshot.png"  alt="Grafana Screenshot"/>
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTM4ODQxMDgzNiwxMjUzNDc3NjQyLDE4Mj
-QzNjI2NTYsLTYxMjM5Mjk5MiwtNTQ3MjE0OTI3XX0=
+eyJoaXN0b3J5IjpbLTEzNzM1OTkwNzEsMTI1MzQ3NzY0MiwxOD
+I0MzYyNjU2LC02MTIzOTI5OTIsLTU0NzIxNDkyN119
 -->
