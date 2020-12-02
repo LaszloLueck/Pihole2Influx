@@ -54,6 +54,11 @@ As a friend of functional programming with scala, i use a library called <a href
 Please look in the <a href="install.md">installation document</a> and check what you need to run the container.
 
 ## Current Release
+### 2020-12-02
+#### Removing obsolete code to track telnet-exceptions
+The issue with the read exception is solved, since yesterday, last code-commit (e.g. 17:xx EST), the tool runs in my docker environment without any error with a parallelity of 6. That means, i've fixed the issue and rollback to the prior code without logging exceptions.
+The second change is the removing of the, now obsolete panels in grafana.
+
 ### 2020-12-01
 #### Find and fix the issue with probably "read-exceptions" from telnet
 As described yesterday, i was able to monitor some read timeouts on some different calls to pihole via telnet. I asked in the pihole forum if this could be a problem with the parallelity of the calls.
