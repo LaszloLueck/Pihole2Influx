@@ -54,6 +54,15 @@ As a friend of functional programming with scala, i use a library called <a href
 Please look in the <a href="install.md">installation document</a> and check what you need to run the container.
 
 ## Current Release
+### 2020-12-03
+#### Adding more errorhandling
+If the write of data to influxdb is not successfully finished in 500ms, an exception is thrown and the process goes to the next worker. If the application container will unexpected stop the work, i've set the configuration parameter
+
+`restart: always`
+
+to my docker-compose.yaml.
+
+
 ### 2020-12-02
 #### Removing obsolete code to track telnet-exceptions
 The issue with the read exception is solved, since yesterday, last code-commit (e.g. 17:xx EST), the tool runs in my docker environment without any error with a parallelity of 6. That means, i've fixed the issue and rollback to the prior code without logging exceptions.
