@@ -62,7 +62,7 @@ If the write of data to influxdb is not successfully finished in 500ms, an excep
 
 to my docker-compose.yaml.
 
-Also i create in the root of this project my docker-compose.yaml as default yaml, if anybody need this. You can find the file <a href="https://github.com/LaszloLueck/Pihole2Influx/blob/master/docker-compose.yaml">here</a>
+I also create in the root of this project my docker-compose.yaml as default yaml, if anybody need this. You can find the file <a href="https://github.com/LaszloLueck/Pihole2Influx/blob/master/docker-compose.yaml">here</a>. If you plan to use this file 1:1 please be aware, that you create a docker static network with the range of 192.168.19.0/24. Also the ip-addresses of the services (pihole, influxdb) or database name would changed.
 
 ### 2020-12-02
 #### Removing obsolete code to track telnet-exceptions
