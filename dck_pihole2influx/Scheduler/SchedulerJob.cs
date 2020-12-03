@@ -38,48 +38,51 @@ namespace dck_pihole2influx.Scheduler
                     $"Connect to Pihole and process data with {configuration.ConcurrentRequestsToPihole} parallel process(es).");
                 await Log.InfoAsync("Connect to pihole and get stats");
 
-                //throttle the amount of concurrent telnet-requests to pihole.
-                //if it is not set per env-var, the default is 1 (one request per time).
-                var mutex = new SemaphoreSlim(configuration.ConcurrentRequestsToPihole);
-                influxConnector.Connect(configuration);
-                var cnt = 0;
-                var enumerable = Workers.GetJobsToDo().Select(async worker =>
+                //only if a connection to influxdb is successfully established, we measure against pihole
+                influxConnector.Connect(configuration).MatchSome(async _ =>
                 {
-                    await mutex.WaitAsync();
-                    var inner = cnt++;
-                    await Log.InfoAsync(
-                        $"Connect Task <{inner}> to Telnet-Host for worker {worker.GetType().Name}");
-
-                    await Task.Run(async () =>
+                    var cnt = 0;
+                    //throttle the amount of concurrent telnet-requests to pihole.
+                    //if it is not set per env-var, the default is 1 (one request per time).
+                    var mutex = new SemaphoreSlim(configuration.ConcurrentRequestsToPihole);
+                    var enumerable = Workers.GetJobsToDo().Select(async worker =>
                     {
-                        Stopwatch sw = Stopwatch.StartNew();
-                        var standardTcpClientImpl = telnetClientFactory.Build();
-                        standardTcpClientImpl.Connect(configuration.PiholeHost, configuration.PiholePort).MatchSome(_ =>
-                        {
-                            standardTcpClientImpl.WriteCommand(worker.GetPiholeCommand()).MatchSome(_ =>
-                            {
-                                standardTcpClientImpl
-                                    .ReceiveDataSync(worker.GetTerminator())
-                                    .MatchSome(async result =>
-                                    {
-                                        standardTcpClientImpl.WriteCommand(PiholeCommands.Quit);
-                                        await worker.Convert(result);
-                                        var measurements = await worker.CalculateMeasurementData();
-                                        await influxConnector.WriteMeasurementsAsync(measurements);
-                                    });
-                            });
-                        });
-                        standardTcpClientImpl.CloseAndDisposeStream();
-                        standardTcpClientImpl.CloseAndDisposeTcpClient();
-                        sw.Stop();
+                        await mutex.WaitAsync();
+                        var inner = cnt++;
                         await Log.InfoAsync(
-                            $"Finished Task <{inner}> for Worker <{worker.GetType().Name}> in {sw.ElapsedMilliseconds} ms");
-                    });
-                    mutex.Release();
-                });
-                await Task.WhenAll(enumerable);
+                            $"Connect Task <{inner}> to Telnet-Host for worker {worker.GetType().Name}");
 
-                influxConnector.DisposeConnector();
+                        await Task.Run(async () =>
+                        {
+                            Stopwatch sw = Stopwatch.StartNew();
+                            var standardTcpClientImpl = telnetClientFactory.Build();
+                            standardTcpClientImpl.Connect(configuration.PiholeHost, configuration.PiholePort).MatchSome(
+                                _ =>
+                                {
+                                    standardTcpClientImpl.WriteCommand(worker.GetPiholeCommand()).MatchSome(_ =>
+                                    {
+                                        standardTcpClientImpl
+                                            .ReceiveDataSync(worker.GetTerminator())
+                                            .MatchSome(async result =>
+                                            {
+                                                standardTcpClientImpl.WriteCommand(PiholeCommands.Quit);
+                                                await worker.Convert(result);
+                                                var measurements = await worker.CalculateMeasurementData();
+                                                await influxConnector.WriteMeasurementsAsync(measurements);
+                                            });
+                                    });
+                                });
+                            standardTcpClientImpl.CloseAndDisposeStream();
+                            standardTcpClientImpl.CloseAndDisposeTcpClient();
+                            sw.Stop();
+                            await Log.InfoAsync(
+                                $"Finished Task <{inner}> for Worker <{worker.GetType().Name}> in {sw.ElapsedMilliseconds} ms");
+                        });
+                        mutex.Release();
+                    });
+                    await Task.WhenAll(enumerable);
+                    influxConnector.DisposeConnector();
+                });
             });
         }
     }
