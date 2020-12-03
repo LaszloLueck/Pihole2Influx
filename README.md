@@ -62,6 +62,7 @@ If the write of data to influxdb is not successfully finished in 500ms, an excep
 
 to my docker-compose.yaml.
 
+Also i create in the root of this project my docker-compose.yaml as default yaml, if anybody need this. You can find the file <a href="https://github.com/LaszloLueck/Pihole2Influx/blob/master/docker-compose.yaml">here</a>
 
 ### 2020-12-02
 #### Removing obsolete code to track telnet-exceptions
