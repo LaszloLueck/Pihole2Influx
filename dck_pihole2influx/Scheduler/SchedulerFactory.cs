@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using dck_pihole2influx.Configuration;
 using dck_pihole2influx.Logging;
+using dck_pihole2influx.Transport.InfluxDb;
+using dck_pihole2influx.Transport.Telnet;
 using Quartz;
 using Quartz.Impl;
 
@@ -16,8 +18,10 @@ namespace dck_pihole2influx.Scheduler
         private IScheduler _scheduler;
         private readonly StdSchedulerFactory _factory;
         private readonly ConfigurationItems _configurationItems;
+        private readonly InfluxConnectionFactory _influxConnectionFactory;
+        private readonly IStandardTelnetClientFactory _telnetClientFactory;
 
-        public CustomSchedulerFactory(string jobName, string groupName, string triggerName, ConfigurationItems configurationItems)
+        public CustomSchedulerFactory(string jobName, string groupName, string triggerName, ConfigurationItems configurationItems, InfluxConnectionFactory influxConnectionFactory, IStandardTelnetClientFactory telnetClientFactory)
         {
             Task.Run(async() =>
             {
@@ -25,12 +29,14 @@ namespace dck_pihole2influx.Scheduler
                 await Log.InfoAsync($"JobName: {jobName}");
                 await Log.InfoAsync($"GroupName: {groupName}");
                 await Log.InfoAsync($"TriggerName: {triggerName}");
-                await Log.InfoAsync($"RepeatInterval: {configurationItems.PiholeHost} s");
+                await Log.InfoAsync($"RepeatInterval: {configurationItems.RunsEvery} s");
             });
             _jobName = jobName;
             _groupName = groupName;
             _triggerName = triggerName;
             _configurationItems = configurationItems;
+            _influxConnectionFactory = influxConnectionFactory;
+            _telnetClientFactory = telnetClientFactory;
             _factory = new StdSchedulerFactory();
         }
 
@@ -78,6 +84,8 @@ namespace dck_pihole2influx.Scheduler
             var job = GetJob();
             var trigger = GetTrigger();
             job.JobDataMap.Put("configuration", _configurationItems);
+            job.JobDataMap.Put("influxConnectionFactory", _influxConnectionFactory);
+            job.JobDataMap.Put("telnetClientFactory", _telnetClientFactory);
             await Log.InfoAsync("Schedule Job");
             await _scheduler.ScheduleJob(job, trigger);
         }

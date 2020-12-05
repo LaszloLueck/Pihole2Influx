@@ -117,6 +117,7 @@ namespace dck_pihole2influx.StatObjects
                     ? dblValue
                     : 0;
 
+            
             IBaseResult retValue = new StringDecimalOutput(splitLine[0], dblValue);
             return Option.Some<(string, IBaseResult)>((splitLine[0], retValue));
         }
@@ -193,18 +194,16 @@ namespace dck_pihole2influx.StatObjects
                 ? Option.Some(iPosition)
                 : Option.None<int>();
 
-            var result = countOpt.FlatMap(count =>
+            return countOpt.FlatMap(count =>
             {
                 return positionOpt.Map<(string, IBaseResult)>(position =>
                 {
                     var hostOpt = match.Groups[4].SomeWhen(value => value.Value.Length > 0).Map(group => group.Value);
 
                     return (match.Groups[1].Value,
-                        new DoubleStringOutputElement(position, count, match.Groups[3].Value, hostOpt));
+                        new DoubleStringOutputElement(count, position, match.Groups[3].Value, hostOpt));
                 });
             });
-
-            return result;
         }
 
         protected static ConcurrentDictionary<string, IBaseResult> ConvertDictionaryOpt(
@@ -235,8 +234,8 @@ namespace dck_pihole2influx.StatObjects
             }
             catch (Exception ex)
             {
-                await Log.ErrorAsync(ex, "An error occured while processing a data structure to json string");
-                return await Task.Run(() => string.Empty);
+                return await Log.ErrorAsync(ex, "An error occured while processing a data structure to json string")
+                    .ContinueWith(_ => string.Empty);
             }
         }
 
@@ -254,25 +253,24 @@ namespace dck_pihole2influx.StatObjects
             return ret;
         }
 
-        protected static Option<ParallelQuery<string>> SplitInputString(string input, string terminator)
+        protected static Task<Option<ParallelQuery<string>>> SplitInputString(string input, string terminator)
         {
             try
             {
-                var splitted = input
-                    .Split("\n")
-                    .Where(s => !string.IsNullOrWhiteSpace(s) && s != terminator)
-                    .AsParallel()
-                    .AsOrdered();
+                return Task.Run(() =>
+                {
+                    var splitted = input
+                        .Split("\n")
+                        .Where(s => !string.IsNullOrWhiteSpace(s) && s != terminator)
+                        .AsParallel()
+                        .AsOrdered();
 
-                return Option.Some(splitted);
+                    return Option.Some(splitted);
+                });
             }
             catch (Exception ex)
             {
-                Task.Run(async () =>
-                {
-                    await Log.ErrorAsync(ex, "An error occured while splitting the input line");
-                });
-                return Option.None<ParallelQuery<string>>();
+                return Log.ErrorAsync(ex, "An error occured while splitting the input line").ContinueWith(_ => Option.None<ParallelQuery<string>>());
             }
         }
     }

@@ -6,7 +6,7 @@ namespace dck_pihole2influx.StatObjects
     {
         public static ConcurrentBag<TelnetResultConverter> GetJobsToDo()
         {
-            return new ConcurrentBag<TelnetResultConverter>
+            return new()
             {
                 new CacheInfoConverter(),
                 new StatsConverter(),

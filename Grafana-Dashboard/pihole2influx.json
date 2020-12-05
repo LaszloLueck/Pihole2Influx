@@ -1,4 +1,43 @@
 {
+  "__inputs": [],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "7.3.4"
+    },
+    {
+      "type": "panel",
+      "id": "grafana-piechart-panel",
+      "name": "Pie Chart",
+      "version": "1.6.1"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -14,9 +53,9 @@
   },
   "editable": true,
   "gnetId": null,
-  "graphTooltip": 0,
-  "id": 1,
-  "iteration": 1605769165599,
+  "graphTooltip": 1,
+  "id": null,
+  "iteration": 1606923738954,
   "links": [],
   "panels": [
     {
@@ -75,7 +114,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -161,7 +200,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -231,7 +270,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -255,7 +294,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Pi Hole Version",
+      "title": "FTL Version",
       "type": "stat"
     },
     {
@@ -301,7 +340,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -371,7 +410,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -441,7 +480,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -511,7 +550,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -535,7 +574,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Pi Hole Tag",
+      "title": "FTL Tag",
       "type": "stat"
     },
     {
@@ -669,7 +708,7 @@
           }
         ]
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "repeat": null,
       "targets": [
         {
@@ -833,7 +872,7 @@
           }
         ]
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [
@@ -985,7 +1024,7 @@
           }
         ]
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [
@@ -1098,7 +1137,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1160,14 +1199,14 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "/^dbstats\\.databaseFileSize$/",
           "values": false
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1235,7 +1274,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1322,7 +1361,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1479,7 +1518,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1540,14 +1579,14 @@
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "lastNotNull"
+            "last"
           ],
           "fields": "/^dbstats\\.databaseEntries$/",
           "values": false
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1615,7 +1654,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1686,7 +1725,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "targets": [
         {
           "groupBy": [],
@@ -1752,7 +1791,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1972,7 +2011,7 @@
         "alertThreshold": true
       },
       "percentage": true,
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2129,7 +2168,7 @@
         "alertThreshold": true
       },
       "percentage": true,
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2524,7 +2563,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.3.3",
+      "pluginVersion": "7.3.4",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -2657,5 +2696,5 @@
   "timezone": "",
   "title": "Pihole2Influx",
   "uid": "BEKAkl2Gk",
-  "version": 11
+  "version": 17
 }

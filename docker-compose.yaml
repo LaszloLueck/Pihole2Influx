@@ -1,0 +1,30 @@
+version: "3.7"  
+
+services:
+  pihole2influx:
+    container_name: pihole2influx
+    networks:
+      default:
+        ipv4_address: 192.168.19.8
+    image: pihole2influx:latest
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10k"
+        max-file: "20"
+    environment:
+      - PIHOLEHOST=192.168.1.4
+      - PIHOLEPORT=4711
+      - INFLUXDBHOST=192.168.1.4
+      - INFLUXDBPORT=8086
+      - INFLUXDBNAME=pihole2influx
+      - INFLUXDBUSERNAME=
+      - INFLUXDBPASSWORD=
+      - RUNSEVERY=30
+      - CONCURRENTREQUESTSTOPIHOLE=6
+    restart: always
+networks:
+  default:
+    external:
+      name: static-net
+...
