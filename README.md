@@ -51,7 +51,7 @@ On 2020/11/16 the code moves to C# 9 (thank god with immutable records) and dotn
 As a friend of functional programming with scala, i use a library called <a href="https://github.com/nlkl/Optional" target="_blank">Optional.Option</a>, so we become some syntactic sugar in the code and no more nullable poop.
 
 ## Installation
-Please look in the <a href="install.md">installation document</a> and check what you need to run the container.
+Please look in the <a href="install.md">installation document</a> and check what you need to run the container..
 
 ## Current Release
 ### 2020-12-03
